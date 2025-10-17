@@ -1,0 +1,57 @@
+version: '3.8'
+
+# Lumin SaaS - Docker Compose Configuration
+# This file manages PostgreSQL and Redis containers for development
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: lumin-postgres
+    environment:
+      POSTGRES_DB: lumin_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: lumin_dev_2025
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - lumin-network
+
+  # Redis Cache & Celery Broker
+  redis:
+    image: redis:7-alpine
+    container_name: lumin-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - lumin-network
+
+# Persistent volumes for data storage
+volumes:
+  postgres_data:
+    name: lumin_postgres_data
+  redis_data:
+    name: lumin_redis_data
+
+# Custom network for service communication
+networks:
+  lumin-network:
+    name: lumin_network
+    driver: bridge

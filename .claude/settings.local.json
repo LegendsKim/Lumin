@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe:*)",
+      "Read(//c/Users/Marlen/**)",
+      "Bash(for dir in apps/accounts/migrations apps/inventory/migrations apps/sales/migrations apps/customers/migrations apps/analytics/migrations)",
+      "Bash(do touch $dir/__init__.py)",
+      "Bash(done)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

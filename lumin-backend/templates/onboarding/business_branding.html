@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מיתוג העסק - Lumin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0F2027 0%, #203A43 50%, #2C5364 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1400px;
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        /* Sidebar Styling - FIXED: No overflow */
+        .sidebar {
+            width: 380px;
+            background: rgba(15, 32, 39, 0.6);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(0, 173, 181, 0.2);
+            padding: 48px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .logo-section {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo-section:hover .logo {
+            transform: scale(1.05);
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 20px rgba(0, 173, 181, 0.6));
+            transition: all 0.3s ease;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #00ADB5;
+            text-shadow: 0 0 20px rgba(0, 173, 181, 0.4);
+            margin-bottom: 6px;
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        /* Dynamic Content Section */
+        .dynamic-content {
+            flex: 1;
+        }
+
+        .content-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .content-icon {
+            font-size: 28px;
+            filter: drop-shadow(0 0 12px rgba(0, 173, 181, 0.5));
+        }
+
+        .content-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #00ADB5;
+        }
+
+        .content-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 20px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: rgba(0, 173, 181, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 173, 181, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            background: rgba(0, 173, 181, 0.1);
+            border-color: rgba(0, 173, 181, 0.3);
+            transform: translateX(-4px);
+        }
+
+        .benefit-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .benefit-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        /* Pro Badge */
+        .pro-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #1E293B;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-left: 8px;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Tip Section - Compact */
+        .tip-section {
+            background: linear-gradient(135deg, rgba(0, 173, 181, 0.15), rgba(0, 173, 181, 0.05));
+            border: 1px solid rgba(0, 173, 181, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: auto;
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tip-icon {
+            font-size: 20px;
+        }
+
+        .tip-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #00ADB5;
+        }
+
+        .tip-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.5;
+        }
+
+        /* Main Content Area */
+        .content-area {
+            flex: 1;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ADB5, #00CED6);
+            border-radius: 20px;
+            transition: width 0.6s ease;
+            box-shadow: 0 0 20px rgba(0, 173, 181, 0.6);
+        }
+
+        /* Form Card */
+        .form-card {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(15, 32, 39, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+        }
+
+        .form-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        .optional-badge {
+            display: inline-block;
+            background: rgba(0, 173, 181, 0.2);
+            color: #00ADB5;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 32px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 10px;
+        }
+
+        .form-help {
+            display: block;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        /* Logo Upload */
+        .logo-upload-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 32px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .logo-upload-section:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 173, 181, 0.4);
+        }
+
+        .logo-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #00ADB5, #00CED6);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 173, 181, 0.4);
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        .remove-logo-btn {
+            padding: 8px 16px;
+            background: rgba(255, 107, 107, 0.2);
+            color: #FF6B6B;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .remove-logo-btn.visible {
+            display: inline-block;
+        }
+
+        .remove-logo-btn:hover {
+            background: rgba(255, 107, 107, 0.3);
+        }
+
+        /* Textarea */
+        .form-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #FFFFFF;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 173, 181, 0.6);
+            box-shadow: 0 0 0 4px rgba(0, 173, 181, 0.1);
+        }
+
+        .form-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .char-count {
+            text-align: left;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 6px;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-skip {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-skip:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ADB5, #00CED6);
+            color: #FFFFFF;
+            box-shadow: 0 8px 24px rgba(0, 173, 181, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            box-shadow: 0 12px 32px rgba(0, 173, 181, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #00ADB5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 32px 24px;
+            }
+
+            .content-area {
+                padding: 32px 24px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .button-group {
+                flex-direction: column;
+            }
+
+            .form-card {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Logo Section (acts as Home button) -->
+            <a href="/" style="text-decoration: none;">
+                <div class="logo-section">
+                    <div class="logo">💡</div>
+                    <div class="logo-text">Lumin</div>
+                    <div class="tagline">האור של העסק שלך</div>
+                </div>
+            </a>
+
+            <!-- Dynamic Content for Step 4 -->
+            <div class="dynamic-content">
+                <div class="content-header">
+                    <span class="content-icon">🎨</span>
+                    <h3 class="content-title">המיתוג שלך</h3>
+                </div>
+
+                <p class="content-description">
+                    השלב האחרון! לוגו ותיאור עסקי עוזרים ליצור חוויה מקצועית ואישית. זה אופציונלי לגמרי - אפשר תמיד להוסיף אחר כך.
+                </p>
+
+                <div class="benefit-item">
+                    <span class="benefit-icon">📄</span>
+                    <span class="benefit-text">
+                        <strong>דוחות מקצועיים</strong>
+                        <span class="pro-badge">PRO</span>
+                        <br>
+                        הלוגו שלך יופיע על כל הדוחות וההצעות מחיר
+                    </span>
+                </div>
+
+                <div class="benefit-item">
+                    <span class="benefit-icon">💼</span>
+                    <span class="benefit-text">
+                        <strong>מיתוג עקבי</strong> - תיאור עסקי ברור משפר את הרושם המקצועי
+                    </span>
+                </div>
+
+                <div class="benefit-item">
+                    <span class="benefit-icon">⏰</span>
+                    <span class="benefit-text">
+                        <strong>אפשר לדלג</strong> - תמיד אפשר להוסיף מיתוג מהגדרות המערכת
+                    </span>
+                </div>
+            </div>
+
+            <!-- Tip Section -->
+            <div class="tip-section">
+                <div class="tip-header">
+                    <span class="tip-icon">💡</span>
+                    <span class="tip-title">טיפ מקצועי</span>
+                </div>
+                <p class="tip-text">
+                    לוגו טוב הוא פשוט, זכיר, ומתאים לעסק שלך. אם אין לך לוגו עדיין - אין בעיה! תוכל להעלות אחד מאוחר יותר או אפילו לייצר אחד עם AI בגירסת Pro.
+                </p>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="content-area">
+            <!-- Progress Section -->
+            <div class="progress-section">
+                <div class="progress-label">
+                    <span>שלב 4 מתוך 4</span>
+                    <span>100%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 100%;"></div>
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="form-card">
+                <div class="form-header">
+                    <h1 class="form-title">בואו נשלים את המיתוג</h1>
+                    <p class="form-subtitle">זה אופציונלי - אפשר להוסיף אחר כך</p>
+                    <span class="optional-badge">שלב אופציונלי - אפשר לדלג</span>
+                </div>
+
+                <form id="brandingForm">
+                    <!-- Logo Upload -->
+                    <div class="form-group">
+                        <label class="form-label">לוגו של העסק</label>
+                        <span class="form-help">
+                            יופיע על דוחות והצעות מחיר בגירסת Pro. מומלץ: JPG או PNG עד 5MB
+                        </span>
+
+                        <div class="logo-upload-section">
+                            <div class="logo-preview" id="logoPreview">
+                                🖼️
+                            </div>
+
+                            <div style="display: flex; gap: 12px;">
+                                <label for="logoInput" class="upload-btn">
+                                    📤 העלה לוגו
+                                </label>
+                                <button type="button" class="remove-logo-btn" id="removeLogoBtn">
+                                    🗑️ הסר
+                                </button>
+                            </div>
+
+                            <input
+                                type="file"
+                                id="logoInput"
+                                class="upload-input"
+                                accept="image/png,image/jpeg,image/jpg,image/webp"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Business Description -->
+                    <div class="form-group">
+                        <label for="businessDescription" class="form-label">תיאור העסק</label>
+                        <span class="form-help">
+                            תיאור קצר שיופיע בדשבורד ובדוחות. ספר למה העסק שלך מיוחד.
+                        </span>
+                        <textarea
+                            id="businessDescription"
+                            class="form-textarea"
+                            placeholder='לדוגמה: "בוטיק פרחים משפחתי המתמחה בעיצוב אירועים ומשלוחים עד הבית. 15 שנות ניסיון בתחום."'
+                            maxlength="300"
+                        ></textarea>
+                        <div class="char-count">
+                            <span id="charCount">0</span>/300 תווים
+                        </div>
+                    </div>
+
+                    <!-- Button Group -->
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'business_details' %}'">
+                            <span>⬅️</span>
+                            <span>חזרה</span>
+                        </button>
+                        <button type="button" class="btn btn-skip" id="skipBtn">
+                            <span>⏭️</span>
+                            <span>דלג לעכשיו</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span>סיים</span>
+                            <span>✓</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('brandingForm');
+        const logoInput = document.getElementById('logoInput');
+        const logoPreview = document.getElementById('logoPreview');
+        const removeLogoBtn = document.getElementById('removeLogoBtn');
+        const businessDescription = document.getElementById('businessDescription');
+        const charCount = document.getElementById('charCount');
+        const skipBtn = document.getElementById('skipBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        let logoFile = null;
+
+        // Logo upload handling
+        logoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file size (5MB max)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('הקובץ גדול מדי. גודל מקסימלי: 5MB');
+                    logoInput.value = '';
+                    return;
+                }
+
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    alert('נא להעלות קובץ תמונה בלבד');
+                    logoInput.value = '';
+                    return;
+                }
+
+                logoFile = file;
+
+                // Preview
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo Preview">`;
+                    removeLogoBtn.classList.add('visible');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Remove logo
+        removeLogoBtn.addEventListener('click', () => {
+            logoFile = null;
+            logoInput.value = '';
+            logoPreview.innerHTML = '🖼️';
+            removeLogoBtn.classList.remove('visible');
+        });
+
+        // Character count
+        businessDescription.addEventListener('input', () => {
+            const count = businessDescription.value.length;
+            charCount.textContent = count;
+        });
+
+        // Skip button
+        skipBtn.addEventListener('click', () => {
+            // Save empty branding data
+            sessionStorage.setItem('business_branding', JSON.stringify({
+                logo: null,
+                description: ''
+            }));
+
+            loadingOverlay.classList.add('active');
+
+            setTimeout(() => {
+                window.location.href = '{% url 'onboarding_complete' %}';
+            }, 400);
+        });
+
+        // Form submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Save to sessionStorage
+            const data = {
+                logo: logoFile ? logoFile.name : null,
+                description: businessDescription.value.trim()
+            };
+
+            sessionStorage.setItem('business_branding', JSON.stringify(data));
+
+            // If logo was uploaded, save it to sessionStorage as base64
+            if (logoFile) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    sessionStorage.setItem('business_logo_data', e.target.result);
+                    redirectToComplete();
+                };
+                reader.readAsDataURL(logoFile);
+            } else {
+                redirectToComplete();
+            }
+        });
+
+        function redirectToComplete() {
+            loadingOverlay.classList.add('active');
+
+            setTimeout(() => {
+                window.location.href = '{% url 'onboarding_complete' %}';
+            }, 400);
+        }
+
+        // Load existing data if available
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedData = sessionStorage.getItem('business_branding');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                businessDescription.value = data.description || '';
+                charCount.textContent = businessDescription.value.length;
+
+                // Load logo if available
+                const logoData = sessionStorage.getItem('business_logo_data');
+                if (logoData) {
+                    logoPreview.innerHTML = `<img src="${logoData}" alt="Logo Preview">`;
+                    removeLogoBtn.classList.add('visible');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

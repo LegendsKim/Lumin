@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לקוחות - Lumin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --lumin-turquoise: #00ADB5;
+            --lumin-turquoise-light: #00CED6;
+            --lumin-dark: #0F2027;
+            --lumin-dark-secondary: #1E293B;
+            --lumin-dark-tertiary: #2C5364;
+            --light-bg: #F8FAFC;
+            --light-card: rgba(255, 255, 255, 0.7);
+            --text-dark: #1E293B;
+            --text-light: rgba(255, 255, 255, 0.9);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --purple: #8B5CF6;
+            --blue: #3B82F6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            min-height: 100vh;
+            display: flex;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(0, 173, 181, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 173, 181, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }

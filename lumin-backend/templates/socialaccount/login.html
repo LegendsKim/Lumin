@@ -1,0 +1,15 @@
+{% load socialaccount %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url='{% provider_login_url "google" process="login" %}'">
+    <script>
+        // Auto-redirect to Google login
+        window.location.href = "{% provider_login_url 'google' process='login' %}";
+    </script>
+</head>
+<body>
+    <p>מעביר אותך ל-Google...</p>
+</body>
+</html>

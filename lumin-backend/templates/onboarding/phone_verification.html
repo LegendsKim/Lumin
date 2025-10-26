@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אימות טלפון - Lumin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0F2027 0%, #203A43 50%, #2C5364 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1400px;
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        /* Sidebar Styling - FIXED: No overflow */
+        .sidebar {
+            width: 380px;
+            background: rgba(15, 32, 39, 0.6);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(0, 173, 181, 0.2);
+            padding: 48px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .logo-section {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo-section:hover .logo {
+            transform: scale(1.05);
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 20px rgba(0, 173, 181, 0.6));
+            transition: all 0.3s ease;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #00ADB5;
+            text-shadow: 0 0 20px rgba(0, 173, 181, 0.4);
+            margin-bottom: 6px;
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        /* Dynamic Content Section */
+        .dynamic-content {
+            flex: 1;
+        }
+
+        .content-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .content-icon {
+            font-size: 28px;
+            filter: drop-shadow(0 0 12px rgba(0, 173, 181, 0.5));
+        }
+
+        .content-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #00ADB5;
+        }
+
+        .content-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 20px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: rgba(0, 173, 181, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 173, 181, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            background: rgba(0, 173, 181, 0.1);
+            border-color: rgba(0, 173, 181, 0.3);
+            transform: translateX(-4px);
+        }
+
+        .benefit-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .benefit-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        /* Tip Section - Compact */
+        .tip-section {
+            background: linear-gradient(135deg, rgba(0, 173, 181, 0.15), rgba(0, 173, 181, 0.05));
+            border: 1px solid rgba(0, 173, 181, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: auto;
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tip-icon {
+            font-size: 20px;
+        }
+
+        .tip-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #00ADB5;
+        }
+
+        .tip-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.5;
+        }
+
+        /* Main Content Area */
+        .content-area {
+            flex: 1;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ADB5, #00CED6);
+            border-radius: 20px;
+            transition: width 0.6s ease;
+            box-shadow: 0 0 20px rgba(0, 173, 181, 0.6);
+        }
+
+        /* Form Card */
+        .form-card {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(15, 32, 39, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+        }
+
+        .form-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 10px;
+        }
+
+        .form-label .required {
+            color: #FF6B6B;
+            margin-right: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #FFFFFF;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            direction: ltr;
+            text-align: right;
+        }
+
+        .form-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 173, 181, 0.6);
+            box-shadow: 0 0 0 4px rgba(0, 173, 181, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-input.error {
+            border-color: #FF6B6B;
+        }
+
+        .form-help {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 8px;
+            padding: 10px 14px;
+            background: rgba(0, 173, 181, 0.05);
+            border-radius: 8px;
+            border-right: 3px solid rgba(0, 173, 181, 0.3);
+        }
+
+        .error-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #FF6B6B;
+            font-size: 13px;
+            margin-top: 8px;
+            padding: 10px 14px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 8px;
+            border-right: 3px solid #FF6B6B;
+        }
+
+        /* Checkbox */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            accent-color: #00ADB5;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ADB5, #00CED6);
+            color: #FFFFFF;
+            box-shadow: 0 8px 24px rgba(0, 173, 181, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            box-shadow: 0 12px 32px rgba(0, 173, 181, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Skip Link */
+        .skip-section {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .skip-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .skip-link:hover {
+            color: #00ADB5;
+            background: rgba(0, 173, 181, 0.1);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #00ADB5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 32px 24px;
+            }
+
+            .content-area {
+                padding: 32px 24px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .button-group {
+                flex-direction: column;
+            }
+
+            .form-card {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Logo Section (acts as Home button) -->
+            <a href="/" style="text-decoration: none;">
+                <div class="logo-section">
+                    <div class="logo">💡</div>
+                    <div class="logo-text">Lumin</div>
+                    <div class="tagline">האור של העסק שלך</div>
+                </div>
+            </a>
+
+            <!-- Dynamic Content for Step 1 -->
+            <div class="dynamic-content">
+                <div class="content-header">
+                    <span class="content-icon">📱</span>
+                    <h3 class="content-title">ברוך הבא!</h3>
+                </div>
+
+                <p class="content-description">
+                    היי {% if user.first_name %}{{ user.first_name }}{% else %}משתמש יקר{% endif %}! 👋
+                    זה השלב הראשון בהקמת המערכת שלך. אימות הטלפון עוזר לנו לשמור על הבטיחות של החשבון שלך.
+                </p>
+
+                <div class="benefit-item">
+                    <span class="benefit-icon">🔒</span>
+                    <span class="benefit-text">
+                        <strong>אבטחה מוגברת</strong> - הגנה על החשבון שלך מפני גישה לא מורשית
+                    </span>
+                </div>
+
+                <div class="benefit-item">
+                    <span class="benefit-icon">📞</span>
+                    <span class="benefit-text">
+                        <strong>תקשורת ישירה</strong> - עדכונים חשובים על העסק שלך ישלחו ישירות אליך
+                    </span>
+                </div>
+
+                <div class="benefit-item">
+                    <span class="benefit-icon">⏰</span>
+                    <span class="benefit-text">
+                        <strong>תהליך מהיר</strong> - תקבל קוד ב-SMS תוך שניות ספורות
+                    </span>
+                </div>
+            </div>
+
+            <!-- Tip Section -->
+            <div class="tip-section">
+                <div class="tip-header">
+                    <span class="tip-icon">💡</span>
+                    <span class="tip-title">טיפ מקצועי</span>
+                </div>
+                <p class="tip-text">
+                    וודא שהמספר שאתה מזין נכון - קוד האימות יישלח אליו תוך שניות. אם לא קיבלת את הקוד, בדוק את תיבת ה-SMS או נסה שוב.
+                </p>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="content-area">
+            <!-- Progress Section -->
+            <div class="progress-section">
+                <div class="progress-label">
+                    <span>שלב 1 מתוך 4</span>
+                    <span>25%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 25%;"></div>
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="form-card">
+                <div class="form-header">
+                    <h1 class="form-title">אימות מספר טלפון</h1>
+                    <p class="form-subtitle">נשלח לך קוד בן 6 ספרות ב-SMS</p>
+                </div>
+
+                <form id="phoneForm">
+                    <!-- Phone Input -->
+                    <div class="form-group">
+                        <label for="phoneInput" class="form-label">
+                            <span class="required">*</span>
+                            מספר הטלפון (נייד בישראל)
+                        </label>
+                        <input
+                            type="tel"
+                            id="phoneInput"
+                            class="form-input"
+                            placeholder="05X-XXX-XXXX"
+                            maxlength="12"
+                            required
+                        >
+                        <div class="form-help">
+                            <span>💡</span>
+                            <span>הזן מספר נייד ישראלי תקין - נשלח אליו קוד אימות</span>
+                        </div>
+                        <div class="error-text" id="phoneError" style="display: none;">
+                            <span>⚠️</span>
+                            <span id="errorMessage"></span>
+                        </div>
+                    </div>
+
+                    <!-- Consent Checkbox -->
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="smsConsent" required>
+                        <label for="smsConsent">
+                            אני מאשר/ת קבלת הודעות SMS מ-Lumin למטרות אימות ותקשורת עסקית
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                            <span>שלח קוד אימות</span>
+                            <span>➡️</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Skip Section -->
+                <div class="skip-section">
+                    <a href="{% url 'business_basics' %}" class="skip-link">
+                        <span>⏭️</span>
+                        <span>דלג לעכשיו (יעבוד בהמשך)</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        const phoneInput = document.getElementById('phoneInput');
+        const smsConsent = document.getElementById('smsConsent');
+        const submitBtn = document.getElementById('submitBtn');
+        const phoneForm = document.getElementById('phoneForm');
+        const phoneError = document.getElementById('phoneError');
+        const errorMessage = document.getElementById('errorMessage');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        // Format phone number as user types
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+
+            // Format: 05X-XXX-XXXX
+            if (value.length > 0) {
+                if (value.length <= 3) {
+                    value = value;
+                } else if (value.length <= 6) {
+                    value = value.slice(0, 3) + '-' + value.slice(3);
+                } else {
+                    value = value.slice(0, 3) + '-' + value.slice(3, 6) + '-' + value.slice(6, 10);
+                }
+            }
+
+            e.target.value = value;
+            validateForm();
+        });
+
+        // Enable submit button when conditions are met
+        smsConsent.addEventListener('change', validateForm);
+
+        function validateForm() {
+            const phone = phoneInput.value.replace(/\D/g, '');
+            const isPhoneValid = phone.length === 10 && phone.startsWith('05');
+            const isConsentChecked = smsConsent.checked;
+
+            submitBtn.disabled = !(isPhoneValid && isConsentChecked);
+
+            // Clear error when user types
+            if (phoneError.style.display !== 'none') {
+                phoneError.style.display = 'none';
+                phoneInput.classList.remove('error');
+            }
+        }
+
+        // Handle form submission
+        phoneForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const phone = phoneInput.value.replace(/\D/g, '');
+
+            // Final validation
+            if (phone.length !== 10 || !phone.startsWith('05')) {
+                showError('מספר הטלפון אינו תקין. הזן מספר נייד ישראלי (05X-XXX-XXXX)');
+                return;
+            }
+
+            // Convert to international format
+            const internationalPhone = '+972' + phone.substring(1);
+
+            // Show loading
+            loadingOverlay.classList.add('active');
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/auth/phone/request/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        phone: internationalPhone
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Success - redirect to verification code page
+                    sessionStorage.setItem('verifying_phone', internationalPhone);
+                    window.location.href = '{% url "verify_code" %}';
+                } else {
+                    // Show error
+                    showError(data.message || 'שגיאה בשליחת SMS. נסה שוב.');
+                }
+            } catch (error) {
+                showError('שגיאת רשת. בדוק את החיבור לאינטרנט ונסה שוב.');
+            } finally {
+                loadingOverlay.classList.remove('active');
+                validateForm();
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            phoneError.style.display = 'flex';
+            phoneInput.classList.add('error');
+            phoneInput.focus();
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Auto-focus on phone input
+        window.addEventListener('load', () => {
+            phoneInput.focus();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לקוחות - Lumin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --lumin-turquoise: #00ADB5;
+            --lumin-turquoise-light: #00CED6;
+            --lumin-dark: #0F2027;
+            --lumin-dark-secondary: #1E293B;
+            --lumin-dark-tertiary: #2C5364;
+            --light-bg: #F8FAFC;
+            --light-card: rgba(255, 255, 255, 0.7);
+            --text-dark: #1E293B;
+            --text-light: rgba(255, 255, 255, 0.9);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            min-height: 100vh;
+            display: flex;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(0, 173, 181, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 173, 181, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ========== DARK SIDEBAR (Reuse from dashboard) ========== */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--lumin-dark) 0%, var(--lumin-dark-tertiary) 100%);
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .sidebar-logo {
+            padding: 32px 24px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-logo:hover .logo-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .logo-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 20px rgba(0, 173, 181, 0.8));
+            animation: pulse-glow 3s ease-in-out infinite;
+            transition: all 0.4s ease;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 173, 181, 0.8)); }
+            50% { filter: drop-shadow(0 0 30px rgba(0, 173, 181, 1)); }
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--lumin-turquoise);
+            text-shadow: 0 0 20px rgba(0, 173, 181, 0.5);
+        }
+
+        .logo-tagline {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 24px 16px;
+            overflow-y: auto;
+        }
+
+        .menu-section {
+            margin-bottom: 24px;
+        }
+
+        .menu-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            padding: 0 12px 8px;
+            font-weight: 600;
+        }
+
+        .menu-item {
+            margin-bottom: 4px;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .menu-link:hover {
+            background: rgba(0, 173, 181, 0.15);
+            color: var(--lumin-turquoise);
+            transform: translateX(-4px);
+        }
+
+        .menu-link.active {
+            background: rgba(0, 173, 181, 0.2);
+            color: var(--lumin-turquoise);
+            box-shadow: 0 0 20px rgba(0, 173, 181, 0.3);
+        }
+
+        .menu-icon {
+            font-size: 20px;
+        }
+
+        .sidebar-user {
+            padding: 20px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0, 173, 181, 0.05);
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid var(--lumin-turquoise);
+            box-shadow: 0 0 15px rgba(0, 173, 181, 0.5);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            margin-right: 280px;
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========== TOP BAR ========== */
+        .top-bar {
+            background: linear-gradient(135deg, var(--lumin-dark-secondary), var(--lumin-dark));
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-bar-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .top-bar-left p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .top-bar-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-bar-btn:hover {
+            box-shadow: 0 8px 20px rgba(0, 173, 181, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* ========== PRODUCTS CONTENT ========== */
+        .products-content {
+            padding: 32px;
+            flex: 1;
+        }
+
+        /* ========== FILTERS BAR ========== */
+        .filters-bar {
+            background: var(--light-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 280px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 1px solid rgba(0, 173, 181, 0.2);
+            border-radius: 10px;
+            font-size: 15px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--lumin-turquoise);
+            box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
+        }
+
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+        }
+
+        /* ========== CUSTOMER TYPE TABS ========== */
+        .customer-tabs {
+            display: flex;
+            gap: 12px;
+            background: rgba(0, 173, 181, 0.05);
+            padding: 6px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-dark);
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            background: rgba(0, 173, 181, 0.1);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+        }
+
+        .tab-count {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .tab-btn.active .tab-count {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            border: 1px solid rgba(0, 173, 181, 0.2);
+            border-radius: 10px;
+            font-size: 15px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--lumin-turquoise);
+            box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
+        }
+
+        .filter-btn {
+            padding: 12px 20px;
+            background: rgba(0, 173, 181, 0.1);
+            color: var(--lumin-turquoise);
+            border: 1px solid rgba(0, 173, 181, 0.3);
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background: rgba(0, 173, 181, 0.2);
+        }
+
+        .filter-btn.active {
+            background: var(--lumin-turquoise);
+            color: white;
+            border-color: var(--lumin-turquoise);
+        }
+
+        /* ========== PRODUCTS GRID/TABLE ========== */
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+            background: white;
+            border-radius: 10px;
+            padding: 4px;
+        }
+
+        .view-toggle-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .view-toggle-btn.active {
+            background: var(--lumin-turquoise);
+            color: white;
+        }
+
+        /* GRID VIEW */
+        .products-grid, .customers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .product-card {
+            background: var(--light-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            padding: 0;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.1s; }
+        .product-card:nth-child(2) { animation-delay: 0.15s; }
+        .product-card:nth-child(3) { animation-delay: 0.2s; }
+        .product-card:nth-child(4) { animation-delay: 0.25s; }
+        .product-card:nth-child(5) { animation-delay: 0.3s; }
+        .product-card:nth-child(6) { animation-delay: 0.35s; }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 173, 181, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(0, 173, 181, 0.1), rgba(0, 173, 181, 0.05));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            position: relative;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .stock-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .stock-badge.good {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .stock-badge.medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .stock-badge.low {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .stock-badge.out {
+            background: rgba(100, 116, 139, 0.2);
+            color: #64748B;
+            border: 1px solid #64748B;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .product-sku {
+            font-size: 13px;
+            color: #64748B;
+            margin-bottom: 12px;
+        }
+
+        .product-price {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--lumin-turquoise);
+            margin-bottom: 12px;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .product-stock {
+            font-size: 13px;
+            color: #64748B;
+        }
+
+        .product-stock strong {
+            color: var(--text-dark);
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .action-btn.edit {
+            background: rgba(0, 173, 181, 0.1);
+            color: var(--lumin-turquoise);
+        }
+
+        .action-btn.edit:hover {
+            background: var(--lumin-turquoise);
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .action-btn.delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* TABLE VIEW */
+        .products-table, .customers-table {
+            display: none;
+            background: var(--light-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .products-table.active, .customers-table.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: rgba(0, 173, 181, 0.05);
+        }
+
+        th {
+            padding: 16px 20px;
+            text-align: right;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(0, 173, 181, 0.03);
+        }
+
+        td {
+            padding: 16px 20px;
+            font-size: 15px;
+            color: var(--text-dark);
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: 80px 24px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            color: #64748B;
+            margin-bottom: 24px;
+        }
+
+        /* ========== LOADING STATE ========== */
+        .loading {
+            text-align: center;
+            padding: 60px 24px;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(0, 173, 181, 0.1);
+            border-top-color: var(--lumin-turquoise);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== MODAL ========== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(0, 173, 181, 0.05), rgba(0, 173, 181, 0.02));
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 32px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-label.required::after {
+            content: ' *';
+            color: var(--danger);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            padding: 12px 16px;
+            border: 1px solid rgba(0, 173, 181, 0.2);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--lumin-turquoise);
+            box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-footer {
+            padding: 20px 32px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .modal-btn-cancel {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-dark);
+        }
+
+        .modal-btn-cancel:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-btn-submit {
+            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+        }
+
+        .modal-btn-submit:hover {
+            box-shadow: 0 8px 20px rgba(0, 173, 181, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .modal-btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(100%);
+            }
+
+            .main-content {
+                margin-right: 0;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+
+        /* ========== PLAN FEATURES CSS ========== */
+        /* Locked Account Banner */
+        .locked-account-banner {
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            padding: 16px 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .banner-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .banner-icon {
+            font-size: 24px;
+        }
+
+        .banner-text {
+            flex: 1;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .banner-text strong {
+            font-weight: 700;
+        }
+
+        .upgrade-btn {
+            background: white;
+            color: #dc2626;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upgrade-btn:hover {
+            background: #fef2f2;
+            transform: scale(1.05);
+        }
+
+        /* Upgrade Prompt Button */
+        .upgrade-prompt-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+
+        .upgrade-prompt-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Disabled Elements */
+        button.disabled,
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed !important;
+            pointer-events: none;
+        }
+
+        /* Usage Stats */
+        .usage-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .stat-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .stat-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+            transition: width 0.3s ease;
+        }
+
+        .stat-text {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    {% include '_sidebar.html' with active_page='customers' %}
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- TOP BAR -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h1>👥 ניהול לקוחות</h1>
+                <p>נהל את הלקוחות והקשרים שלך</p>
+            </div>
+
+            <div class="top-bar-right">
+                <button class="top-bar-btn add-customer-btn" onclick="openAddCustomerModal()">
+                    <span>➕</span>
+                    <span>הוסף לקוח</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- CUSTOMERS CONTENT -->
+        <div class="customers-content">
+            <!-- CUSTOMER TYPE TABS -->
+            <div class="customer-tabs">
+                <button class="tab-btn active" data-type="all" onclick="filterByTab('all')">
+                    <span>👥</span>
+                    <span>כל הלקוחות</span>
+                    <span class="tab-count" id="count-all">0</span>
+                </button>
+                <button class="tab-btn" data-type="PRIVATE" onclick="filterByTab('PRIVATE')">
+                    <span>👤</span>
+                    <span>לקוחות פרטיים</span>
+                    <span class="tab-count" id="count-private">0</span>
+                </button>
+                <button class="tab-btn" data-type="BUSINESS" onclick="filterByTab('BUSINESS')">
+                    <span>🏢</span>
+                    <span>לקוחות עסקיים</span>
+                    <span class="tab-count" id="count-business">0</span>
+                </button>
+                <button class="tab-btn" data-type="TREATMENT" onclick="filterByTab('TREATMENT')">
+                    <span>💆</span>
+                    <span>לקוחות טיפול</span>
+                    <span class="tab-count" id="count-treatment">0</span>
+                </button>
+                <button class="tab-btn" data-type="VIP" onclick="filterByTab('VIP')">
+                    <span>⭐</span>
+                    <span>VIP</span>
+                    <span class="tab-count" id="count-vip">0</span>
+                </button>
+            </div>
+
+            <!-- FILTERS BAR -->
+            <div class="filters-bar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="חפש לקוח לפי שם, אימייל או טלפון...">
+                </div>
+
+                <select class="filter-select" id="statusFilter">
+                    <option value="">כל הסטטוסים</option>
+                    <option value="active">פעיל</option>
+                    <option value="inactive">לא פעיל</option>
+                </select>
+
+                <div class="view-toggle">
+                    <button class="view-toggle-btn active" onclick="switchView('grid')">⊞</button>
+                    <button class="view-toggle-btn" onclick="switchView('table')">☰</button>
+                </div>
+            </div>
+
+            <!-- LOADING STATE -->
+            <div class="loading" id="loadingState">
+                <div class="spinner"></div>
+                <p>טוען לקוחות...</p>
+            </div>
+
+            <!-- GRID VIEW -->
+            <div class="customers-grid" id="customersGrid" style="display: none;">
+                <!-- Customers will be inserted here via JavaScript -->
+            </div>
+
+            <!-- TABLE VIEW -->
+            <div class="customers-table" id="customersTable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>שם מלא</th>
+                            <th>אימייל</th>
+                            <th>טלפון</th>
+                            <th>חברה</th>
+                            <th>סוג</th>
+                            <th>סה"כ הזמנות</th>
+                            <th>סה"כ הוצאות</th>
+                            <th>פעולות</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody">
+                        <!-- Customers will be inserted here via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- EMPTY STATE -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">👥</div>
+                <div class="empty-title">אין לקוחות עדיין</div>
+                <div class="empty-text">התחל בהוספת הלקוח הראשון שלך</div>
+                <button class="top-bar-btn add-customer-btn" onclick="openAddCustomerModal()">
+                    <span>➕</span>
+                    <span>הוסף לקוח</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD CUSTOMER MODAL -->
+    <div class="modal-overlay" id="customerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>👤</span>
+                    <span>הוסף לקוח חדש</span>
+                </div>
+                <button class="modal-close" onclick="closeCustomerModal()">✕</button>
+            </div>
+
+            <form id="customerForm" class="modal-body">
+                <div class="form-grid">
+                    <!-- Personal Info -->
+                    <div class="form-group">
+                        <label class="form-label required">שם פרטי</label>
+                        <input type="text" name="first_name" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">שם משפחה</label>
+                        <input type="text" name="last_name" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">אימייל</label>
+                        <input type="email" name="email" class="form-input" placeholder="example@mail.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">טלפון</label>
+                        <input type="tel" name="phone" class="form-input" placeholder="050-1234567" required>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="form-group full-width">
+                        <label class="form-label">כתובת</label>
+                        <input type="text" name="address" class="form-input" placeholder="רחוב 123, עיר">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">עיר</label>
+                        <input type="text" name="city" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">מיקוד</label>
+                        <input type="text" name="postal_code" class="form-input">
+                    </div>
+
+                    <!-- Business Info -->
+                    <div class="form-group">
+                        <label class="form-label">חברה</label>
+                        <input type="text" name="company" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">ח.פ / עוסק</label>
+                        <input type="text" name="tax_id" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">סוג לקוח</label>
+                        <select name="customer_type" class="form-select">
+                            <option value="PRIVATE">לקוח פרטי</option>
+                            <option value="BUSINESS">לקוח עסקי</option>
+                            <option value="TREATMENT">לקוח טיפול</option>
+                            <option value="VIP">VIP</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">סטטוס</label>
+                        <select name="is_active" class="form-select">
+                            <option value="true">פעיל</option>
+                            <option value="false">לא פעיל</option>
+                        </select>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="form-group full-width">
+                        <label class="form-label">הערות</label>
+                        <textarea name="notes" class="form-textarea" placeholder="הערות נוספות..."></textarea>
+                    </div>
+                </div>
+            </form>
+
+            <div class="modal-footer">
+                <button type="button" class="modal-btn modal-btn-cancel" onclick="closeCustomerModal()">ביטול</button>
+                <button type="submit" form="customerForm" class="modal-btn modal-btn-submit" id="submitBtn">
+                    <span id="submitText">הוסף לקוח</span>
+                    <span id="submitLoader" style="display: none;">שומר...</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOMER PROFILE MODAL -->
+    <div class="modal-overlay" id="profileModal" style="z-index: 3000;">
+        <div class="modal" style="max-width: 1200px; max-height: 95vh;">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>👤</span>
+                    <span id="profileModalTitle">פרופיל לקוח</span>
+                </div>
+                <button class="modal-close" onclick="closeProfileModal()">✕</button>
+            </div>
+
+            <div class="modal-body" style="padding: 0; overflow-y: auto; max-height: calc(95vh - 140px);">
+                <!-- Profile Header -->
+                <div style="background: linear-gradient(135deg, var(--lumin-dark-secondary), var(--lumin-dark)); padding: 32px; color: white;">
+                    <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+                        <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light)); display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: 0 0 30px rgba(0, 173, 181, 0.5);">
+                            👤
+                        </div>
+                        <div style="flex: 1;">
+                            <h2 id="profileCustomerName" style="font-size: 28px; margin-bottom: 8px;">טוען...</h2>
+                            <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px;">
+                                <div style="display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.1); padding: 6px 12px; border-radius: 8px; font-size: 14px;">
+                                    <span>📧</span>
+                                    <span id="profileCustomerEmail">-</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.1); padding: 6px 12px; border-radius: 8px; font-size: 14px;">
+                                    <span>📱</span>
+                                    <span id="profileCustomerPhone">-</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.1); padding: 6px 12px; border-radius: 8px; font-size: 14px;">
+                                    <span>🏷️</span>
+                                    <span id="profileCustomerType">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="action-button btn-primary" onclick="openEditCustomerModal()" style="padding: 10px 20px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light)); color: white; box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3); display: flex; align-items: center; gap: 8px;">
+                                <span>✏️</span>
+                                <span>ערוך</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; padding: 24px; background: var(--light-bg);">
+                    <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                        <div style="font-size: 13px; color: #64748B; margin-bottom: 8px;">סה"כ טיפולים</div>
+                        <div style="font-size: 28px; font-weight: 700; color: var(--lumin-turquoise);" id="profileTotalTreatments">0</div>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                        <div style="font-size: 13px; color: #64748B; margin-bottom: 8px;">סכום טיפולים</div>
+                        <div style="font-size: 28px; font-weight: 700; color: var(--lumin-turquoise);">₪<span id="profileTreatmentTotal">0</span></div>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                        <div style="font-size: 13px; color: #64748B; margin-bottom: 8px;">סה"כ רכישות</div>
+                        <div style="font-size: 28px; font-weight: 700; color: var(--lumin-turquoise);" id="profileTotalPurchases">0</div>
+                    </div>
+                    <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                        <div style="font-size: 13px; color: #64748B; margin-bottom: 8px;">סכום רכישות</div>
+                        <div style="font-size: 28px; font-weight: 700; color: var(--lumin-turquoise);">₪<span id="profilePurchaseTotal">0</span></div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div style="background: var(--light-card); backdrop-filter: blur(20px); border-radius: 16px; padding: 6px; display: flex; gap: 8px; margin: 0 24px 24px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);">
+                    <button class="profile-tab-btn active" onclick="switchProfileTab('treatments')" data-tab="treatments" style="flex: 1; padding: 12px 16px; border: none; background: transparent; color: var(--text-dark); font-size: 15px; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span>💆</span>
+                        <span>טיפולים</span>
+                    </button>
+                    <button class="profile-tab-btn" onclick="switchProfileTab('purchases')" data-tab="purchases" style="flex: 1; padding: 12px 16px; border: none; background: transparent; color: var(--text-dark); font-size: 15px; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span>🛒</span>
+                        <span>רכישות</span>
+                    </button>
+                    <button class="profile-tab-btn" onclick="switchProfileTab('notes')" data-tab="notes" style="flex: 1; padding: 12px 16px; border: none; background: transparent; color: var(--text-dark); font-size: 15px; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span>📝</span>
+                        <span>הערות</span>
+                    </button>
+                </div>
+
+                <!-- Tab Content -->
+                <div style="padding: 0 24px 24px;">
+                    <!-- Treatments Tab -->
+                    <div class="profile-tab-content active" id="profile-tab-treatments">
+                        <div style="background: var(--light-card); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06);">
+                                <h3 style="font-size: 20px; font-weight: 700; color: var(--text-dark);">היסטוריית טיפולים</h3>
+                                <button class="action-button btn-primary" onclick="openAddTreatmentModal()" style="padding: 10px 20px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light)); color: white; box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3); display: flex; align-items: center; gap: 8px;">
+                                    <span>➕</span>
+                                    <span>הוסף טיפול</span>
+                                </button>
+                            </div>
+                            <div id="profileTreatmentsList" style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="text-align: center; padding: 40px;">
+                                    <div style="font-size: 48px; margin-bottom: 12px; opacity: 0.3;">💆</div>
+                                    <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">אין טיפולים עדיין</div>
+                                    <div style="font-size: 14px; color: #64748B;">הוסף את הטיפול הראשון</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Purchases Tab -->
+                    <div class="profile-tab-content" id="profile-tab-purchases" style="display: none;">
+                        <div style="background: var(--light-card); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);">
+                            <h3 style="font-size: 20px; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06);">היסטוריית רכישות</h3>
+                            <div style="text-align: center; padding: 40px;">
+                                <div style="font-size: 48px; margin-bottom: 12px; opacity: 0.3;">🛒</div>
+                                <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">אין רכישות עדיין</div>
+                                <div style="font-size: 14px; color: #64748B;">רכישות יופיעו כאן</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes Tab -->
+                    <div class="profile-tab-content" id="profile-tab-notes" style="display: none;">
+                        <div style="background: var(--light-card); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);">
+                            <h3 style="font-size: 20px; font-weight: 700; color: var(--text-dark); margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.06);">הערות</h3>
+                            <form id="profileNotesForm" onsubmit="saveCustomerNotes(event)">
+                                <div style="margin-bottom: 20px;">
+                                    <label style="display: block; font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">הערות כלליות</label>
+                                    <textarea id="profileGeneralNotes" style="width: 100%; padding: 12px 16px; border: 1px solid rgba(0, 173, 181, 0.2); border-radius: 10px; font-size: 15px; font-family: inherit; resize: vertical; min-height: 120px;"></textarea>
+                                </div>
+                                <div style="margin-bottom: 20px;">
+                                    <label style="display: block; font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;">הערות רפואיות</label>
+                                    <textarea id="profileMedicalNotes" style="width: 100%; padding: 12px 16px; border: 1px solid rgba(0, 173, 181, 0.2); border-radius: 10px; font-size: 15px; font-family: inherit; resize: vertical; min-height: 120px;"></textarea>
+                                </div>
+                                <button type="submit" style="padding: 12px 24px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light)); color: white; box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3); display: flex; align-items: center; gap: 8px;">
+                                    <span>💾</span>
+                                    <span>שמור הערות</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT CUSTOMER MODAL -->
+    <div class="modal-overlay" id="editCustomerModal" style="z-index: 3500;">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>✏️</span>
+                    <span>ערוך פרטי לקוח</span>
+                </div>
+                <button class="modal-close" onclick="closeEditCustomerModal()">✕</button>
+            </div>
+
+            <form id="editCustomerForm" class="modal-body" onsubmit="updateCustomer(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label required">שם פרטי</label>
+                        <input type="text" id="editFirstName" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">שם משפחה</label>
+                        <input type="text" id="editLastName" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">אימייל</label>
+                        <input type="email" id="editEmail" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">טלפון</label>
+                        <input type="tel" id="editPhone" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">סוג לקוח</label>
+                        <select id="editCustomerType" class="form-select">
+                            <option value="INDIVIDUAL">פרטי</option>
+                            <option value="PRIVATE">Private Customer</option>
+                            <option value="BUSINESS">עסקי</option>
+                            <option value="TREATMENT">טיפול</option>
+                            <option value="VIP">VIP</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+
+            <div class="modal-footer">
+                <button type="button" class="modal-btn modal-btn-cancel" onclick="closeEditCustomerModal()">ביטול</button>
+                <button type="submit" form="editCustomerForm" class="modal-btn modal-btn-submit">שמור שינויים</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD TREATMENT MODAL -->
+    <div class="modal-overlay" id="addTreatmentModal" style="z-index: 3500;">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>💆</span>
+                    <span>הוסף טיפול חדש</span>
+                </div>
+                <button class="modal-close" onclick="closeAddTreatmentModal()">✕</button>
+            </div>
+
+            <form id="addTreatmentForm" class="modal-body" onsubmit="addTreatment(event)">
+                <div class="form-group">
+                    <label class="form-label required">סוג טיפול</label>
+                    <select id="treatmentType" class="form-select" required>
+                        <option value="">בחר סוג טיפול...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">תאריך טיפול</label>
+                    <input type="date" id="treatmentDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">מטפל</label>
+                    <select id="staffMember" class="form-select">
+                        <option value="">בחר מטפל...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label required">מחיר</label>
+                    <input type="number" id="treatmentPrice" class="form-input" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">הערות</label>
+                    <textarea id="treatmentNotes" class="form-textarea"></textarea>
+                </div>
+            </form>
+
+            <div class="modal-footer">
+                <button type="button" class="modal-btn modal-btn-cancel" onclick="closeAddTreatmentModal()">ביטול</button>
+                <button type="submit" form="addTreatmentForm" class="modal-btn modal-btn-submit">הוסף טיפול</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .profile-tab-btn:hover {
+            background: rgba(0, 173, 181, 0.1);
+        }
+
+        .profile-tab-btn.active {
+            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light)) !important;
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+        }
+
+        .profile-tab-content {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+
+    <script>
+        // ========== DATA FETCHING ==========
+        let allCustomers = [];
+        let currentView = 'grid';
+
+        async function fetchCustomers() {
+            try {
+                const response = await fetch('/api/customers/api/customers/');
+                const data = await response.json();
+                allCustomers = data.results || data || [];
+
+                // Hide loading
+                document.getElementById('loadingState').style.display = 'none';
+
+                if (allCustomers.length === 0) {
+                    document.getElementById('emptyState').style.display = 'block';
+                } else {
+                    renderCustomers(allCustomers);
+                }
+            } catch (error) {
+                console.error('Error fetching customers:', error);
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        // ========== RENDERING ==========
+        let currentTabType = 'all';
+
+        function renderCustomers(customers) {
+            if (currentView === 'grid') {
+                renderGrid(customers);
+            } else {
+                renderTable(customers);
+            }
+            updateTabCounts();
+        }
+
+        function updateTabCounts() {
+            document.getElementById('count-all').textContent = allCustomers.length;
+            document.getElementById('count-private').textContent = allCustomers.filter(c => c.customer_type === 'PRIVATE').length;
+            document.getElementById('count-business').textContent = allCustomers.filter(c => c.customer_type === 'BUSINESS').length;
+            document.getElementById('count-treatment').textContent = allCustomers.filter(c => c.customer_type === 'TREATMENT').length;
+            document.getElementById('count-vip').textContent = allCustomers.filter(c => c.customer_type === 'VIP').length;
+        }
+
+        function filterByTab(type) {
+            currentTabType = type;
+
+            // Update active tab
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.tab-btn').classList.add('active');
+
+            // Filter customers
+            if (type === 'all') {
+                renderCustomers(allCustomers);
+            } else {
+                const filtered = allCustomers.filter(c => c.customer_type === type);
+                renderCustomers(filtered);
+            }
+        }
+
+        function renderGrid(customers) {
+            const grid = document.getElementById('customersGrid');
+            grid.style.display = 'grid';
+            document.getElementById('customersTable').classList.remove('active');
+
+            grid.innerHTML = customers.map((customer, index) => `
+                <div class="product-card" style="animation-delay: ${index * 0.05}s;" onclick="openCustomerProfile('${customer.id}')">
+                    <div class="product-image" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));">
+                        <div style="font-size: 48px;">👤</div>
+                        <span class="stock-badge ${getCustomerTypeBadge(customer.customer_type)}">${customer.customer_type_display}</span>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${customer.full_name}</div>
+                        <div class="product-sku">${customer.email || customer.phone}</div>
+                        <div class="product-price">₪${Number(customer.total_spent).toLocaleString()}</div>
+                        <div class="product-meta">
+                            <div class="product-stock">
+                                <strong>${customer.total_orders}</strong> הזמנות
+                            </div>
+                            <div class="product-actions">
+                                <button class="action-btn edit" onclick="event.stopPropagation(); editCustomer('${customer.id}')">✏️</button>
+                                <button class="action-btn delete" onclick="event.stopPropagation(); deleteCustomer('${customer.id}')">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderTable(customers) {
+            const tbody = document.getElementById('customersTableBody');
+            document.getElementById('customersGrid').style.display = 'none';
+            document.getElementById('customersTable').classList.add('active');
+
+            tbody.innerHTML = customers.map(customer => `
+                <tr onclick="openCustomerProfile('${customer.id}')" style="cursor: pointer;">
+                    <td><strong>${customer.full_name}</strong></td>
+                    <td>${customer.email || '-'}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customer.company || '-'}</td>
+                    <td><span class="stock-badge ${getCustomerTypeBadge(customer.customer_type)}">${customer.customer_type_display}</span></td>
+                    <td>${customer.total_orders}</td>
+                    <td><strong>₪${Number(customer.total_spent).toLocaleString()}</strong></td>
+                    <td>
+                        <div class="product-actions">
+                            <button class="action-btn edit" onclick="event.stopPropagation(); editCustomer('${customer.id}')">✏️</button>
+                            <button class="action-btn delete" onclick="event.stopPropagation(); deleteCustomer('${customer.id}')">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getCustomerTypeBadge(type) {
+            const badges = {
+                'RETAIL': 'good',
+                'WHOLESALE': 'medium',
+                'VIP': 'low'
+            };
+            return badges[type] || 'good';
+        }
+
+        // ========== VIEW TOGGLE ==========
+        function switchView(view) {
+            currentView = view;
+            const buttons = document.querySelectorAll('.view-toggle-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            renderCustomers(allCustomers);
+        }
+
+        // ========== SEARCH & FILTER ==========
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            let baseCustomers = currentTabType === 'all' ? allCustomers : allCustomers.filter(c => c.customer_type === currentTabType);
+
+            const filtered = baseCustomers.filter(c =>
+                c.full_name.toLowerCase().includes(query) ||
+                (c.email && c.email.toLowerCase().includes(query)) ||
+                c.phone.includes(query) ||
+                (c.company && c.company.toLowerCase().includes(query))
+            );
+            renderCustomers(filtered);
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', function(e) {
+            const status = e.target.value;
+            let filtered = currentTabType === 'all' ? allCustomers : allCustomers.filter(c => c.customer_type === currentTabType);
+
+            if (status === 'active') {
+                filtered = filtered.filter(c => c.is_active);
+            } else if (status === 'inactive') {
+                filtered = filtered.filter(c => !c.is_active);
+            }
+
+            renderCustomers(filtered);
+        });
+
+        // ========== CUSTOMER ACTIONS ==========
+        // Get CSRF token from cookie
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function openAddCustomerModal() {
+            document.getElementById('customerModal').classList.add('active');
+            document.getElementById('customerForm').reset();
+        }
+
+        function closeCustomerModal() {
+            document.getElementById('customerModal').classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.getElementById('customerModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCustomerModal();
+            }
+        });
+
+        // Form submission
+        document.getElementById('customerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const submitLoader = document.getElementById('submitLoader');
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitText.style.display = 'none';
+            submitLoader.style.display = 'inline';
+
+            // Collect form data
+            const formData = new FormData(this);
+            const customerData = {
+                first_name: formData.get('first_name'),
+                last_name: formData.get('last_name'),
+                email: formData.get('email') || '',
+                phone: formData.get('phone'),
+                address: formData.get('address') || '',
+                city: formData.get('city') || '',
+                postal_code: formData.get('postal_code') || '',
+                company: formData.get('company') || '',
+                tax_id: formData.get('tax_id') || '',
+                customer_type: formData.get('customer_type'),
+                is_active: formData.get('is_active') === 'true',
+                notes: formData.get('notes') || ''
+            };
+
+            try {
+                const csrftoken = getCookie('csrftoken');
+                console.log('CSRF Token:', csrftoken);
+                console.log('Customer Data:', customerData);
+
+                const response = await fetch('/api/customers/api/customers/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    credentials: 'same-origin', // Important for CSRF
+                    body: JSON.stringify(customerData)
+                });
+
+                console.log('Response status:', response.status);
+
+                if (response.ok) {
+                    const newCustomer = await response.json();
+
+                    // Close modal
+                    closeCustomerModal();
+
+                    // Refresh customer list
+                    await fetchCustomers();
+
+                    // Show success message
+                    alert('הלקוח נוסף בהצלחה! ✓');
+                } else {
+                    const errorText = await response.text();
+                    console.error('Server response:', errorText);
+                    alert('שגיאה בהוספת הלקוח. בדוק את הקונסול לפרטים נוספים.');
+                }
+            } catch (error) {
+                console.error('Error adding customer:', error);
+                alert('שגיאה בהוספת הלקוח: ' + error.message);
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitText.style.display = 'inline';
+                submitLoader.style.display = 'none';
+            }
+        });
+
+        let currentCustomerId = null;
+        let currentCustomerData = null;
+
+        async function openCustomerProfile(id) {
+            currentCustomerId = id;
+            document.getElementById('profileModal').classList.add('active');
+
+            // Load customer data
+            try {
+                const response = await fetch(`/api/customers/api/customers/${id}/`);
+                currentCustomerData = await response.json();
+
+                // Update profile header
+                document.getElementById('profileCustomerName').textContent = currentCustomerData.full_name;
+                document.getElementById('profileCustomerEmail').textContent = currentCustomerData.email || '-';
+                document.getElementById('profileCustomerPhone').textContent = currentCustomerData.phone;
+                document.getElementById('profileCustomerType').textContent = currentCustomerData.customer_type_display || currentCustomerData.customer_type;
+
+                // Update statistics
+                document.getElementById('profileTotalTreatments').textContent = currentCustomerData.treatment_count || 0;
+                document.getElementById('profileTreatmentTotal').textContent = Number(currentCustomerData.total_treatments || 0).toLocaleString();
+                document.getElementById('profileTotalPurchases').textContent = currentCustomerData.purchase_count || 0;
+                document.getElementById('profilePurchaseTotal').textContent = Number(currentCustomerData.total_purchases || 0).toLocaleString();
+
+                // Update notes
+                document.getElementById('profileGeneralNotes').value = currentCustomerData.notes || '';
+                document.getElementById('profileMedicalNotes').value = currentCustomerData.medical_notes || '';
+
+                // Load treatments
+                await loadProfileTreatments(id);
+
+                // Load treatment types and staff for adding treatments
+                await loadTreatmentTypesForModal();
+                await loadStaffMembersForModal();
+            } catch (error) {
+                console.error('Error loading customer:', error);
+                alert('שגיאה בטעינת פרופיל הלקוח');
+            }
+        }
+
+        async function loadProfileTreatments(customerId) {
+            try {
+                const response = await fetch(`/api/customers/api/treatments/?customer=${customerId}`);
+                const data = await response.json();
+                const treatments = data.results || data || [];
+
+                const list = document.getElementById('profileTreatmentsList');
+
+                if (treatments.length === 0) {
+                    list.innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <div style="font-size: 48px; margin-bottom: 12px; opacity: 0.3;">💆</div>
+                            <div style="font-size: 16px; font-weight: 600; margin-bottom: 4px;">אין טיפולים עדיין</div>
+                            <div style="font-size: 14px; color: #64748B;">הוסף את הטיפול הראשון</div>
+                        </div>
+                    `;
+                } else {
+                    list.innerHTML = treatments.map(treatment => `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: white; border-radius: 12px; border: 1px solid rgba(0, 0, 0, 0.06); transition: all 0.3s ease;">
+                            <div>
+                                <h4 style="font-size: 16px; margin-bottom: 4px;">${treatment.treatment_name}</h4>
+                                <div style="font-size: 14px; color: #64748B;">
+                                    📅 ${new Date(treatment.treatment_date).toLocaleDateString('he-IL')}
+                                    ${treatment.staff_member_name ? `• 👤 ${treatment.staff_member_name}` : ''}
+                                </div>
+                                ${treatment.notes ? `<div style="font-size: 14px; color: #64748B; margin-top: 4px;">💬 ${treatment.notes}</div>` : ''}
+                            </div>
+                            <div style="font-size: 20px; font-weight: 700; color: var(--lumin-turquoise);">₪${Number(treatment.price).toLocaleString()}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading treatments:', error);
+            }
+        }
+
+        async function loadTreatmentTypesForModal() {
+            try {
+                const response = await fetch('/api/customers/api/treatment-types/');
+                const data = await response.json();
+                const types = (data.results || data || []).filter(t => t.is_active);
+
+                const select = document.getElementById('treatmentType');
+                select.innerHTML = '<option value="">בחר סוג טיפול...</option>' +
+                    types.map(type => `<option value="${type.id}" data-price="${type.default_price || 0}">${type.name}</option>`).join('');
+
+                // Auto-fill price when treatment type changes
+                select.onchange = function() {
+                    const selected = this.options[this.selectedIndex];
+                    if (selected.dataset.price) {
+                        document.getElementById('treatmentPrice').value = selected.dataset.price;
+                    }
+                };
+            } catch (error) {
+                console.error('Error loading treatment types:', error);
+            }
+        }
+
+        async function loadStaffMembersForModal() {
+            try {
+                const response = await fetch('/api/customers/api/staff-members/');
+                const data = await response.json();
+                const staff = (data.results || data || []).filter(s => s.is_active);
+
+                const select = document.getElementById('staffMember');
+                select.innerHTML = '<option value="">בחר מטפל...</option>' +
+                    staff.map(member => `<option value="${member.id}">${member.full_name}</option>`).join('');
+            } catch (error) {
+                console.error('Error loading staff members:', error);
+            }
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('active');
+            currentCustomerId = null;
+            currentCustomerData = null;
+        }
+
+        function switchProfileTab(tabName) {
+            // Update buttons
+            document.querySelectorAll('.profile-tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.profile-tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            document.getElementById(`profile-tab-${tabName}`).style.display = 'block';
+        }
+
+        function openEditCustomerModal() {
+            if (!currentCustomerData) return;
+
+            document.getElementById('editCustomerModal').classList.add('active');
+            document.getElementById('editFirstName').value = currentCustomerData.first_name;
+            document.getElementById('editLastName').value = currentCustomerData.last_name;
+            document.getElementById('editEmail').value = currentCustomerData.email || '';
+            document.getElementById('editPhone').value = currentCustomerData.phone;
+            document.getElementById('editCustomerType').value = currentCustomerData.customer_type;
+        }
+
+        function closeEditCustomerModal() {
+            document.getElementById('editCustomerModal').classList.remove('active');
+        }
+
+        async function updateCustomer(event) {
+            event.preventDefault();
+
+            const customerUpdate = {
+                first_name: document.getElementById('editFirstName').value,
+                last_name: document.getElementById('editLastName').value,
+                email: document.getElementById('editEmail').value,
+                phone: document.getElementById('editPhone').value,
+                customer_type: document.getElementById('editCustomerType').value
+            };
+
+            try {
+                const csrftoken = getCookie('csrftoken');
+                const response = await fetch(`/api/customers/api/customers/${currentCustomerId}/`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify(customerUpdate)
+                });
+
+                if (response.ok) {
+                    closeEditCustomerModal();
+                    await openCustomerProfile(currentCustomerId); // Reload profile
+                    await fetchCustomers(); // Reload customer list
+                    alert('הלקוח עודכן בהצלחה! ✓');
+                } else {
+                    const error = await response.json();
+                    alert('שגיאה בעדכון הלקוח: ' + JSON.stringify(error));
+                }
+            } catch (error) {
+                console.error('Error updating customer:', error);
+                alert('שגיאה בעדכון הלקוח');
+            }
+        }
+
+        function openAddTreatmentModal() {
+            document.getElementById('addTreatmentModal').classList.add('active');
+            document.getElementById('addTreatmentForm').reset();
+            // Set today's date as default
+            document.getElementById('treatmentDate').valueAsDate = new Date();
+        }
+
+        function closeAddTreatmentModal() {
+            document.getElementById('addTreatmentModal').classList.remove('active');
+        }
+
+        async function addTreatment(event) {
+            event.preventDefault();
+
+            const treatmentData = {
+                customer: currentCustomerId,
+                treatment_type: document.getElementById('treatmentType').value,
+                treatment_date: document.getElementById('treatmentDate').value,
+                staff_member: document.getElementById('staffMember').value || null,
+                price: document.getElementById('treatmentPrice').value,
+                notes: document.getElementById('treatmentNotes').value || ''
+            };
+
+            try {
+                const csrftoken = getCookie('csrftoken');
+                const response = await fetch('/api/customers/api/treatments/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify(treatmentData)
+                });
+
+                if (response.ok) {
+                    closeAddTreatmentModal();
+                    await openCustomerProfile(currentCustomerId); // Reload profile to update stats
+                    await fetchCustomers(); // Reload customer list to update totals
+                    alert('הטיפול נוסף בהצלחה! ✓');
+                } else {
+                    const error = await response.json();
+                    alert('שגיאה בהוספת הטיפול: ' + JSON.stringify(error));
+                }
+            } catch (error) {
+                console.error('Error adding treatment:', error);
+                alert('שגיאה בהוספת הטיפול');
+            }
+        }
+
+        async function saveCustomerNotes(event) {
+            event.preventDefault();
+
+            const notesData = {
+                notes: document.getElementById('profileGeneralNotes').value,
+                medical_notes: document.getElementById('profileMedicalNotes').value
+            };
+
+            try {
+                const csrftoken = getCookie('csrftoken');
+                const response = await fetch(`/api/customers/api/customers/${currentCustomerId}/`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify(notesData)
+                });
+
+                if (response.ok) {
+                    alert('ההערות נשמרו בהצלחה! ✓');
+                } else {
+                    alert('שגיאה בשמירת ההערות');
+                }
+            } catch (error) {
+                console.error('Error saving notes:', error);
+                alert('שגיאה בשמירת ההערות');
+            }
+        }
+
+        // Close modals on overlay click
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('profileModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeProfileModal();
+                }
+            });
+
+            document.getElementById('editCustomerModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeEditCustomerModal();
+                }
+            });
+
+            document.getElementById('addTreatmentModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeAddTreatmentModal();
+                }
+            });
+        });
+
+        function editCustomer(id) {
+            openCustomerProfile(id);
+        }
+
+        async function deleteCustomer(id) {
+            if (!confirm('האם אתה בטוח שברצונך למחוק לקוח זה?')) {
+                return;
+            }
+
+            try {
+                const csrftoken = getCookie('csrftoken');
+                const response = await fetch(`/api/customers/api/customers/${id}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    }
+                });
+
+                if (response.ok) {
+                    // Refresh list
+                    await fetchCustomers();
+                    alert('הלקוח נמחק בהצלחה');
+                } else {
+                    alert('שגיאה במחיקת הלקוח');
+                }
+            } catch (error) {
+                console.error('Error deleting customer:', error);
+                alert('שגיאה במחיקת הלקוח');
+            }
+        }
+
+        // ========== INIT ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchCustomers();
+        });
+    </script>
+
+    <!-- Plan Features JavaScript -->
+    <script src="/static/js/plan-features.js"></script>
+</body>
+</html>

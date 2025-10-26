@@ -1,0 +1,57 @@
+{% load socialaccount %}
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>מתחבר...</title>
+    <style>
+        body {
+            font-family: 'Heebo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .container {
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h2>מתחבר למערכת...</h2>
+        <p>רק רגע, אנחנו מכינים הכל בשבילך</p>
+
+        <form method="post" action="{% url 'socialaccount_signup' %}" id="signup_form" style="display:none;">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" id="continue_btn">Continue</button>
+        </form>
+    </div>
+
+    <script>
+        // Auto-submit the form immediately
+        window.onload = function() {
+            setTimeout(function() {
+                document.getElementById('signup_form').submit();
+            }, 100);
+        };
+    </script>
+</body>
+</html>

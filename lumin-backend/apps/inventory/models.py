@@ -117,6 +117,20 @@ class Product(BaseModel):
         verbose_name=_('Active')
     )
 
+    # WooCommerce Integration
+    woocommerce_product_id = models.IntegerField(
+        null=True,
+        blank=True,
+        verbose_name=_('WooCommerce Product ID'),
+        help_text=_('WooCommerce product ID for sync')
+    )
+    last_synced_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('Last Synced At'),
+        help_text=_('Last sync with WooCommerce')
+    )
+
     class Meta:
         verbose_name = _('מוצר')
         verbose_name_plural = _('מוצרים')

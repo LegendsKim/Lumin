@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סנכרון WooCommerce - Lumin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --lumin-turquoise: #00ADB5;
+            --lumin-turquoise-light: #00CED6;
+            --lumin-dark: #0F2027;
+            --lumin-dark-secondary: #1E293B;
+            --lumin-dark-tertiary: #2C5364;
+            --light-bg: #F8FAFC;
+            --light-card: rgba(255, 255, 255, 0.7);
+            --text-dark: #1E293B;
+            --text-light: rgba(255, 255, 255, 0.9);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            min-height: 100vh;
+            display: flex;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(0, 173, 181, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 173, 181, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--lumin-dark) 0%, var(--lumin-dark-tertiary) 100%);
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .sidebar-logo {
+            padding: 32px 24px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 20px rgba(0, 173, 181, 0.8));
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--lumin-turquoise);
+            text-shadow: 0 0 20px rgba(0, 173, 181, 0.5);
+        }
+
+        .logo-tagline {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 24px 0;
+            overflow-y: auto;
+        }
+
+        .menu-section {
+            margin-bottom: 24px;
+        }
+
+        .menu-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            padding: 0 24px 8px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            padding: 14px 24px;
+            color: var(--text-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s ease;
+            border-right: 3px solid transparent;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 173, 181, 0.1);
+            border-right-color: var(--lumin-turquoise);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 173, 181, 0.15);
+            border-right-color: var(--lumin-turquoise);
+            color: var(--lumin-turquoise);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-right: 280px;
+            flex: 1;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        /* Connection Card */
+        .connection-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .connection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .connection-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-inactive {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--lumin-turquoise);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--lumin-turquoise);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--lumin-turquoise-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #E2E8F0;
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #CBD5E1;
+        }
+
+        /* Sync Controls */
+        .sync-controls {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .sync-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .sync-btn {
+            background: linear-gradient(135deg, var(--lumin-turquoise) 0%, var(--lumin-turquoise-light) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .sync-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 173, 181, 0.3);
+        }
+
+        .sync-btn-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .sync-btn-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* Sync Jobs */
+        .sync-jobs {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .jobs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .job-card {
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border-right: 4px solid transparent;
+        }
+
+        .job-card.running {
+            border-right-color: var(--warning);
+        }
+
+        .job-card.completed {
+            border-right-color: var(--success);
+        }
+
+        .job-card.failed {
+            border-right-color: var(--danger);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .job-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .job-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-running {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .status-completed {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-failed {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .status-pending {
+            background: #E0E7FF;
+            color: #3730A3;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #E2E8F0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--lumin-turquoise) 0%, var(--lumin-turquoise-light) 100%);
+            transition: width 0.3s ease;
+        }
+
+        .job-info {
+            display: flex;
+            gap: 24px;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .alert-error {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        /* ========== PLAN FEATURES CSS ========== */
+        /* Locked Account Banner */
+        .locked-account-banner {
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            padding: 16px 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .banner-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .banner-icon {
+            font-size: 24px;
+        }
+
+        .banner-text {
+            flex: 1;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .banner-text strong {
+            font-weight: 700;
+        }
+
+        .upgrade-btn {
+            background: white;
+            color: #dc2626;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upgrade-btn:hover {
+            background: #fef2f2;
+            transform: scale(1.05);
+        }
+
+        /* Upgrade Prompt Button */
+        .upgrade-prompt-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+
+        .upgrade-prompt-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Disabled Elements */
+        button.disabled,
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed !important;
+            pointer-events: none;
+        }
+
+        /* Usage Stats */
+        .usage-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .stat-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .stat-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+            transition: width 0.3s ease;
+        }
+
+        .stat-text {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        /* ========== LOADING BUTTON ANIMATION ========== */
+        .sync-btn.loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .sync-btn.loading .sync-btn-content {
+            opacity: 0;
+        }
+
+        .sync-btn-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        .sync-btn.loading .sync-btn-loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Spinner Animation */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Pulsing Dots */
+        .loading-text {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .loading-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .loading-dots span {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+
+        .loading-dots span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .loading-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        /* Success State */
+        .sync-btn.success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            animation: successBounce 0.6s ease;
+        }
+
+        @keyframes successBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Error State */
+        .sync-btn.error {
+            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* ========== CUSTOM MODALS ========== */
+        .custom-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .custom-modal-overlay.active {
+            display: flex;
+        }
+
+        .custom-modal {
+            background: white;
+            border-radius: 20px;
+            padding: 0;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .custom-modal-header {
+            padding: 32px 32px 24px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 173, 181, 0.1), rgba(0, 173, 181, 0.05));
+        }
+
+        .custom-modal-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            background: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            animation: iconBounce 0.6s ease;
+        }
+
+        @keyframes iconBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .custom-modal-icon.success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .custom-modal-icon.error {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+        }
+
+        .custom-modal-icon.warning {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+        }
+
+        .custom-modal-icon.question {
+            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+            color: white;
+        }
+
+        .custom-modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .custom-modal-body {
+            padding: 24px 32px;
+        }
+
+        .custom-modal-message {
+            font-size: 16px;
+            color: #64748b;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .custom-modal-footer {
+            padding: 20px 32px 32px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .custom-modal-btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .custom-modal-btn-cancel {
+            background: #E2E8F0;
+            color: var(--text-dark);
+        }
+
+        .custom-modal-btn-cancel:hover {
+            background: #CBD5E1;
+            transform: translateY(-2px);
+        }
+
+        .custom-modal-btn-confirm {
+            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+        }
+
+        .custom-modal-btn-confirm:hover {
+            box-shadow: 0 8px 20px rgba(0, 173, 181, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .custom-modal-btn-ok {
+            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+        }
+
+        .custom-modal-btn-ok:hover {
+            box-shadow: 0 8px 20px rgba(0, 173, 181, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Modal closing animation */
+        .custom-modal-overlay.closing {
+            animation: fadeOut 0.3s ease forwards;
+        }
+
+        .custom-modal-overlay.closing .custom-modal {
+            animation: modalSlideOut 0.3s ease forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes modalSlideOut {
+            to {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+        }
+
+        /* ========== TOGGLE SWITCH ========== */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #CBD5E1;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .toggle-switch input:disabled + .toggle-slider {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Last Sync Card */
+        .last-sync-card {
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 20px;
+            border-right: 4px solid var(--lumin-turquoise);
+            transition: all 0.3s ease;
+        }
+
+        .last-sync-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .last-sync-type {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .last-sync-time {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .last-sync-date {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .last-sync-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo" onclick="window.location.href='/dashboard/'">
+            <div class="logo-icon">💡</div>
+            <div class="logo-text">Lumin</div>
+            <div class="logo-tagline">האור של העסק שלך</div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="menu-section">
+                <div class="menu-section-title">תפריט ראשי</div>
+                <a href="/dashboard/" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span>דשבורד</span>
+                </a>
+                <a href="/api/products/" class="nav-item">
+                    <span class="nav-icon">📦</span>
+                    <span>מוצרים</span>
+                </a>
+                <a href="/api/orders/" class="nav-item">
+                    <span class="nav-icon">🛒</span>
+                    <span>הזמנות</span>
+                </a>
+                <a href="/api/customers/" class="nav-item">
+                    <span class="nav-icon">👥</span>
+                    <span>לקוחות</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">כלים</div>
+                <a href="/api/analytics/" class="nav-item">
+                    <span class="nav-icon">📈</span>
+                    <span>אנליטיקה</span>
+                </a>
+                <a href="/api/integrations/coupons/" class="nav-item">
+                    <span class="nav-icon">🎫</span>
+                    <span>קופונים</span>
+                </a>
+                <a href="/api/integrations/sync/" class="nav-item active">
+                    <span class="nav-icon">🔄</span>
+                    <span>סנכרון</span>
+                </a>
+                <a href="/settings/" class="nav-item">
+                    <span class="nav-icon">⚙️</span>
+                    <span>הגדרות</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">🔄 סנכרון WooCommerce</h1>
+            <p class="page-subtitle">נהל את החיבור והסנכרון עם החנות שלך ב-WooCommerce</p>
+        </div>
+
+        <!-- Connection Card -->
+        <div class="connection-card" id="connectionCard">
+            <div class="connection-header">
+                <h2 class="connection-title">הגדרות חיבור</h2>
+                <span class="status-badge status-inactive" id="connectionStatus">לא מחובר</span>
+            </div>
+
+            <div id="connectionForm">
+                <div class="form-group">
+                    <label class="form-label">כתובת האתר 🌐</label>
+                    <input type="url" class="form-input" id="storeUrl" placeholder="https://yourstore.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Consumer Key 🔑</label>
+                    <input type="text" class="form-input" id="consumerKey" placeholder="ck_...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Consumer Secret 🔐</label>
+                    <input type="password" class="form-input" id="consumerSecret" placeholder="cs_...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Webhook Secret (אופציונלי) 🛡️</label>
+                    <input type="text" class="form-input" id="webhookSecret" placeholder="secret_...">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="syncCustomers" checked>
+                    <label for="syncCustomers">סנכרן לקוחות</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="syncOrders" checked>
+                    <label for="syncOrders">סנכרן הזמנות</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="syncProducts" checked>
+                    <label for="syncProducts">סנכרן מוצרים</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="syncCoupons" checked>
+                    <label for="syncCoupons">סנכרן קופונים</label>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button class="btn btn-secondary" onclick="testConnection()">בדיקת חיבור 🔍</button>
+                    <button class="btn btn-primary" onclick="saveConnection()">שמור חיבור ✓</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sync Controls -->
+        <div class="sync-controls" id="syncControls" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h2 class="connection-title">פעולות סנכרון</h2>
+                <button class="btn btn-primary" onclick="syncAll(this)" style="display: flex; align-items: center; gap: 8px;">
+                    <span>🔄</span>
+                    <span>סנכרן הכל</span>
+                </button>
+            </div>
+            <div class="sync-buttons">
+                <button class="sync-btn" onclick="startSync('customers', this)">
+                    <div class="sync-btn-content">
+                        <div class="sync-btn-icon">👥</div>
+                        <div class="sync-btn-title">סנכרן לקוחות</div>
+                    </div>
+                    <div class="sync-btn-loader">
+                        <div class="spinner"></div>
+                        <div class="loading-text">
+                            <span>מסנכרן</span>
+                            <div class="loading-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+                <button class="sync-btn" onclick="startSync('orders', this)">
+                    <div class="sync-btn-content">
+                        <div class="sync-btn-icon">🛒</div>
+                        <div class="sync-btn-title">סנכרן הזמנות</div>
+                    </div>
+                    <div class="sync-btn-loader">
+                        <div class="spinner"></div>
+                        <div class="loading-text">
+                            <span>מסנכרן</span>
+                            <div class="loading-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+                <button class="sync-btn" onclick="startSync('products', this)">
+                    <div class="sync-btn-content">
+                        <div class="sync-btn-icon">📦</div>
+                        <div class="sync-btn-title">סנכרן מוצרים</div>
+                    </div>
+                    <div class="sync-btn-loader">
+                        <div class="spinner"></div>
+                        <div class="loading-text">
+                            <span>מסנכרן</span>
+                            <div class="loading-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+                <button class="sync-btn" onclick="startSync('coupons', this)">
+                    <div class="sync-btn-content">
+                        <div class="sync-btn-icon">🎫</div>
+                        <div class="sync-btn-title">סנכרן קופונים</div>
+                    </div>
+                    <div class="sync-btn-loader">
+                        <div class="spinner"></div>
+                        <div class="loading-text">
+                            <span>מסנכרן</span>
+                            <div class="loading-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Last Sync Info -->
+        <div class="sync-jobs">
+            <h2 class="connection-title" style="margin-bottom: 24px;">מידע סנכרון</h2>
+
+            <!-- Auto Sync Toggle (PRO only) -->
+            <div style="background: linear-gradient(135deg, rgba(0, 173, 181, 0.1), rgba(0, 173, 181, 0.05)); border-radius: 12px; padding: 20px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+                        <span>⚡</span>
+                        <span>סנכרון אוטומטי</span>
+                        <span class="status-badge" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 11px; padding: 4px 8px;">PRO</span>
+                    </h3>
+                    <p style="font-size: 14px; color: #64748b;">סנכרון אוטומטי כל 6 שעות עם WooCommerce</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="autoSyncToggle" onchange="toggleAutoSync(this)">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <!-- Last Sync Info Grid -->
+            <div id="lastSyncInfo" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let connectionId = null;
+        let pollInterval = null;
+
+        // Load connection on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadConnection();
+            loadSyncJobs();
+            loadAutoSyncState();
+            startPolling();
+        });
+
+        async function loadConnection() {
+            try {
+                const response = await fetch('/api/integrations/api/connections/');
+                const data = await response.json();
+
+                if (data.results && data.results.length > 0) {
+                    const connection = data.results[0];
+                    connectionId = connection.id;
+
+                    document.getElementById('storeUrl').value = connection.store_url;
+                    document.getElementById('consumerKey').value = connection.consumer_key;
+                    document.getElementById('syncCustomers').checked = connection.sync_customers;
+                    document.getElementById('syncOrders').checked = connection.sync_orders;
+                    document.getElementById('syncProducts').checked = connection.sync_products;
+                    document.getElementById('syncCoupons').checked = connection.sync_coupons;
+
+                    if (connection.is_active) {
+                        document.getElementById('connectionStatus').textContent = 'מחובר ✓';
+                        document.getElementById('connectionStatus').className = 'status-badge status-active';
+                        document.getElementById('syncControls').style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading connection:', error);
+            }
+        }
+
+        async function testConnection() {
+            const storeUrl = document.getElementById('storeUrl').value;
+            const consumerKey = document.getElementById('consumerKey').value;
+            const consumerSecret = document.getElementById('consumerSecret').value;
+
+            if (!storeUrl || !consumerKey || !consumerSecret) {
+                await customAlert('אנא מלא את כל השדות הנדרשים', 'שדות חסרים', 'warning');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/integrations/api/connections/test_connection/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                        store_url: storeUrl,
+                        consumer_key: consumerKey,
+                        consumer_secret: consumerSecret
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    await customAlert('החיבור הצליח! ✓', 'הצלחה', 'success');
+                } else {
+                    await customAlert('החיבור נכשל: ' + result.message, 'שגיאה', 'error');
+                }
+            } catch (error) {
+                await customAlert('שגיאה בבדיקת החיבור', 'שגיאה', 'error');
+                console.error(error);
+            }
+        }
+
+        async function saveConnection() {
+            const connectionData = {
+                store_url: document.getElementById('storeUrl').value,
+                consumer_key: document.getElementById('consumerKey').value,
+                consumer_secret: document.getElementById('consumerSecret').value,
+                webhook_secret: document.getElementById('webhookSecret').value,
+                sync_customers: document.getElementById('syncCustomers').checked,
+                sync_orders: document.getElementById('syncOrders').checked,
+                sync_products: document.getElementById('syncProducts').checked,
+                sync_coupons: document.getElementById('syncCoupons').checked,
+                is_active: true
+            };
+
+            try {
+                const url = connectionId
+                    ? `/api/integrations/api/connections/${connectionId}/`
+                    : '/api/integrations/api/connections/';
+
+                const method = connectionId ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify(connectionData)
+                });
+
+                if (response.ok) {
+                    await customAlert('החיבור נשמר בהצלחה! ✓', 'הצלחה', 'success');
+                    await loadConnection();
+                } else {
+                    await customAlert('שגיאה בשמירת החיבור', 'שגיאה', 'error');
+                }
+            } catch (error) {
+                await customAlert('שגיאה בשמירת החיבור', 'שגיאה', 'error');
+                console.error(error);
+            }
+        }
+
+        async function startSync(jobType, button) {
+            const confirmed = await customConfirm(
+                `האם אתה בטוח שברצונך לסנכרן ${getJobTypeName(jobType)}?`,
+                'אישור סנכרון',
+                '🔄'
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            // Add loading state
+            button.classList.add('loading');
+
+            try {
+                const response = await fetch('/api/integrations/api/sync-jobs/start_sync/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                        job_type: jobType,
+                        direction: 'import'
+                    })
+                });
+
+                const result = await response.json();
+
+                // Remove loading, add success/error state
+                button.classList.remove('loading');
+
+                if (response.ok) {
+                    // Success animation
+                    button.classList.add('success');
+                    setTimeout(() => button.classList.remove('success'), 2000);
+
+                    await customAlert('הסנכרון התחיל בהצלחה! 🔄', 'הצלחה', 'success');
+                    await loadSyncJobs();
+                } else {
+                    // Error animation
+                    button.classList.add('error');
+                    setTimeout(() => button.classList.remove('error'), 1000);
+
+                    await customAlert('שגיאה: ' + (result.error || 'לא ניתן להתחיל סנכרון'), 'שגיאה', 'error');
+                }
+            } catch (error) {
+                // Remove loading, show error
+                button.classList.remove('loading');
+                button.classList.add('error');
+                setTimeout(() => button.classList.remove('error'), 1000);
+
+                await customAlert('שגיאה בהתחלת הסנכרון', 'שגיאה', 'error');
+                console.error(error);
+            }
+        }
+
+        async function loadSyncJobs() {
+            try {
+                const response = await fetch('/api/integrations/api/sync-jobs/');
+                const data = await response.json();
+
+                const lastSyncInfo = document.getElementById('lastSyncInfo');
+
+                if (data.results && data.results.length > 0) {
+                    // Group by job type and get latest for each
+                    const latestByType = {};
+                    data.results.forEach(job => {
+                        if (!latestByType[job.job_type] ||
+                            new Date(job.started_at) > new Date(latestByType[job.job_type].started_at)) {
+                            latestByType[job.job_type] = job;
+                        }
+                    });
+
+                    lastSyncInfo.innerHTML = Object.values(latestByType).map(job => renderLastSyncCard(job)).join('');
+                } else {
+                    lastSyncInfo.innerHTML = '<p style="text-align: center; color: #64748b; grid-column: 1 / -1;">אין סנכרונים עדיין</p>';
+                }
+            } catch (error) {
+                console.error('Error loading sync jobs:', error);
+            }
+        }
+
+        function renderLastSyncCard(job) {
+            const icons = {
+                'customers': '👥',
+                'orders': '🛒',
+                'products': '📦',
+                'coupons': '🎫'
+            };
+
+            const date = new Date(job.started_at);
+            const timeStr = date.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+            const dateStr = date.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+            const statusClass = job.status === 'completed' ? 'status-completed' :
+                              job.status === 'failed' ? 'status-failed' : 'status-running';
+
+            const statusText = getStatusName(job.status);
+
+            return `
+                <div class="last-sync-card">
+                    <div class="last-sync-type">
+                        <span>${icons[job.job_type] || '🔄'}</span>
+                        <span>${getJobTypeName(job.job_type)}</span>
+                    </div>
+                    <div class="last-sync-time">${timeStr}</div>
+                    <div class="last-sync-date">${dateStr}</div>
+                    <div class="last-sync-status ${statusClass}">${statusText}</div>
+                </div>
+            `;
+        }
+
+        function renderJob(job) {
+            const statusClass = job.status === 'running' ? 'running' :
+                              job.status === 'completed' ? 'completed' :
+                              job.status === 'failed' ? 'failed' : '';
+
+            const statusBadgeClass = job.status === 'running' ? 'status-running' :
+                                   job.status === 'completed' ? 'status-completed' :
+                                   job.status === 'failed' ? 'status-failed' : 'status-pending';
+
+            return `
+                <div class="job-card ${statusClass}">
+                    <div class="job-header">
+                        <div class="job-title">${getJobTypeName(job.job_type)}</div>
+                        <div class="job-status ${statusBadgeClass}">${getStatusName(job.status)}</div>
+                    </div>
+                    ${job.status === 'running' || job.total_items > 0 ? `
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${job.progress_percentage}%"></div>
+                        </div>
+                    ` : ''}
+                    <div class="job-info">
+                        <span>📊 ${job.processed_items}/${job.total_items} פריטים</span>
+                        <span>✅ ${job.successful_items} הצליחו</span>
+                        ${job.failed_items > 0 ? `<span>❌ ${job.failed_items} נכשלו</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function getJobTypeName(type) {
+            const names = {
+                'customers': 'לקוחות',
+                'orders': 'הזמנות',
+                'products': 'מוצרים',
+                'coupons': 'קופונים'
+            };
+            return names[type] || type;
+        }
+
+        function getStatusName(status) {
+            const names = {
+                'pending': 'ממתין',
+                'running': 'פועל',
+                'completed': 'הושלם',
+                'failed': 'נכשל',
+                'cancelled': 'בוטל'
+            };
+            return names[status] || status;
+        }
+
+        function startPolling() {
+            pollInterval = setInterval(() => {
+                loadSyncJobs();
+            }, 3000); // Refresh every 3 seconds
+        }
+
+        // ========== SYNC ALL ==========
+        async function syncAll(button) {
+            const confirmed = await customConfirm(
+                'פעולה זו תסנכרן את כל הנתונים (לקוחות, הזמנות, מוצרים וקופונים). האם להמשיך?',
+                'סנכרון מלא',
+                '🔄'
+            );
+
+            if (!confirmed) return;
+
+            // Disable button and show loading
+            const originalHTML = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div class="spinner" style="width: 20px; height: 20px; border-width: 3px;"></div>
+                    <span>מסנכרן...</span>
+                </div>
+            `;
+
+            const types = ['customers', 'products', 'orders', 'coupons'];
+            let successCount = 0;
+            let failCount = 0;
+
+            for (const type of types) {
+                try {
+                    const response = await fetch('/api/integrations/api/sync-jobs/start_sync/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({
+                            job_type: type,
+                            direction: 'import'
+                        })
+                    });
+
+                    if (response.ok) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                    }
+
+                    // Small delay between requests
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                } catch (error) {
+                    failCount++;
+                    console.error(`Error syncing ${type}:`, error);
+                }
+            }
+
+            // Restore button
+            button.disabled = false;
+            button.innerHTML = originalHTML;
+
+            // Show result
+            if (failCount === 0) {
+                await customAlert(
+                    `סנכרון מלא הושלם בהצלחה! ${successCount} סנכרונים התחילו.`,
+                    'הצלחה',
+                    'success'
+                );
+            } else {
+                await customAlert(
+                    `הסנכרון הושלם עם שגיאות. ${successCount} הצליחו, ${failCount} נכשלו.`,
+                    'הושלם עם שגיאות',
+                    'warning'
+                );
+            }
+
+            await loadSyncJobs();
+        }
+
+        // ========== AUTO SYNC TOGGLE ==========
+        async function toggleAutoSync(checkbox) {
+            // Check if user has PRO plan
+            if (!window.luminFeatures || !window.luminFeatures.loaded) {
+                // Try to load features first
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
+            const isPro = window.luminFeatures?.plan === 'PRO';
+
+            if (!isPro) {
+                // Revert checkbox
+                checkbox.checked = false;
+
+                await customAlert(
+                    'סנכרון אוטומטי זמין רק למשתמשי PRO. שדרג את התוכנית שלך כדי להפעיל תכונה זו.',
+                    'תכונת PRO',
+                    'warning'
+                );
+                return;
+            }
+
+            // Save setting
+            const enabled = checkbox.checked;
+
+            try {
+                const response = await fetch('/api/integrations/api/connections/toggle_auto_sync/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                        auto_sync_enabled: enabled
+                    })
+                });
+
+                if (response.ok) {
+                    await customAlert(
+                        enabled ? 'סנכרון אוטומטי הופעל! הנתונים יסונכרנו כל 6 שעות.' : 'סנכרון אוטומטי הושבת.',
+                        enabled ? 'הופעל' : 'הושבת',
+                        'success'
+                    );
+                } else {
+                    checkbox.checked = !enabled; // Revert
+                    await customAlert('שגיאה בשמירת ההגדרות', 'שגיאה', 'error');
+                }
+            } catch (error) {
+                checkbox.checked = !enabled; // Revert
+                await customAlert('שגיאה בשמירת ההגדרות', 'שגיאה', 'error');
+                console.error(error);
+            }
+        }
+
+        // Load auto-sync state on page load
+        async function loadAutoSyncState() {
+            try {
+                const response = await fetch('/api/integrations/api/connections/');
+                const data = await response.json();
+
+                if (data.results && data.results.length > 0) {
+                    const connection = data.results[0];
+                    const toggle = document.getElementById('autoSyncToggle');
+
+                    if (toggle && connection.auto_sync_enabled !== undefined) {
+                        toggle.checked = connection.auto_sync_enabled;
+                    }
+
+                    // Disable toggle for non-PRO users
+                    if (window.luminFeatures?.plan !== 'PRO') {
+                        toggle.disabled = true;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading auto-sync state:', error);
+            }
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+
+    <!-- Custom Modal for Confirm -->
+    <div class="custom-modal-overlay" id="customConfirmModal">
+        <div class="custom-modal">
+            <div class="custom-modal-header">
+                <div class="custom-modal-icon question" id="confirmIcon">❓</div>
+                <h3 class="custom-modal-title" id="confirmTitle">אישור פעולה</h3>
+            </div>
+            <div class="custom-modal-body">
+                <p class="custom-modal-message" id="confirmMessage"></p>
+            </div>
+            <div class="custom-modal-footer">
+                <button class="custom-modal-btn custom-modal-btn-cancel" id="confirmCancelBtn">ביטול</button>
+                <button class="custom-modal-btn custom-modal-btn-confirm" id="confirmOkBtn">אישור</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal for Alert -->
+    <div class="custom-modal-overlay" id="customAlertModal">
+        <div class="custom-modal">
+            <div class="custom-modal-header">
+                <div class="custom-modal-icon" id="alertIcon">ℹ️</div>
+                <h3 class="custom-modal-title" id="alertTitle">הודעה</h3>
+            </div>
+            <div class="custom-modal-body">
+                <p class="custom-modal-message" id="alertMessage"></p>
+            </div>
+            <div class="custom-modal-footer">
+                <button class="custom-modal-btn custom-modal-btn-ok" id="alertOkBtn">הבנתי</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== CUSTOM CONFIRM DIALOG ==========
+        function customConfirm(message, title = 'אישור פעולה', icon = '❓') {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('customConfirmModal');
+                const titleEl = document.getElementById('confirmTitle');
+                const messageEl = document.getElementById('confirmMessage');
+                const iconEl = document.getElementById('confirmIcon');
+                const okBtn = document.getElementById('confirmOkBtn');
+                const cancelBtn = document.getElementById('confirmCancelBtn');
+
+                titleEl.textContent = title;
+                messageEl.textContent = message;
+                iconEl.textContent = icon;
+
+                modal.classList.add('active');
+
+                const handleOk = () => {
+                    closeModal(modal);
+                    cleanup();
+                    resolve(true);
+                };
+
+                const handleCancel = () => {
+                    closeModal(modal);
+                    cleanup();
+                    resolve(false);
+                };
+
+                const cleanup = () => {
+                    okBtn.removeEventListener('click', handleOk);
+                    cancelBtn.removeEventListener('click', handleCancel);
+                };
+
+                okBtn.addEventListener('click', handleOk);
+                cancelBtn.addEventListener('click', handleCancel);
+
+                // Close on overlay click
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        handleCancel();
+                    }
+                });
+            });
+        }
+
+        // ========== CUSTOM ALERT DIALOG ==========
+        function customAlert(message, title = 'הודעה', type = 'info') {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('customAlertModal');
+                const titleEl = document.getElementById('alertTitle');
+                const messageEl = document.getElementById('alertMessage');
+                const iconEl = document.getElementById('alertIcon');
+                const okBtn = document.getElementById('alertOkBtn');
+
+                titleEl.textContent = title;
+                messageEl.textContent = message;
+
+                // Set icon based on type
+                iconEl.className = 'custom-modal-icon';
+                if (type === 'success') {
+                    iconEl.textContent = '✓';
+                    iconEl.classList.add('success');
+                } else if (type === 'error') {
+                    iconEl.textContent = '✕';
+                    iconEl.classList.add('error');
+                } else if (type === 'warning') {
+                    iconEl.textContent = '⚠';
+                    iconEl.classList.add('warning');
+                } else {
+                    iconEl.textContent = 'ℹ️';
+                    iconEl.classList.add('question');
+                }
+
+                modal.classList.add('active');
+
+                const handleOk = () => {
+                    closeModal(modal);
+                    cleanup();
+                    resolve();
+                };
+
+                const cleanup = () => {
+                    okBtn.removeEventListener('click', handleOk);
+                };
+
+                okBtn.addEventListener('click', handleOk);
+
+                // Close on overlay click
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        handleOk();
+                    }
+                });
+            });
+        }
+
+        // ========== CLOSE MODAL WITH ANIMATION ==========
+        function closeModal(modal) {
+            modal.classList.add('closing');
+            setTimeout(() => {
+                modal.classList.remove('active', 'closing');
+            }, 300);
+        }
+    </script>
+
+    <!-- Plan Features JavaScript -->
+    <script src="/static/js/plan-features.js"></script>
+</body>
+</html>

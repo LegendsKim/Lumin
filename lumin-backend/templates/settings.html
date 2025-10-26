@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הגדרות - Lumin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --lumin-turquoise: #00ADB5;
+            --lumin-turquoise-light: #00CED6;
+            --lumin-dark: #0F2027;
+            --lumin-dark-secondary: #1E293B;
+            --lumin-dark-tertiary: #2C5364;
+            --light-bg: #F8FAFC;
+            --light-card: rgba(255, 255, 255, 0.7);
+            --text-dark: #1E293B;
+            --text-light: rgba(255, 255, 255, 0.9);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            min-height: 100vh;
+            display: flex;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(0, 173, 181, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 173, 181, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--lumin-dark) 0%, var(--lumin-dark-tertiary) 100%);
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .sidebar-logo {
+            padding: 32px 24px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 20px rgba(0, 173, 181, 0.8));
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--lumin-turquoise);
+            text-shadow: 0 0 20px rgba(0, 173, 181, 0.5);
+        }
+
+        .logo-tagline {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 24px 0;
+            overflow-y: auto;
+        }
+
+        .menu-section {
+            margin-bottom: 24px;
+        }
+
+        .menu-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            padding: 0 24px 8px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            padding: 14px 24px;
+            color: var(--text-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s ease;
+            border-right: 3px solid transparent;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 173, 181, 0.1);
+            border-right-color: var(--lumin-turquoise);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 173, 181, 0.15);
+            border-right-color: var(--lumin-turquoise);
+            color: var(--lumin-turquoise);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-right: 280px;
+            flex: 1;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        /* Settings Layout */
+        .settings-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 32px;
+        }
+
+        /* Settings Sidebar */
+        .settings-sidebar {
+            background: white;
+            border-radius: 16px;
+            padding: 8px;
+            height: fit-content;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 40px;
+        }
+
+        .settings-nav-item {
+            padding: 14px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-dark);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .settings-nav-item:hover {
+            background: rgba(0, 173, 181, 0.1);
+        }
+
+        .settings-nav-item.active {
+            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+        }
+
+        .settings-nav-icon {
+            font-size: 18px;
+        }
+
+        /* Settings Content */
+        .settings-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .settings-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #E2E8F0;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* Form Elements */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-input, .form-select {
+            padding: 12px 16px;
+            border: 2px solid #E2E8F0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--lumin-turquoise);
+            box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
+        }
+
+        .form-input:disabled {
+            background: #F1F5F9;
+            cursor: not-allowed;
+        }
+
+        /* Avatar Upload */
+        .avatar-upload {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 173, 181, 0.3);
+        }
+
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .avatar-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 20px rgba(0, 173, 181, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #E2E8F0;
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #CBD5E1;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        /* Plan Badge */
+        .plan-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .plan-badge.basic {
+            background: #E2E8F0;
+            color: #64748b;
+        }
+
+        .plan-badge.pro {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Plan Card */
+        .plan-card {
+            background: linear-gradient(135deg, rgba(0, 173, 181, 0.1), rgba(0, 173, 181, 0.05));
+            border-radius: 12px;
+            padding: 24px;
+            border: 2px solid rgba(0, 173, 181, 0.2);
+        }
+
+        .plan-features {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .plan-features li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-dark);
+        }
+
+        .plan-features li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #CBD5E1;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Setting Item */
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .setting-info p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* Danger Zone */
+        .danger-zone {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05));
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .danger-zone h3 {
+            color: var(--danger);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .settings-container {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-sidebar {
+                position: static;
+                display: flex;
+                overflow-x: auto;
+                padding: 8px;
+            }
+
+            .settings-nav-item {
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(100%);
+            }
+
+            .main-content {
+                margin-right: 0;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo" onclick="window.location.href='/dashboard/'">
+            <div class="logo-icon">💡</div>
+            <div class="logo-text">Lumin</div>
+            <div class="logo-tagline">האור של העסק שלך</div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="menu-section">
+                <div class="menu-section-title">תפריט ראשי</div>
+                <a href="/dashboard/" class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span>דשבורד</span>
+                </a>
+                <a href="/api/products/" class="nav-item">
+                    <span class="nav-icon">📦</span>
+                    <span>מוצרים</span>
+                </a>
+                <a href="/api/orders/" class="nav-item">
+                    <span class="nav-icon">🛒</span>
+                    <span>הזמנות</span>
+                </a>
+                <a href="/api/customers/" class="nav-item">
+                    <span class="nav-icon">👥</span>
+                    <span>לקוחות</span>
+                </a>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">כלים</div>
+                <a href="/api/analytics/" class="nav-item">
+                    <span class="nav-icon">📈</span>
+                    <span>אנליטיקה</span>
+                </a>
+                <a href="/api/integrations/coupons/" class="nav-item">
+                    <span class="nav-icon">🎫</span>
+                    <span>קופונים</span>
+                </a>
+                <a href="/api/integrations/sync/" class="nav-item">
+                    <span class="nav-icon">🔄</span>
+                    <span>סנכרון</span>
+                </a>
+                <a href="/settings/" class="nav-item active">
+                    <span class="nav-icon">⚙️</span>
+                    <span>הגדרות</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">⚙️ הגדרות</h1>
+            <p class="page-subtitle">נהל את הפרופיל, העסק וההגדרות שלך</p>
+        </div>
+
+        <div class="settings-container">
+            <!-- Settings Sidebar -->
+            <div class="settings-sidebar">
+                <div class="settings-nav-item active" data-section="profile">
+                    <span class="settings-nav-icon">👤</span>
+                    <span>פרופיל אישי</span>
+                </div>
+                <div class="settings-nav-item" data-section="business">
+                    <span class="settings-nav-icon">🏢</span>
+                    <span>פרטי העסק</span>
+                </div>
+                <div class="settings-nav-item" data-section="account">
+                    <span class="settings-nav-icon">🔐</span>
+                    <span>חשבון ואבטחה</span>
+                </div>
+                <div class="settings-nav-item" data-section="plan">
+                    <span class="settings-nav-icon">⭐</span>
+                    <span>תוכנית ומנוי</span>
+                </div>
+                <div class="settings-nav-item" data-section="notifications">
+                    <span class="settings-nav-icon">🔔</span>
+                    <span>התראות</span>
+                </div>
+                <div class="settings-nav-item" data-section="system">
+                    <span class="settings-nav-icon">🎨</span>
+                    <span>מערכת ותצוגה</span>
+                </div>
+            </div>
+
+            <!-- Settings Content -->
+            <div class="settings-content">
+                <!-- Profile Section -->
+                <div class="settings-section active" id="profile">
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h2 class="card-title">פרופיל אישי</h2>
+                            <p class="card-subtitle">עדכן את המידע האישי שלך</p>
+                        </div>
+
+                        <div class="avatar-upload">
+                            <div class="avatar-preview" id="avatarPreview">
+                                👤
+                            </div>
+                            <div class="avatar-actions">
+                                <button class="btn btn-primary btn-sm" onclick="document.getElementById('avatarInput').click()">
+                                    <span>📷</span>
+                                    <span>העלה תמונה</span>
+                                </button>
+                                <input type="file" id="avatarInput" style="display: none;" accept="image/*">
+                                <button class="btn btn-secondary btn-sm">הסר תמונה</button>
+                            </div>
+                        </div>
+
+                        <form class="form-grid" style="margin-top: 32px;">
+                            <div class="form-group">
+                                <label class="form-label">שם פרטי</label>
+                                <input type="text" class="form-input" id="firstName" value="{{ user.first_name }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">שם משפחה</label>
+                                <input type="text" class="form-input" id="lastName" value="{{ user.last_name }}">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="form-label">אימייל</label>
+                                <input type="email" class="form-input" id="email" value="{{ user.email }}">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="form-label">טלפון</label>
+                                <input type="tel" class="form-input" id="phone" placeholder="050-1234567">
+                            </div>
+
+                            <div class="form-group full-width" style="margin-top: 16px;">
+                                <button type="button" class="btn btn-primary" onclick="saveProfile()">
+                                    <span>💾</span>
+                                    <span>שמור שינויים</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Business Section -->
+                <div class="settings-section" id="business">
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h2 class="card-title">פרטי העסק</h2>
+                            <p class="card-subtitle">נהל את פרטי העסק שלך</p>
+                        </div>
+
+                        <form class="form-grid">
+                            <div class="form-group full-width">
+                                <label class="form-label">שם העסק</label>
+                                <input type="text" class="form-input" id="businessName" value="{{ user.tenant.business_name }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">טלפון עסק</label>
+                                <input type="tel" class="form-input" id="businessPhone" value="{{ user.tenant.owner_phone }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">אימייל עסק</label>
+                                <input type="email" class="form-input" id="businessEmail" value="{{ user.tenant.owner_email }}">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="form-label">כתובת</label>
+                                <input type="text" class="form-input" id="businessAddress" placeholder="רחוב 123, עיר">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">עיר</label>
+                                <input type="text" class="form-input" id="city" placeholder="תל אביב">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">מיקוד</label>
+                                <input type="text" class="form-input" id="postalCode" placeholder="1234567">
+                            </div>
+
+                            <div class="form-group full-width" style="margin-top: 16px;">
+                                <button type="button" class="btn btn-primary" onclick="saveBusinessInfo()">
+                                    <span>💾</span>
+                                    <span>שמור שינויים</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Account Section -->
+                <div class="settings-section" id="account">
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h2 class="card-title">שינוי סיסמה</h2>
+                            <p class="card-subtitle">עדכן את סיסמת החשבון שלך</p>
+                        </div>
+
+                        <form class="form-grid">
+                            <div class="form-group full-width">
+                                <label class="form-label">סיסמה נוכחית</label>
+                                <input type="password" class="form-input" id="currentPassword">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">סיסמה חדשה</label>
+                                <input type="password" class="form-input" id="newPassword">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">אימות סיסמה</label>
+                                <input type="password" class="form-input" id="confirmPassword">
+                            </div>
+
+                            <div class="form-group full-width" style="margin-top: 16px;">
+                                <button type="button" class="btn btn-primary" onclick="changePassword()">
+                                    <span>🔐</span>
+                                    <span>שנה סיסמה</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="settings-card danger-zone" style="margin-top: 24px;">
+                        <h3>
+                            <span>⚠️</span>
+                            <span>אזור מסוכן</span>
+                        </h3>
+                        <p style="color: #64748b; margin-bottom: 16px;">
+                            פעולות בלתי הפיכות - שים לב!
+                        </p>
+                        <button class="btn btn-danger" onclick="deleteAccount()">
+                            <span>🗑️</span>
+                            <span>מחק חשבון לצמיתות</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plan Section -->
+                <div class="settings-section" id="plan">
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h2 class="card-title">התוכנית שלי</h2>
+                            <p class="card-subtitle">נהל את המנוי והתוכנית שלך</p>
+                        </div>
+
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                            <div>
+                                <h3 style="font-size: 18px; margin-bottom: 8px;">תוכנית נוכחית</h3>
+                                <span class="plan-badge basic" id="currentPlanBadge">
+                                    <span>📦</span>
+                                    <span>BASIC</span>
+                                </span>
+                            </div>
+                            <button class="btn btn-primary" onclick="upgradeToPro()">
+                                <span>⭐</span>
+                                <span>שדרג ל-PRO</span>
+                            </button>
+                        </div>
+
+                        <div class="plan-card">
+                            <h4 style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">תוכנית PRO</h4>
+                            <p style="color: #64748b; margin-bottom: 16px;">כל התכונות המתקדמות לעסק שלך</p>
+
+                            <div style="font-size: 32px; font-weight: 700; color: var(--lumin-turquoise); margin: 16px 0;">
+                                ₪99 <span style="font-size: 16px; font-weight: 400; color: #64748b;">/חודש</span>
+                            </div>
+
+                            <ul class="plan-features">
+                                <li>לקוחות ומוצרים ללא הגבלה</li>
+                                <li>סנכרון אוטומטי עם WooCommerce</li>
+                                <li>סנכרון webhooks בזמן אמת</li>
+                                <li>שליחת SMS שיווקי</li>
+                                <li>אחסון קבצים ללא הגבלה</li>
+                                <li>דוחות אנליטיקה מתקדמים</li>
+                                <li>תמיכה מהירה בעדיפות</li>
+                            </ul>
+
+                            <button class="btn btn-primary" style="width: 100%;" onclick="upgradeToPro()">
+                                <span>🚀</span>
+                                <span>התחל עכשיו</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Usage Stats -->
+                    <div class="settings-card" style="margin-top: 24px;">
+                        <div class="card-header">
+                            <h2 class="card-title">שימוש נוכחי</h2>
+                            <p class="card-subtitle">מגבלות התוכנית שלך</p>
+                        </div>
+
+                        <div id="usageStats">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications Section -->
+                <div class="settings-section" id="notifications">
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h2 class="card-title">התראות</h2>
+                            <p class="card-subtitle">בחר אילו התראות לקבל</p>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>התראות אימייל</h4>
+                                <p>קבל עדכונים חשובים באימייל</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>התראות SMS</h4>
+                                <p>הודעות דחופות בהודעת SMS</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>הזמנות חדשות</h4>
+                                <p>התראה על כל הזמנה חדשה</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>דוחות שבועיים</h4>
+                                <p>סיכום שבועי של הפעילות</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Section -->
+                <div class="settings-section" id="system">
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <h2 class="card-title">הגדרות מערכת</h2>
+                            <p class="card-subtitle">התאם את המערכת לצרכים שלך</p>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">שפה</label>
+                                <select class="form-select" id="language">
+                                    <option value="he" selected>עברית</option>
+                                    <option value="en">English</option>
+                                    <option value="ar">العربية</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">אזור זמן</label>
+                                <select class="form-select" id="timezone">
+                                    <option value="Asia/Jerusalem" selected>ירושלים (GMT+2)</option>
+                                    <option value="UTC">UTC</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">פורמט תאריך</label>
+                                <select class="form-select" id="dateFormat">
+                                    <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">מטבע</label>
+                                <select class="form-select" id="currency">
+                                    <option value="ILS" selected>₪ שקל ישראלי</option>
+                                    <option value="USD">$ דולר אמריקאי</option>
+                                    <option value="EUR">€ יורו</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 24px;">
+                            <button class="btn btn-primary" onclick="saveSystemSettings()">
+                                <span>💾</span>
+                                <span>שמור הגדרות</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Settings Navigation
+        document.querySelectorAll('.settings-nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const section = item.dataset.section;
+
+                // Update nav
+                document.querySelectorAll('.settings-nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                item.classList.add('active');
+
+                // Update content
+                document.querySelectorAll('.settings-section').forEach(sec => {
+                    sec.classList.remove('active');
+                });
+                document.getElementById(section).classList.add('active');
+            });
+        });
+
+        // Avatar Upload
+        document.getElementById('avatarInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('avatarPreview').innerHTML =
+                        `<img src="${e.target.result}" alt="Avatar">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Save Functions (placeholders)
+        function saveProfile() {
+            alert('פרופיל נשמר בהצלחה! ✓');
+        }
+
+        function saveBusinessInfo() {
+            alert('פרטי העסק נשמרו בהצלחה! ✓');
+        }
+
+        function changePassword() {
+            alert('הסיסמה שונתה בהצלחה! 🔐');
+        }
+
+        function deleteAccount() {
+            if (confirm('האם אתה בטוח? פעולה זו בלתי הפיכה!')) {
+                alert('החשבון נמחק.');
+            }
+        }
+
+        function upgradeToPro() {
+            alert('מעבר לדף התשלום... 🚀');
+        }
+
+        function saveSystemSettings() {
+            alert('הגדרות המערכת נשמרו בהצלחה! ⚙️');
+        }
+
+        // Load Usage Stats
+        async function loadUsageStats() {
+            try {
+                const response = await fetch('/api/auth/features/', {
+                    credentials: 'same-origin',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                const data = await response.json();
+                const stats = document.getElementById('usageStats');
+
+                const limits = data.limits || {};
+                const current = data.current || {};
+
+                stats.innerHTML = `
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>👥 לקוחות</h4>
+                            <p>${current.customers || 0} / ${limits.max_customers || '∞'}</p>
+                        </div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--lumin-turquoise);">
+                            ${Math.round((current.customers / limits.max_customers) * 100) || 0}%
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>📦 מוצרים</h4>
+                            <p>${current.products || 0} / ${limits.max_products || '∞'}</p>
+                        </div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--lumin-turquoise);">
+                            ${Math.round((current.products / limits.max_products) * 100) || 0}%
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>👨‍⚕️ מטפלים</h4>
+                            <p>${current.staff_members || 0} / ${limits.max_staff_members || '∞'}</p>
+                        </div>
+                        <div style="font-size: 24px; font-weight: 700; color: var(--lumin-turquoise);">
+                            ${Math.round((current.staff_members / limits.max_staff_members) * 100) || 0}%
+                        </div>
+                    </div>
+                `;
+
+                // Update plan badge
+                const planBadge = document.getElementById('currentPlanBadge');
+                if (data.plan === 'PRO') {
+                    planBadge.className = 'plan-badge pro';
+                    planBadge.innerHTML = '<span>⭐</span><span>PRO</span>';
+                }
+            } catch (error) {
+                console.error('Error loading usage stats:', error);
+            }
+        }
+
+        // Load on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUsageStats();
+        });
+    </script>
+
+    <!-- Plan Features JavaScript -->
+    <script src="/static/js/plan-features.js"></script>
+</body>
+</html>

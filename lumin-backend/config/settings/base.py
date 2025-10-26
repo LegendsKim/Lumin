@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'django_celery_beat',
+    'django_celery_results',
 
     # Local apps
     'apps.core',
@@ -53,6 +55,7 @@ INSTALLED_APPS = [
     'apps.sales',
     'apps.customers',
     'apps.analytics',
+    'apps.integrations',
 ]
 
 MIDDLEWARE = [
@@ -90,8 +93,13 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
+# Using SQLite for development (PostgreSQL for production)
+import os
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='postgresql://localhost/lumin_db')
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 # Custom User Model
@@ -161,8 +169,14 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # We use phone verification instead
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/splash/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
+# Social account auto-signup settings
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_EMAIL_REQUIRED = False
+SOCIALACCOUNT_LOGIN_ON_GET = True  # Skip intermediate confirmation page
 
 # Social account providers
 SOCIALACCOUNT_PROVIDERS = {
@@ -221,9 +235,19 @@ if USE_S3:
     AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
     AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-east-1')
     AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
     AWS_DEFAULT_ACL = 'public-read'
+    AWS_QUERYSTRING_AUTH = False
+
+    # Use S3 for media files (customer profile images, etc.)
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+else:
+    # Local storage (development)
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
 
 # Logging
 LOGGING = {

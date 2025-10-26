@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פרטי העסק - Lumin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .glass-card {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 48px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Progress */
+        .progress-header {
+            margin-bottom: 40px;
+        }
+
+        .step-indicator {
+            font-size: 0.9em;
+            color: #6C757D;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 173, 181, 0.1);
+            border-radius: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ADB5 0%, #66D9DD 100%);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 173, 181, 0.4);
+            width: 42%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-percentage {
+            font-size: 0.85em;
+            color: #00ADB5;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Header */
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(0, 173, 181, 0.1) 0%, rgba(102, 217, 221, 0.1) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .icon-wrapper span {
+            font-size: 3em;
+        }
+
+        h1 {
+            font-size: 2em;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 1.05em;
+            color: #6C757D;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        /* Form Fields */
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 10px;
+        }
+
+        .required {
+            color: #00ADB5;
+            margin-right: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 1.05em;
+            font-family: 'Heebo', sans-serif;
+            border: 2px solid #E9ECEF;
+            border-radius: 12px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00ADB5;
+            box-shadow: 0 0 0 4px rgba(0, 173, 181, 0.1);
+        }
+
+        .form-input.error {
+            border-color: #DC3545;
+        }
+
+        .helper-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #6C757D;
+            padding: 10px 14px;
+            background: rgba(0, 173, 181, 0.05);
+            border-radius: 8px;
+            border-right: 3px solid #00ADB5;
+        }
+
+        .error-text {
+            color: #DC3545;
+            font-size: 0.9em;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .error-text.show {
+            display: block;
+        }
+
+        /* Dropdown with search */
+        .custom-select-wrapper {
+            position: relative;
+        }
+
+        .custom-select {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            font-size: 1.05em;
+            font-family: 'Heebo', sans-serif;
+            border: 2px solid #E9ECEF;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+        }
+
+        .custom-select:focus {
+            outline: none;
+            border-color: #00ADB5;
+            box-shadow: 0 0 0 4px rgba(0, 173, 181, 0.1);
+        }
+
+        .select-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            transition: transform 0.3s ease;
+        }
+
+        .custom-select:focus ~ .select-icon {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        /* Category Options Popup */
+        .category-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .category-popup.active {
+            display: flex;
+        }
+
+        .popup-content {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .popup-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #212529;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2em;
+            color: #6C757D;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #DC3545;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 1em;
+            font-family: 'Heebo', sans-serif;
+            border: 2px solid #E9ECEF;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #00ADB5;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .category-option {
+            padding: 16px;
+            border: 2px solid #E9ECEF;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .category-option:hover {
+            border-color: #00ADB5;
+            background: rgba(0, 173, 181, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .category-option.selected {
+            border-color: #00ADB5;
+            background: rgba(0, 173, 181, 0.1);
+        }
+
+        .category-icon {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+
+        .category-name {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #212529;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 32px;
+            font-size: 1.05em;
+            font-weight: 600;
+            font-family: 'Heebo', sans-serif;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #6C757D;
+            border: 2px solid #E9ECEF;
+        }
+
+        .btn-secondary:hover {
+            border-color: #00ADB5;
+            color: #00ADB5;
+        }
+
+        .btn-primary {
+            background: #00ADB5;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 173, 181, 0.4);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #008C94;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 173, 181, 0.5);
+        }
+
+        .btn-primary:disabled {
+            background: #CED4DA;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 640px) {
+            .glass-card {
+                padding: 32px 24px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <!-- Progress -->
+        <div class="progress-header">
+            <div class="step-indicator">שלב 2 מתוך 3: בואו נכיר את העסק שלך 🏪</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: 66%;"></div>
+            </div>
+            <div class="progress-percentage">66%</div>
+        </div>
+
+        <!-- Header -->
+        <div class="icon-wrapper">
+            <span>🏪</span>
+        </div>
+        <h1>פרטי העסק שלך</h1>
+        <p class="subtitle">
+            המידע הזה יעזור לנו להתאים את Lumin בדיוק לצרכים שלך
+        </p>
+
+        <!-- Form -->
+        <form id="businessForm">
+            <!-- Business Name -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="required">*</span>
+                    שם העסק
+                </label>
+                <input
+                    type="text"
+                    id="businessName"
+                    class="form-input"
+                    placeholder='לדוגמה: "קליניקת היופי של שרה"'
+                    required
+                    minlength="2"
+                    maxlength="100"
+                >
+                <div class="helper-text">
+                    <span>💡</span>
+                    <span>השם שיופיע בחשבוניות ובהודעות ללקוחות</span>
+                </div>
+                <div class="error-text" id="nameError"></div>
+            </div>
+
+            <!-- Business Category -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="required">*</span>
+                    סוג העסק
+                </label>
+                <div class="custom-select-wrapper">
+                    <input
+                        type="text"
+                        id="categoryDisplay"
+                        class="form-input"
+                        placeholder="בחר קטגוריה..."
+                        readonly
+                        required
+                        style="cursor: pointer;"
+                    >
+                    <input type="hidden" id="categoryValue" required>
+                    <span class="select-icon">▼</span>
+                </div>
+                <div class="helper-text">
+                    <span>💡</span>
+                    <span>עוזר לנו להתאים את המערכת בצורה מושלמת</span>
+                </div>
+            </div>
+
+            <!-- Business Size -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="required">*</span>
+                    גודל העסק
+                </label>
+                <select id="businessSize" class="form-input" required>
+                    <option value="">בחר גודל עסק...</option>
+                    <option value="solo">עצמאי/ת (רק אני)</option>
+                    <option value="small">2-5 עובדים</option>
+                    <option value="medium">6-15 עובדים</option>
+                    <option value="large">16+ עובדים</option>
+                </select>
+            </div>
+
+            <!-- Monthly Revenue -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="required">*</span>
+                    מחזור חודשי משוער
+                </label>
+                <select id="monthlyRevenue" class="form-input" required>
+                    <option value="">בחר טווח...</option>
+                    <option value="0-10k">עד 10,000 ₪</option>
+                    <option value="10k-30k">10,000 - 30,000 ₪</option>
+                    <option value="30k-50k">30,000 - 50,000 ₪</option>
+                    <option value="50k-100k">50,000 - 100,000 ₪</option>
+                    <option value="100k+">מעל 100,000 ₪</option>
+                </select>
+                <div class="helper-text">
+                    <span>🔒</span>
+                    <span>מידע חסוי - עוזר לנו להתאים את התמחור והמלצות</span>
+                </div>
+            </div>
+
+            <!-- Primary Goal -->
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="required">*</span>
+                    מה המטרה העיקרית שלך?
+                </label>
+                <select id="primaryGoal" class="form-input" required>
+                    <option value="">בחר מטרה...</option>
+                    <option value="organize">סדר וארגון - לנהל את העסק יותר טוב</option>
+                    <option value="grow">צמיחה - להגדיל את המכירות</option>
+                    <option value="time">חיסכון בזמן - אוטומציה ויעילות</option>
+                    <option value="professional">מקצועיות - להיראות יותר מקצועי ללקוחות</option>
+                    <option value="insights">תובנות - להבין את העסק דרך דאטה</option>
+                </select>
+            </div>
+
+            <!-- Current System -->
+            <div class="form-group">
+                <label class="form-label">
+                    איך אתה מנהל את העסק היום?
+                </label>
+                <select id="currentSystem" class="form-input">
+                    <option value="">בחר...</option>
+                    <option value="manual">ידני (מחברות, אקסל, וואטסאפ)</option>
+                    <option value="basic">מערכת בסיסית (Google Sheets, Trello)</option>
+                    <option value="software">תוכנה ייעודית אחרת</option>
+                    <option value="none">עדיין לא מנהל באופן מסודר</option>
+                </select>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                    <span>⬅️</span>
+                    <span>חזרה</span>
+                </button>
+                <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                    <span>המשך</span>
+                    <span>➡️</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Category Popup -->
+    <div class="category-popup" id="categoryPopup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2 class="popup-title">בחר סוג עסק</h2>
+                <button class="close-btn" onclick="closePopup()">×</button>
+            </div>
+
+            <input
+                type="text"
+                class="search-box"
+                id="categorySearch"
+                placeholder="🔍 חפש קטגוריה..."
+            >
+
+            <div class="category-grid" id="categoryGrid">
+                <!-- Categories will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader"></div>
+    </div>
+
+    <script>
+        const categories = [
+            { value: 'beauty_clinic', name: 'קליניקת היופי והקוסמטיקה', icon: '✨' },
+            { value: 'hair_salon', name: 'סלון עיצוב שיער', icon: '💇' },
+            { value: 'nail_salon', name: 'סטודיו למניקור ופדיקור', icon: '💅' },
+            { value: 'spa', name: 'ספא ועיסויים', icon: '🧖' },
+            { value: 'barbershop', name: 'מספרה לגברים', icon: '💈' },
+            { value: 'dental_clinic', name: 'מרפאת שיניים', icon: '🦷' },
+            { value: 'physiotherapy', name: 'פיזיותרפיה', icon: '🏥' },
+            { value: 'clinic', name: 'מרפאה כללית', icon: '⚕️' },
+            { value: 'gym', name: 'חדר כושר', icon: '💪' },
+            { value: 'yoga_studio', name: 'סטודיו ליוגה ופילאטיס', icon: '🧘' },
+            { value: 'personal_training', name: 'אימון אישי', icon: '🏋️' },
+            { value: 'garage', name: 'מוסך', icon: '🔧' },
+            { value: 'car_wash', name: 'שטיפת רכבים', icon: '🚗' },
+            { value: 'restaurant', name: 'מסעדה', icon: '🍽️' },
+            { value: 'cafe', name: 'בית קפה', icon: '☕' },
+            { value: 'bakery', name: 'מאפייה', icon: '🥖' },
+            { value: 'photography', name: 'צילום', icon: '📸' },
+            { value: 'events', name: 'אירועים', icon: '🎉' },
+            { value: 'consulting', name: 'ייעוץ', icon: '💼' },
+            { value: 'accounting', name: 'הנה"ח ורואי חשבון', icon: '📊' },
+            { value: 'law', name: 'משרד עורכי דין', icon: '⚖️' },
+            { value: 'cleaning', name: 'ניקיון', icon: '🧹' },
+            { value: 'handyman', name: 'שיפוצים ותחזוקה', icon: '🔨' },
+            { value: 'retail', name: 'חנות קמעונאית', icon: '🛍️' },
+            { value: 'online_shop', name: 'חנות מקוונת', icon: '🌐' },
+            { value: 'other', name: 'אחר', icon: '📁' }
+        ];
+
+        const categoryDisplay = document.getElementById('categoryDisplay');
+        const categoryValue = document.getElementById('categoryValue');
+        const categoryPopup = document.getElementById('categoryPopup');
+        const categoryGrid = document.getElementById('categoryGrid');
+        const categorySearch = document.getElementById('categorySearch');
+        const businessName = document.getElementById('businessName');
+        const businessSize = document.getElementById('businessSize');
+        const monthlyRevenue = document.getElementById('monthlyRevenue');
+        const primaryGoal = document.getElementById('primaryGoal');
+        const currentSystem = document.getElementById('currentSystem');
+        const submitBtn = document.getElementById('submitBtn');
+        const businessForm = document.getElementById('businessForm');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        // Render categories
+        function renderCategories(filter = '') {
+            const filtered = categories.filter(cat =>
+                cat.name.includes(filter)
+            );
+
+            categoryGrid.innerHTML = filtered.map(cat => `
+                <div class="category-option" data-value="${cat.value}" data-name="${cat.name}">
+                    <div class="category-icon">${cat.icon}</div>
+                    <div class="category-name">${cat.name}</div>
+                </div>
+            `).join('');
+
+            // Add click handlers
+            document.querySelectorAll('.category-option').forEach(option => {
+                option.addEventListener('click', () => selectCategory(option));
+            });
+        }
+
+        function selectCategory(option) {
+            const value = option.dataset.value;
+            const name = option.dataset.name;
+
+            categoryValue.value = value;
+            categoryDisplay.value = name;
+
+            // Visual feedback
+            document.querySelectorAll('.category-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            option.classList.add('selected');
+
+            setTimeout(closePopup, 300);
+            validateForm();
+        }
+
+        function closePopup() {
+            categoryPopup.classList.remove('active');
+        }
+
+        // Open popup
+        categoryDisplay.addEventListener('click', () => {
+            categoryPopup.classList.add('active');
+            categorySearch.value = '';
+            renderCategories();
+            categorySearch.focus();
+        });
+
+        // Search categories
+        categorySearch.addEventListener('input', (e) => {
+            renderCategories(e.target.value);
+        });
+
+        // Close on background click
+        categoryPopup.addEventListener('click', (e) => {
+            if (e.target === categoryPopup) {
+                closePopup();
+            }
+        });
+
+        // Validate form
+        businessName.addEventListener('input', validateForm);
+        businessSize.addEventListener('change', validateForm);
+        monthlyRevenue.addEventListener('change', validateForm);
+        primaryGoal.addEventListener('change', validateForm);
+
+        function validateForm() {
+            const nameValid = businessName.value.trim().length >= 2;
+            const categoryValid = categoryValue.value !== '';
+            const sizeValid = businessSize.value !== '';
+            const revenueValid = monthlyRevenue.value !== '';
+            const goalValid = primaryGoal.value !== '';
+
+            submitBtn.disabled = !(nameValid && categoryValid && sizeValid && revenueValid && goalValid);
+        }
+
+        // Form submission
+        businessForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // MVP: Collect all business data
+            const data = {
+                business_name: businessName.value.trim(),
+                business_category: categoryValue.value,
+                business_size: businessSize.value,
+                monthly_revenue: monthlyRevenue.value,
+                primary_goal: primaryGoal.value,
+                current_system: currentSystem.value || 'none',
+                phone: sessionStorage.getItem('verifying_phone')
+            };
+
+            // Save to sessionStorage for later
+            sessionStorage.setItem('business_data', JSON.stringify(data));
+
+            // Show loading briefly for UX
+            loadingOverlay.classList.add('active');
+
+            setTimeout(() => {
+                // Move to completion screen
+                window.location.href = '{% url "onboarding_complete" %}';
+            }, 500);
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Auto-focus business name
+        window.addEventListener('load', () => {
+            businessName.focus();
+        });
+    </script>
+</body>
+</html>

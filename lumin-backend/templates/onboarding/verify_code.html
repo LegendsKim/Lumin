@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הזנת קוד אימות - Lumin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .glass-card {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 48px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Progress Bar */
+        .progress-header {
+            margin-bottom: 40px;
+        }
+
+        .step-indicator {
+            font-size: 0.9em;
+            color: #6C757D;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 173, 181, 0.1);
+            border-radius: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ADB5 0%, #66D9DD 100%);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 173, 181, 0.4);
+            width: 14%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-percentage {
+            font-size: 0.85em;
+            color: #00ADB5;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Header */
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(0, 173, 181, 0.1) 0%, rgba(102, 217, 221, 0.1) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .icon-wrapper span {
+            font-size: 3em;
+        }
+
+        h1 {
+            font-size: 2em;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 16px;
+        }
+
+        .subtitle {
+            font-size: 1.05em;
+            color: #6C757D;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .phone-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 173, 181, 0.1);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #00ADB5;
+            margin-bottom: 32px;
+        }
+
+        .change-phone {
+            background: none;
+            border: none;
+            color: #00ADB5;
+            text-decoration: underline;
+            cursor: pointer;
+            font-family: 'Heebo', sans-serif;
+            font-size: 0.9em;
+            margin-right: 8px;
+        }
+
+        .change-phone:hover {
+            color: #008C94;
+        }
+
+        /* OTP Input */
+        .otp-container {
+            margin: 40px 0;
+        }
+
+        .otp-label {
+            display: block;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 20px;
+        }
+
+        .otp-inputs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            direction: ltr;
+        }
+
+        .otp-input {
+            width: 60px;
+            height: 70px;
+            font-size: 2em;
+            font-weight: 700;
+            text-align: center;
+            border: 2px solid #E9ECEF;
+            border-radius: 12px;
+            background: white;
+            transition: all 0.3s ease;
+            font-family: 'Heebo', sans-serif;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: #00ADB5;
+            box-shadow: 0 0 0 4px rgba(0, 173, 181, 0.1);
+        }
+
+        .otp-input.filled {
+            border-color: #00ADB5;
+            background: rgba(0, 173, 181, 0.05);
+        }
+
+        .otp-input.error {
+            border-color: #DC3545;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Timer */
+        .timer-section {
+            text-align: center;
+            margin: 24px 0;
+            padding: 16px;
+            background: rgba(0, 173, 181, 0.05);
+            border-radius: 12px;
+        }
+
+        .timer-text {
+            font-size: 0.95em;
+            color: #6C757D;
+            margin-bottom: 8px;
+        }
+
+        .timer {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #00ADB5;
+            direction: ltr;
+        }
+
+        .timer.warning {
+            color: #FFC107;
+        }
+
+        .timer.danger {
+            color: #DC3545;
+        }
+
+        /* Resend SMS */
+        .resend-section {
+            text-align: center;
+            margin: 24px 0;
+        }
+
+        .resend-text {
+            font-size: 0.95em;
+            color: #6C757D;
+            margin-bottom: 12px;
+        }
+
+        .resend-btn {
+            background: none;
+            border: 2px solid #00ADB5;
+            color: #00ADB5;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-family: 'Heebo', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .resend-btn:hover:not(:disabled) {
+            background: rgba(0, 173, 181, 0.1);
+        }
+
+        .resend-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 32px;
+            font-size: 1.05em;
+            font-weight: 600;
+            font-family: 'Heebo', sans-serif;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #00ADB5;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 173, 181, 0.4);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #008C94;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            background: #CED4DA;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: #FFF3CD;
+            border: 1px solid #FFC107;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-top: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            color: #856404;
+            font-size: 0.95em;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 640px) {
+            .glass-card {
+                padding: 32px 24px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+
+            .otp-input {
+                width: 48px;
+                height: 60px;
+                font-size: 1.6em;
+            }
+
+            .otp-inputs {
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <!-- Progress -->
+        <div class="progress-header">
+            <div class="step-indicator">שלב 1 מתוך 7</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="progress-percentage">14%</div>
+        </div>
+
+        <!-- Header -->
+        <div class="icon-wrapper">
+            <span>✉️</span>
+        </div>
+        <h1>הזנת הקוד שנשלח</h1>
+        <p class="subtitle">
+            שלחנו קוד בן 6 ספרות ל-
+        </p>
+        <div class="phone-display">
+            <span>📱</span>
+            <span id="phoneDisplay">+972-50-123-4567</span>
+            <button class="change-phone" onclick="window.history.back()">✏️ שנה</button>
+        </div>
+
+        <!-- OTP Input -->
+        <div class="otp-container">
+            <label class="otp-label">קוד אימות</label>
+            <div class="otp-inputs" id="otpInputs">
+                <input type="text" maxlength="1" class="otp-input" data-index="0" inputmode="numeric" pattern="[0-9]">
+                <input type="text" maxlength="1" class="otp-input" data-index="1" inputmode="numeric" pattern="[0-9]">
+                <input type="text" maxlength="1" class="otp-input" data-index="2" inputmode="numeric" pattern="[0-9]">
+                <input type="text" maxlength="1" class="otp-input" data-index="3" inputmode="numeric" pattern="[0-9]">
+                <input type="text" maxlength="1" class="otp-input" data-index="4" inputmode="numeric" pattern="[0-9]">
+                <input type="text" maxlength="1" class="otp-input" data-index="5" inputmode="numeric" pattern="[0-9]">
+            </div>
+        </div>
+
+        <!-- Timer -->
+        <div class="timer-section">
+            <div class="timer-text">הקוד תקף ל-10 דקות</div>
+            <div class="timer" id="timer">⏱️ 09:59 דקות נותרו</div>
+        </div>
+
+        <!-- Resend SMS -->
+        <div class="resend-section">
+            <p class="resend-text">לא קיבלת SMS?</p>
+            <button class="resend-btn" id="resendBtn" disabled>
+                <span>📲</span>
+                <span>שלח שוב</span>
+                <span id="resendCounter">(זמין בעוד 60 שניות)</span>
+            </button>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-message" id="errorMessage">
+            <span>⚠️</span>
+            <span id="errorText"></span>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-group">
+            <button class="btn btn-primary" id="verifyBtn" disabled>
+                <span>אמת והמשך</span>
+                <span>✓</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader"></div>
+    </div>
+
+    <script>
+        const otpInputs = document.querySelectorAll('.otp-input');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const timerElement = document.getElementById('timer');
+        const resendBtn = document.getElementById('resendBtn');
+        const resendCounter = document.getElementById('resendCounter');
+        const phoneDisplay = document.getElementById('phoneDisplay');
+
+        // Get phone from session storage
+        const phone = sessionStorage.getItem('verifying_phone') || '+972501234567';
+        phoneDisplay.textContent = phone;
+
+        // OTP Input Logic
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const value = e.target.value;
+
+                // Only allow digits
+                if (!/^\d$/.test(value)) {
+                    e.target.value = '';
+                    return;
+                }
+
+                // Mark as filled
+                input.classList.add('filled');
+
+                // Auto-focus next input
+                if (value && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+
+                // Check if all filled
+                checkComplete();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                // Backspace handling
+                if (e.key === 'Backspace' && !input.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                    otpInputs[index - 1].value = '';
+                    otpInputs[index - 1].classList.remove('filled');
+                    checkComplete();
+                }
+
+                // Clear error on any key press
+                errorMessage.classList.remove('show');
+                otpInputs.forEach(inp => inp.classList.remove('error'));
+            });
+
+            // Paste handling
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text').slice(0, 6);
+
+                if (!/^\d+$/.test(pastedData)) return;
+
+                pastedData.split('').forEach((digit, i) => {
+                    if (otpInputs[i]) {
+                        otpInputs[i].value = digit;
+                        otpInputs[i].classList.add('filled');
+                    }
+                });
+
+                checkComplete();
+            });
+        });
+
+        function checkComplete() {
+            const code = Array.from(otpInputs).map(input => input.value).join('');
+            verifyBtn.disabled = code.length !== 6;
+        }
+
+        function getOTPCode() {
+            return Array.from(otpInputs).map(input => input.value).join('');
+        }
+
+        // Verify Button
+        verifyBtn.addEventListener('click', async () => {
+            const code = getOTPCode();
+
+            loadingOverlay.classList.add('active');
+            verifyBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/auth/phone/verify/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        phone: phone,
+                        code: code
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Success! Move to next step
+                    window.location.href = '{% url "business_details" %}';
+                } else {
+                    // Show error
+                    showError(data.message || 'הקוד שגוי או פג תוקפו. נסה שוב.');
+                    clearOTP();
+                }
+            } catch (error) {
+                showError('שגיאה בתקשורת. בדוק את החיבור ונסה שוב.');
+                clearOTP();
+            } finally {
+                loadingOverlay.classList.remove('active');
+                verifyBtn.disabled = false;
+            }
+        });
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.add('show');
+            otpInputs.forEach(input => input.classList.add('error'));
+        }
+
+        function clearOTP() {
+            otpInputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('filled');
+            });
+            otpInputs[0].focus();
+        }
+
+        // Timer (10 minutes countdown)
+        let timeLeft = 600; // 10 minutes in seconds
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const display = `⏱️ ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} דקות נותרו`;
+
+            timerElement.textContent = display;
+
+            if (timeLeft <= 60) {
+                timerElement.classList.add('danger');
+            } else if (timeLeft <= 180) {
+                timerElement.classList.add('warning');
+            }
+
+            if (timeLeft > 0) {
+                timeLeft--;
+                setTimeout(updateTimer, 1000);
+            } else {
+                showError('הקוד פג תוקף. לחץ על "שלח שוב" לקבלת קוד חדש.');
+            }
+        }
+
+        updateTimer();
+
+        // Resend SMS Timer (60 seconds cooldown)
+        let resendCountdown = 60;
+
+        function updateResendTimer() {
+            if (resendCountdown > 0) {
+                resendCounter.textContent = `(זמין בעוד ${resendCountdown} שניות)`;
+                resendBtn.disabled = true;
+                resendCountdown--;
+                setTimeout(updateResendTimer, 1000);
+            } else {
+                resendCounter.textContent = '';
+                resendBtn.disabled = false;
+            }
+        }
+
+        updateResendTimer();
+
+        // Resend SMS
+        resendBtn.addEventListener('click', async () => {
+            resendBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/auth/phone/request/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        phone: phone
+                    })
+                });
+
+                if (response.ok) {
+                    // Reset timers
+                    timeLeft = 600;
+                    resendCountdown = 60;
+                    updateResendTimer();
+
+                    // Show success message
+                    errorText.textContent = 'נשלח קוד חדש! ✅';
+                    errorMessage.style.background = '#D4EDDA';
+                    errorMessage.style.borderColor = '#28A745';
+                    errorMessage.style.color = '#155724';
+                    errorMessage.classList.add('show');
+
+                    setTimeout(() => {
+                        errorMessage.classList.remove('show');
+                    }, 3000);
+                }
+            } catch (error) {
+                showError('שגיאה בשליחה. נסה שוב.');
+            }
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Auto-focus first input
+        window.addEventListener('load', () => {
+            otpInputs[0].focus();
+        });
+    </script>
+</body>
+</html>

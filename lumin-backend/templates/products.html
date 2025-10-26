@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מוצרים - Lumin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --lumin-turquoise: #00ADB5;
+            --lumin-turquoise-light: #00CED6;
+            --lumin-dark: #0F2027;
+            --lumin-dark-secondary: #1E293B;
+            --lumin-dark-tertiary: #2C5364;
+            --light-bg: #F8FAFC;
+            --light-card: rgba(255, 255, 255, 0.7);
+            --text-dark: #1E293B;
+            --text-light: rgba(255, 255, 255, 0.9);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            min-height: 100vh;
+            display: flex;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(0, 173, 181, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 173, 181, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ========== DARK SIDEBAR (Reuse from dashboard) ========== */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--lumin-dark) 0%, var(--lumin-dark-tertiary) 100%);
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .sidebar-logo {
+            padding: 32px 24px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-logo:hover .logo-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .logo-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 20px rgba(0, 173, 181, 0.8));
+            animation: pulse-glow 3s ease-in-out infinite;
+            transition: all 0.4s ease;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 173, 181, 0.8)); }
+            50% { filter: drop-shadow(0 0 30px rgba(0, 173, 181, 1)); }
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--lumin-turquoise);
+            text-shadow: 0 0 20px rgba(0, 173, 181, 0.5);
+        }
+
+        .logo-tagline {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 24px 16px;
+            overflow-y: auto;
+        }
+
+        .menu-section {
+            margin-bottom: 24px;
+        }
+
+        .menu-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            padding: 0 12px 8px;
+            font-weight: 600;
+        }
+
+        .menu-item {
+            margin-bottom: 4px;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .menu-link:hover {
+            background: rgba(0, 173, 181, 0.15);
+            color: var(--lumin-turquoise);
+            transform: translateX(-4px);
+        }
+
+        .menu-link.active {
+            background: rgba(0, 173, 181, 0.2);
+            color: var(--lumin-turquoise);
+            box-shadow: 0 0 20px rgba(0, 173, 181, 0.3);
+        }
+
+        .menu-icon {
+            font-size: 20px;
+        }
+
+        .sidebar-user {
+            padding: 20px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0, 173, 181, 0.05);
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid var(--lumin-turquoise);
+            box-shadow: 0 0 15px rgba(0, 173, 181, 0.5);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            margin-right: 280px;
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========== TOP BAR ========== */
+        .top-bar {
+            background: linear-gradient(135deg, var(--lumin-dark-secondary), var(--lumin-dark));
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-bar-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .top-bar-left p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .top-bar-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-bar-btn:hover {
+            box-shadow: 0 8px 20px rgba(0, 173, 181, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* ========== PRODUCTS CONTENT ========== */
+        .products-content {
+            padding: 32px;
+            flex: 1;
+        }
+
+        /* ========== FILTERS BAR ========== */
+        .filters-bar {
+            background: var(--light-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 280px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 1px solid rgba(0, 173, 181, 0.2);
+            border-radius: 10px;
+            font-size: 15px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--lumin-turquoise);
+            box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
+        }
+
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            border: 1px solid rgba(0, 173, 181, 0.2);
+            border-radius: 10px;
+            font-size: 15px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--lumin-turquoise);
+            box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
+        }
+
+        .filter-btn {
+            padding: 12px 20px;
+            background: rgba(0, 173, 181, 0.1);
+            color: var(--lumin-turquoise);
+            border: 1px solid rgba(0, 173, 181, 0.3);
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background: rgba(0, 173, 181, 0.2);
+        }
+
+        .filter-btn.active {
+            background: var(--lumin-turquoise);
+            color: white;
+            border-color: var(--lumin-turquoise);
+        }
+
+        /* ========== PRODUCTS GRID/TABLE ========== */
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+            background: white;
+            border-radius: 10px;
+            padding: 4px;
+        }
+
+        .view-toggle-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .view-toggle-btn.active {
+            background: var(--lumin-turquoise);
+            color: white;
+        }
+
+        /* GRID VIEW */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .product-card {
+            background: var(--light-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            padding: 0;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.1s; }
+        .product-card:nth-child(2) { animation-delay: 0.15s; }
+        .product-card:nth-child(3) { animation-delay: 0.2s; }
+        .product-card:nth-child(4) { animation-delay: 0.25s; }
+        .product-card:nth-child(5) { animation-delay: 0.3s; }
+        .product-card:nth-child(6) { animation-delay: 0.35s; }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 173, 181, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(0, 173, 181, 0.1), rgba(0, 173, 181, 0.05));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            position: relative;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .stock-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .stock-badge.good {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .stock-badge.medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .stock-badge.low {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .stock-badge.out {
+            background: rgba(100, 116, 139, 0.2);
+            color: #64748B;
+            border: 1px solid #64748B;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .product-sku {
+            font-size: 13px;
+            color: #64748B;
+            margin-bottom: 12px;
+        }
+
+        .product-price {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--lumin-turquoise);
+            margin-bottom: 12px;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .product-stock {
+            font-size: 13px;
+            color: #64748B;
+        }
+
+        .product-stock strong {
+            color: var(--text-dark);
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .action-btn.edit {
+            background: rgba(0, 173, 181, 0.1);
+            color: var(--lumin-turquoise);
+        }
+
+        .action-btn.edit:hover {
+            background: var(--lumin-turquoise);
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .action-btn.delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* TABLE VIEW */
+        .products-table {
+            display: none;
+            background: var(--light-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .products-table.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: rgba(0, 173, 181, 0.05);
+        }
+
+        th {
+            padding: 16px 20px;
+            text-align: right;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(0, 173, 181, 0.03);
+        }
+
+        td {
+            padding: 16px 20px;
+            font-size: 15px;
+            color: var(--text-dark);
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: 80px 24px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            color: #64748B;
+            margin-bottom: 24px;
+        }
+
+        /* ========== LOADING STATE ========== */
+        .loading {
+            text-align: center;
+            padding: 60px 24px;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(0, 173, 181, 0.1);
+            border-top-color: var(--lumin-turquoise);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(100%);
+            }
+
+            .main-content {
+                margin-right: 0;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+        }
+
+        /* ========== PLAN FEATURES CSS ========== */
+        /* Locked Account Banner */
+        .locked-account-banner {
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            padding: 16px 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .banner-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .banner-icon {
+            font-size: 24px;
+        }
+
+        .banner-text {
+            flex: 1;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .banner-text strong {
+            font-weight: 700;
+        }
+
+        .upgrade-btn {
+            background: white;
+            color: #dc2626;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upgrade-btn:hover {
+            background: #fef2f2;
+            transform: scale(1.05);
+        }
+
+        /* Upgrade Prompt Button */
+        .upgrade-prompt-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+
+        .upgrade-prompt-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Disabled Elements */
+        button.disabled,
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed !important;
+            pointer-events: none;
+        }
+
+        /* Usage Stats */
+        .usage-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .stat-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .stat-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+            transition: width 0.3s ease;
+        }
+
+        .stat-text {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- DARK SIDEBAR -->
+    <aside class="sidebar">
+        <!-- Logo -->
+        <a href="/dashboard/" style="text-decoration: none;">
+            <div class="sidebar-logo">
+                <div class="logo-icon">💡</div>
+                <div class="logo-text">Lumin</div>
+                <div class="logo-tagline">האור של העסק שלך</div>
+            </div>
+        </a>
+
+        <!-- Menu -->
+        <nav class="sidebar-menu">
+            <div class="menu-section">
+                <div class="menu-section-title">תפריט ראשי</div>
+                <div class="menu-item">
+                    <a href="/dashboard/" class="menu-link">
+                        <span class="menu-icon">📊</span>
+                        <span>דשבורד</span>
+                    </a>
+                </div>
+                <div class="menu-item">
+                    <a href="/api/products/" class="menu-link active">
+                        <span class="menu-icon">📦</span>
+                        <span>מוצרים</span>
+                    </a>
+                </div>
+                <div class="menu-item">
+                    <a href="/api/orders/" class="menu-link">
+                        <span class="menu-icon">🛒</span>
+                        <span>הזמנות</span>
+                    </a>
+                </div>
+                <div class="menu-item">
+                    <a href="/api/customers/" class="menu-link">
+                        <span class="menu-icon">👥</span>
+                        <span>לקוחות</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-title">כלים</div>
+                <div class="menu-item">
+                    <a href="/api/analytics/" class="menu-link">
+                        <span class="menu-icon">📈</span>
+                        <span>אנליטיקה</span>
+                    </a>
+                </div>
+                <div class="menu-item">
+                    <a href="/api/integrations/coupons/" class="menu-link">
+                        <span class="menu-icon">🎫</span>
+                        <span>קופונים</span>
+                    </a>
+                </div>
+                <div class="menu-item">
+                    <a href="/api/integrations/sync/" class="menu-link">
+                        <span class="menu-icon">🔄</span>
+                        <span>סנכרון</span>
+                    </a>
+                </div>
+                <div class="menu-item">
+                    <a href="/admin/" class="menu-link">
+                        <span class="menu-icon">⚙️</span>
+                        <span>הגדרות</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- User -->
+        <div class="sidebar-user">
+            <img class="user-avatar"
+                 src="https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&background=00ADB5&color=fff&size=128"
+                 alt="User">
+            <div class="user-info">
+                <div class="user-name">{{ user.first_name }} {{ user.last_name }}</div>
+                <div class="user-role">מנהל</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- TOP BAR -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h1>📦 ניהול מוצרים</h1>
+                <p>נהל את המלאי והמוצרים שלך</p>
+            </div>
+
+            <div class="top-bar-right">
+                <button class="top-bar-btn" onclick="openAddProductModal()">
+                    <span>➕</span>
+                    <span>הוסף מוצר</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- PRODUCTS CONTENT -->
+        <div class="products-content">
+            <!-- FILTERS BAR -->
+            <div class="filters-bar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="חפש מוצר לפי שם, SKU או ברקוד...">
+                </div>
+
+                <select class="filter-select" id="categoryFilter">
+                    <option value="">כל הקטגוריות</option>
+                    <option value="electronics">אלקטרוניקה</option>
+                    <option value="clothing">ביגוד</option>
+                    <option value="food">מזון</option>
+                </select>
+
+                <select class="filter-select" id="stockFilter">
+                    <option value="">כל המלאי</option>
+                    <option value="good">מלאי תקין</option>
+                    <option value="low">מלאי נמוך</option>
+                    <option value="out">אזל מהמלאי</option>
+                </select>
+
+                <div class="view-toggle">
+                    <button class="view-toggle-btn active" onclick="switchView('grid')">⊞</button>
+                    <button class="view-toggle-btn" onclick="switchView('table')">☰</button>
+                </div>
+            </div>
+
+            <!-- LOADING STATE -->
+            <div class="loading" id="loadingState">
+                <div class="spinner"></div>
+                <p>טוען מוצרים...</p>
+            </div>
+
+            <!-- GRID VIEW -->
+            <div class="products-grid" id="productsGrid" style="display: none;">
+                <!-- Products will be inserted here via JavaScript -->
+            </div>
+
+            <!-- TABLE VIEW -->
+            <div class="products-table" id="productsTable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>תמונה</th>
+                            <th>שם המוצר</th>
+                            <th>SKU</th>
+                            <th>קטגוריה</th>
+                            <th>מחיר</th>
+                            <th>מלאי</th>
+                            <th>סטטוס</th>
+                            <th>פעולות</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <!-- Products will be inserted here via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- EMPTY STATE -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">📦</div>
+                <div class="empty-title">אין מוצרים עדיין</div>
+                <div class="empty-text">התחל בהוספת המוצר הראשון שלך</div>
+                <button class="top-bar-btn" onclick="openAddProductModal()">
+                    <span>➕</span>
+                    <span>הוסף מוצר</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== DATA FETCHING ==========
+        let allProducts = [];
+        let currentView = 'grid';
+
+        async function fetchProducts() {
+            try {
+                const response = await fetch('/api/products/api/products/');
+                const data = await response.json();
+                allProducts = data.results || data || [];
+
+                // Hide loading
+                document.getElementById('loadingState').style.display = 'none';
+
+                if (allProducts.length === 0) {
+                    document.getElementById('emptyState').style.display = 'block';
+                } else {
+                    renderProducts(allProducts);
+                }
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        // ========== RENDERING ==========
+        function renderProducts(products) {
+            if (currentView === 'grid') {
+                renderGrid(products);
+            } else {
+                renderTable(products);
+            }
+        }
+
+        function renderGrid(products) {
+            const grid = document.getElementById('productsGrid');
+            grid.style.display = 'grid';
+            document.getElementById('productsTable').classList.remove('active');
+
+            grid.innerHTML = products.map((product, index) => `
+                <div class="product-card" style="animation-delay: ${index * 0.05}s;">
+                    <div class="product-image">
+                        ${product.image ? `<img src="${product.image}" alt="${product.name}">` : '📦'}
+                        <span class="stock-badge ${product.stock_status}">${getStockText(product.stock_status)}</span>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-sku">SKU: ${product.sku}</div>
+                        <div class="product-price">₪${product.price}</div>
+                        <div class="product-meta">
+                            <div class="product-stock">
+                                <strong>${product.stock_quantity}</strong> ${product.unit}
+                            </div>
+                            <div class="product-actions">
+                                <button class="action-btn edit" onclick="editProduct(${product.id})">✏️</button>
+                                <button class="action-btn delete" onclick="deleteProduct(${product.id})">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderTable(products) {
+            const tbody = document.getElementById('productsTableBody');
+            document.getElementById('productsGrid').style.display = 'none';
+            document.getElementById('productsTable').classList.add('active');
+
+            tbody.innerHTML = products.map(product => `
+                <tr>
+                    <td>
+                        ${product.image ? `<img src="${product.image}" style="width: 48px; height: 48px; object-fit: cover; border-radius: 8px;">` : '📦'}
+                    </td>
+                    <td><strong>${product.name}</strong></td>
+                    <td>${product.sku}</td>
+                    <td>${product.category_name || '-'}</td>
+                    <td><strong>₪${product.price}</strong></td>
+                    <td>${product.stock_quantity} ${product.unit}</td>
+                    <td><span class="stock-badge ${product.stock_status}">${getStockText(product.stock_status)}</span></td>
+                    <td>
+                        <div class="product-actions">
+                            <button class="action-btn edit" onclick="editProduct(${product.id})">✏️</button>
+                            <button class="action-btn delete" onclick="deleteProduct(${product.id})">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getStockText(status) {
+            const texts = {
+                'good': 'מלאי תקין',
+                'medium': 'מלאי בינוני',
+                'low': 'מלאי נמוך',
+                'out': 'אזל מהמלאי'
+            };
+            return texts[status] || 'לא ידוע';
+        }
+
+        // ========== VIEW TOGGLE ==========
+        function switchView(view) {
+            currentView = view;
+            const buttons = document.querySelectorAll('.view-toggle-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            renderProducts(allProducts);
+        }
+
+        // ========== SEARCH & FILTER ==========
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const filtered = allProducts.filter(p =>
+                p.name.toLowerCase().includes(query) ||
+                p.sku.toLowerCase().includes(query) ||
+                (p.barcode && p.barcode.toLowerCase().includes(query))
+            );
+            renderProducts(filtered);
+        });
+
+        document.getElementById('stockFilter').addEventListener('change', function(e) {
+            const status = e.target.value;
+            if (status === '') {
+                renderProducts(allProducts);
+            } else {
+                const filtered = allProducts.filter(p => p.stock_status === status);
+                renderProducts(filtered);
+            }
+        });
+
+        // ========== PRODUCT ACTIONS ==========
+        function openAddProductModal() {
+            alert('פתיחת מודל הוספת מוצר - יתווסף בהמשך');
+        }
+
+        function editProduct(id) {
+            alert(`עריכת מוצר ${id} - יתווסף בהמשך`);
+        }
+
+        function deleteProduct(id) {
+            if (confirm('האם אתה בטוח שברצונך למחוק מוצר זה?')) {
+                alert(`מחיקת מוצר ${id} - יתווסף בהמשך`);
+            }
+        }
+
+        // ========== INIT ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchProducts();
+        });
+    </script>
+
+    <!-- Plan Features JavaScript -->
+    <script src="/static/js/plan-features.js"></script>
+</body>
+</html>

@@ -1,11 +1,27 @@
 {
   "permissions": {
     "allow": [
+      "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe manage.py shell:*)",
       "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe:*)",
-      "Read(//c/Users/Marlen/**)",
-      "Bash(for dir in apps/accounts/migrations apps/inventory/migrations apps/sales/migrations apps/customers/migrations apps/analytics/migrations)",
-      "Bash(do touch $dir/__init__.py)",
-      "Bash(done)"
+      "Bash(python:*)",
+      "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe manage.py migrate:*)",
+      "Bash(del business_details.html)",
+      "Bash(ren:*)",
+      "Bash(del phone_verification.html)",
+      "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe manage.py:*)",
+      "Bash(./venv/Scripts/pip.exe install:*)",
+      "Bash(del check_duplicates.py)",
+      "Bash(timeout 3 bash:*)",
+      "Bash(find:*)",
+      "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe manage.py makemigrations:*)",
+      "Bash(timeout 5 curl:*)",
+      "Bash(dir:*)",
+      "Bash(for file in customers.html products.html sync.html coupons.html)",
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(tail:*)",
+      "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe manage.py runserver:*)",
+      "Bash(tasklist:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []

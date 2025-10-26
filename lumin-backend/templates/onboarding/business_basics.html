@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פרטי עסק בסיסיים - Lumin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0F2027 0%, #203A43 50%, #2C5364 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1400px;
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        /* Sidebar Styling - FIXED: No overflow */
+        .sidebar {
+            width: 380px;
+            background: rgba(15, 32, 39, 0.6);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(0, 173, 181, 0.2);
+            padding: 48px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .logo-section {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo-section:hover .logo {
+            transform: scale(1.05);
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 20px rgba(0, 173, 181, 0.6));
+            transition: all 0.3s ease;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #00ADB5;
+            text-shadow: 0 0 20px rgba(0, 173, 181, 0.4);
+            margin-bottom: 6px;
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        /* Dynamic Content Section */
+        .dynamic-content {
+            flex: 1;
+        }
+
+        .content-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .content-icon {
+            font-size: 28px;
+            filter: drop-shadow(0 0 12px rgba(0, 173, 181, 0.5));
+        }
+
+        .content-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #00ADB5;
+        }
+
+        .content-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 20px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: rgba(0, 173, 181, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 173, 181, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            background: rgba(0, 173, 181, 0.1);
+            border-color: rgba(0, 173, 181, 0.3);
+            transform: translateX(-4px);
+        }
+
+        .benefit-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .benefit-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        /* Tip Section - Compact */
+        .tip-section {
+            background: linear-gradient(135deg, rgba(0, 173, 181, 0.15), rgba(0, 173, 181, 0.05));
+            border: 1px solid rgba(0, 173, 181, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: auto;
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tip-icon {
+            font-size: 20px;
+        }
+
+        .tip-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #00ADB5;
+        }
+
+        .tip-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.5;
+        }
+
+        /* Main Content Area */
+        .content-area {
+            flex: 1;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ADB5, #00CED6);
+            border-radius: 20px;
+            transition: width 0.6s ease;
+            box-shadow: 0 0 20px rgba(0, 173, 181, 0.6);
+        }
+
+        /* Form Card */
+        .form-card {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(15, 32, 39, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+        }
+
+        .form-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 10px;
+        }
+
+        .form-label .required {
+            color: #FF6B6B;
+            margin-right: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #FFFFFF;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 173, 181, 0.6);
+            box-shadow: 0 0 0 4px rgba(0, 173, 181, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Category Selection - FIXED: 4 columns */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .category-option {
+            position: relative;
+        }
+
+        .category-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .category-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 20px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .category-option input[type="radio"]:checked + .category-label {
+            background: rgba(0, 173, 181, 0.15);
+            border-color: rgba(0, 173, 181, 0.6);
+            box-shadow: 0 0 20px rgba(0, 173, 181, 0.3);
+        }
+
+        .category-label:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .category-icon {
+            font-size: 32px;
+        }
+
+        .category-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ADB5, #00CED6);
+            color: #FFFFFF;
+            box-shadow: 0 8px 24px rgba(0, 173, 181, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            box-shadow: 0 12px 32px rgba(0, 173, 181, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #00ADB5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 32px 24px;
+            }
+
+            .content-area {
+                padding: 32px 24px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .form-card {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Logo Section (acts as Home button) -->
+            <a href="/" style="text-decoration: none;">
+                <div class="logo-section">
+                    <div class="logo">💡</div>
+                    <div class="logo-text">Lumin</div>
+                    <div class="tagline">האור של העסק שלך</div>
+                </div>
+            </a>
+
+            <!-- Dynamic Content for Step 2 -->
+            <div class="dynamic-content">
+                <div class="content-header">
+                    <span class="content-icon">🏢</span>
+                    <h3 class="content-title">בואו נתחיל!</h3>
+                </div>
+
+                <p class="content-description">
+                    זה השלב הראשון בבניית המערכת שלך. שם העסק והקטגוריה שלו עוזרים לנו להתאים את Lumin בדיוק לצרכים שלך.
+                </p>
+
+                <div class="benefit-item">
+                    <span class="benefit-icon">✨</span>
+                    <span class="benefit-text">
+                        <strong>שם ברור וזכיר</strong> עוזר ללקוחות למצוא אותך ומשפר את המיתוג שלך
+                    </span>
+                </div>
+
+                <div class="benefit-item">
+                    <span class="benefit-icon">🎯</span>
+                    <span class="benefit-text">
+                        <strong>קטגוריה מדויקת</strong> מאפשרת לנו להציע תבניות ותכונות ייעודיות לתחום שלך
+                    </span>
+                </div>
+
+                <div class="benefit-item">
+                    <span class="benefit-icon">⚡</span>
+                    <span class="benefit-text">
+                        <strong>התאמה אישית</strong> - הדשבורד והדוחות יותאמו אוטומטית לסוג העסק שלך
+                    </span>
+                </div>
+            </div>
+
+            <!-- Tip Section -->
+            <div class="tip-section">
+                <div class="tip-header">
+                    <span class="tip-icon">💡</span>
+                    <span class="tip-title">טיפ מקצועי</span>
+                </div>
+                <p class="tip-text">
+                    שם ברור וזכיר עוזר ללקוחות למצוא אותך בקלות. הימנע משמות כלליים מדי והוסף ערך ייחודי - למשל "בוטיק הפרחים של רחל" במקום "חנות פרחים".
+                </p>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="content-area">
+            <!-- Progress Section -->
+            <div class="progress-section">
+                <div class="progress-label">
+                    <span>שלב 2 מתוך 4</span>
+                    <span>50%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 50%;"></div>
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="form-card">
+                <div class="form-header">
+                    <h1 class="form-title">בואו נכיר את העסק שלך</h1>
+                    <p class="form-subtitle">רק שתי שאלות מהירות כדי להתחיל</p>
+                </div>
+
+                <form id="businessBasicsForm">
+                    <!-- Business Name -->
+                    <div class="form-group">
+                        <label for="businessName" class="form-label">
+                            <span class="required">*</span>
+                            מה שם העסק שלך?
+                        </label>
+                        <input
+                            type="text"
+                            id="businessName"
+                            class="form-input"
+                            placeholder='לדוגמה: "בוטיק הפרחים של רחל" או "מסעדת אלדד"'
+                            required
+                            maxlength="100"
+                        >
+                    </div>
+
+                    <!-- Business Category -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="required">*</span>
+                            באיזה תחום העסק שלך פועל?
+                        </label>
+                        <div class="category-grid">
+                            <div class="category-option">
+                                <input type="radio" id="cat-retail" name="category" value="retail" required>
+                                <label for="cat-retail" class="category-label">
+                                    <span class="category-icon">🛍️</span>
+                                    <span class="category-name">קמעונאות וחנויות</span>
+                                </label>
+                            </div>
+
+                            <div class="category-option">
+                                <input type="radio" id="cat-food" name="category" value="food">
+                                <label for="cat-food" class="category-label">
+                                    <span class="category-icon">🍽️</span>
+                                    <span class="category-name">מסעדות ואוכל</span>
+                                </label>
+                            </div>
+
+                            <div class="category-option">
+                                <input type="radio" id="cat-services" name="category" value="services">
+                                <label for="cat-services" class="category-label">
+                                    <span class="category-icon">💼</span>
+                                    <span class="category-name">שירותים מקצועיים</span>
+                                </label>
+                            </div>
+
+                            <div class="category-option">
+                                <input type="radio" id="cat-beauty" name="category" value="beauty">
+                                <label for="cat-beauty" class="category-label">
+                                    <span class="category-icon">💅</span>
+                                    <span class="category-name">יופי ואסתטיקה</span>
+                                </label>
+                            </div>
+
+                            <div class="category-option">
+                                <input type="radio" id="cat-tech" name="category" value="tech">
+                                <label for="cat-tech" class="category-label">
+                                    <span class="category-icon">💻</span>
+                                    <span class="category-name">טכנולוגיה ומחשבים</span>
+                                </label>
+                            </div>
+
+                            <div class="category-option">
+                                <input type="radio" id="cat-health" name="category" value="health">
+                                <label for="cat-health" class="category-label">
+                                    <span class="category-icon">⚕️</span>
+                                    <span class="category-name">בריאות ורפואה</span>
+                                </label>
+                            </div>
+
+                            <div class="category-option">
+                                <input type="radio" id="cat-education" name="category" value="education">
+                                <label for="cat-education" class="category-label">
+                                    <span class="category-icon">📚</span>
+                                    <span class="category-name">חינוך והדרכה</span>
+                                </label>
+                            </div>
+
+                            <div class="category-option">
+                                <input type="radio" id="cat-other" name="category" value="other">
+                                <label for="cat-other" class="category-label">
+                                    <span class="category-icon">🎨</span>
+                                    <span class="category-name">אחר</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Button Group -->
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'phone_verification' %}'">
+                            <span>⬅️</span>
+                            <span>חזרה</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                            <span>המשך</span>
+                            <span>➡️</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('businessBasicsForm');
+        const businessName = document.getElementById('businessName');
+        const categoryInputs = document.querySelectorAll('input[name="category"]');
+        const submitBtn = document.getElementById('submitBtn');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        // Validate form and enable/disable submit button
+        function validateForm() {
+            const nameValid = businessName.value.trim().length >= 2;
+            const categoryValid = Array.from(categoryInputs).some(input => input.checked);
+
+            submitBtn.disabled = !(nameValid && categoryValid);
+        }
+
+        // Add event listeners
+        businessName.addEventListener('input', validateForm);
+        categoryInputs.forEach(input => {
+            input.addEventListener('change', validateForm);
+        });
+
+        // Form submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const selectedCategory = Array.from(categoryInputs).find(input => input.checked);
+
+            if (!selectedCategory) {
+                alert('אנא בחר קטגוריה לעסק שלך');
+                return;
+            }
+
+            // Save to sessionStorage
+            const data = {
+                business_name: businessName.value.trim(),
+                business_category: selectedCategory.value
+            };
+
+            sessionStorage.setItem('business_basics', JSON.stringify(data));
+
+            // Show loading and redirect
+            loadingOverlay.classList.add('active');
+
+            setTimeout(() => {
+                window.location.href = '{% url 'business_details' %}';
+            }, 400);
+        });
+
+        // Load existing data if available
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedData = sessionStorage.getItem('business_basics');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                businessName.value = data.business_name || '';
+
+                const categoryInput = document.getElementById(`cat-${data.business_category}`);
+                if (categoryInput) {
+                    categoryInput.checked = true;
+                }
+
+                validateForm();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פרטי העסק - Lumin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0F2027 0%, #203A43 50%, #2C5364 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1400px;
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        /* Sidebar Styling - FIXED: No overflow, stays sticky */
+        .sidebar {
+            width: 380px;
+            background: rgba(15, 32, 39, 0.6);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(0, 173, 181, 0.2);
+            padding: 48px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden; /* FIXED: No internal scrolling */
+        }
+
+        .logo-section {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo-section:hover .logo {
+            transform: scale(1.05);
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 20px rgba(0, 173, 181, 0.6));
+            transition: all 0.3s ease;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #00ADB5;
+            text-shadow: 0 0 20px rgba(0, 173, 181, 0.4);
+            margin-bottom: 6px;
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        /* Dynamic Content Section */
+        .dynamic-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .content-icon {
+            font-size: 28px;
+            filter: drop-shadow(0 0 12px rgba(0, 173, 181, 0.5));
+        }
+
+        .content-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #00ADB5;
+        }
+
+        .content-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 20px;
+        }
+
+        /* Accordion Styling - NEW */
+        .accordion-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .accordion-item {
+            border-radius: 12px;
+            border: 1px solid rgba(0, 173, 181, 0.1);
+            background: rgba(0, 173, 181, 0.05);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-item.active {
+            background: rgba(0, 173, 181, 0.1);
+            border-color: rgba(0, 173, 181, 0.3);
+        }
+
+        .accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: rgba(0, 173, 181, 0.08);
+        }
+
+        .accordion-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .accordion-icon {
+            font-size: 18px;
+        }
+
+        .accordion-toggle {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .accordion-item.active .accordion-toggle {
+            transform: rotate(180deg);
+            color: #00ADB5;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 300px;
+        }
+
+        .accordion-body {
+            padding: 12px 16px 16px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Tip Section - Compact */
+        .tip-section {
+            background: linear-gradient(135deg, rgba(0, 173, 181, 0.15), rgba(0, 173, 181, 0.05));
+            border: 1px solid rgba(0, 173, 181, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: auto;
+        }
+
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tip-icon {
+            font-size: 20px;
+        }
+
+        .tip-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #00ADB5;
+        }
+
+        .tip-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.5;
+        }
+
+        /* Main Content Area */
+        .content-area {
+            flex: 1;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ADB5, #00CED6);
+            border-radius: 20px;
+            transition: width 0.6s ease;
+            box-shadow: 0 0 20px rgba(0, 173, 181, 0.6);
+        }
+
+        /* Form Card */
+        .form-card {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(15, 32, 39, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+        }
+
+        .form-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 10px;
+        }
+
+        .form-label .required {
+            color: #FF6B6B;
+            margin-right: 4px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #FFFFFF;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 173, 181, 0.6);
+            box-shadow: 0 0 0 4px rgba(0, 173, 181, 0.1);
+        }
+
+        .form-select option {
+            background: #1E293B;
+            color: #FFFFFF;
+            padding: 12px;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ADB5, #00CED6);
+            color: #FFFFFF;
+            box-shadow: 0 8px 24px rgba(0, 173, 181, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            box-shadow: 0 12px 32px rgba(0, 173, 181, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #00ADB5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 32px 24px;
+            }
+
+            .content-area {
+                padding: 32px 24px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .button-group {
+                flex-direction: column;
+            }
+
+            .form-card {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Logo Section (acts as Home button) -->
+            <a href="/" style="text-decoration: none;">
+                <div class="logo-section">
+                    <div class="logo">💡</div>
+                    <div class="logo-text">Lumin</div>
+                    <div class="tagline">האור של העסק שלך</div>
+                </div>
+            </a>
+
+            <!-- Dynamic Content for Step 3 -->
+            <div class="dynamic-content">
+                <div class="content-header">
+                    <span class="content-icon">📊</span>
+                    <h3 class="content-title">נתונים חכמים</h3>
+                </div>
+
+                <p class="content-description">
+                    הפרטים האלה עוזרים לנו להתאים את Lumin בדיוק לגודל העסק שלך.
+                </p>
+
+                <!-- Accordion Container - NEW -->
+                <div class="accordion-container">
+                    <!-- Accordion Item 1 - OPEN by default -->
+                    <div class="accordion-item active">
+                        <div class="accordion-header" onclick="toggleAccordion(0)">
+                            <div class="accordion-title">
+                                <span class="accordion-icon">🎯</span>
+                                <span>תכונות מותאמות</span>
+                            </div>
+                            <span class="accordion-toggle">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                נציג רק את הכלים והדוחות הרלוונטיים לגודל העסק שלך - ללא עומס מיותר.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Accordion Item 2 -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(1)">
+                            <div class="accordion-title">
+                                <span class="accordion-icon">📈</span>
+                                <span>יעדים חכמים</span>
+                            </div>
+                            <span class="accordion-toggle">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                המערכת תעזור לך לעקוב אחר התקדמות למטרות שלך עם תובנות ממוקדות.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Accordion Item 3 -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(2)">
+                            <div class="accordion-title">
+                                <span class="accordion-icon">💰</span>
+                                <span>תובנות כלכליות</span>
+                            </div>
+                            <span class="accordion-toggle">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                השוואה למדדים בתעשייה ומעקב אחר צמיחה עם דוחות מותאמים.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Accordion Item 4 -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(3)">
+                            <div class="accordion-title">
+                                <span class="accordion-icon">🔒</span>
+                                <span>פרטיות מובטחת</span>
+                            </div>
+                            <span class="accordion-toggle">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                כל המידע מוצפן ונשמר בצורה מאובטחת. לעולם לא נשתף נתונים עם צדדים שלישיים.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tip Section -->
+            <div class="tip-section">
+                <div class="tip-header">
+                    <span class="tip-icon">💡</span>
+                    <span class="tip-title">טיפ מקצועי</span>
+                </div>
+                <p class="tip-text">
+                    המידע שאתה מספק עוזר לנו להציע המלצות מדויקות - עסק קטן יקבל דוחות פשוטים, עסק גדול יקבל ניתוחים מעמיקים.
+                </p>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="content-area">
+            <!-- Progress Section -->
+            <div class="progress-section">
+                <div class="progress-label">
+                    <span>שלב 3 מתוך 4</span>
+                    <span>75%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 75%;"></div>
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="form-card">
+                <div class="form-header">
+                    <h1 class="form-title">ספר לנו על העסק שלך</h1>
+                    <p class="form-subtitle">כדי שנוכל להתאים את המערכת בדיוק לצרכים שלך</p>
+                </div>
+
+                <form id="businessDetailsForm">
+                    <!-- Business Size -->
+                    <div class="form-group">
+                        <label for="businessSize" class="form-label">
+                            <span class="required">*</span>
+                            כמה אנשים עובדים בעסק?
+                        </label>
+                        <select id="businessSize" class="form-select" required>
+                            <option value="">בחר גודל עסק...</option>
+                            <option value="solo">רק אני (עצמאי/ת)</option>
+                            <option value="small">2-5 עובדים</option>
+                            <option value="medium">6-15 עובדים</option>
+                            <option value="large">16-30 עובדים</option>
+                            <option value="enterprise">31+ עובדים</option>
+                        </select>
+                    </div>
+
+                    <!-- Monthly Revenue -->
+                    <div class="form-group">
+                        <label for="monthlyRevenue" class="form-label">
+                            <span class="required">*</span>
+                            מה היקף ההכנסות החודשי המשוער?
+                        </label>
+                        <select id="monthlyRevenue" class="form-select" required>
+                            <option value="">בחר טווח...</option>
+                            <option value="0-10k">עד 10,000 ₪</option>
+                            <option value="10k-50k">10,000 - 50,000 ₪</option>
+                            <option value="50k-100k">50,000 - 100,000 ₪</option>
+                            <option value="100k-250k">100,000 - 250,000 ₪</option>
+                            <option value="250k-500k">250,000 - 500,000 ₪</option>
+                            <option value="500k+">מעל 500,000 ₪</option>
+                        </select>
+                    </div>
+
+                    <!-- Primary Goal -->
+                    <div class="form-group">
+                        <label for="primaryGoal" class="form-label">
+                            <span class="required">*</span>
+                            מה המטרה העיקרית שלך עם Lumin?
+                        </label>
+                        <select id="primaryGoal" class="form-select" required>
+                            <option value="">בחר מטרה...</option>
+                            <option value="organize">ארגון ומעקב אחר המלאי והמכירות</option>
+                            <option value="grow">צמיחה והגדלת ההכנסות</option>
+                            <option value="efficiency">שיפור יעילות וחיסכון בזמן</option>
+                            <option value="customers">ניהול טוב יותר של לקוחות</option>
+                            <option value="reports">דוחות ותובנות עסקיות</option>
+                            <option value="automation">אוטומציה של תהליכים</option>
+                        </select>
+                    </div>
+
+                    <!-- Button Group -->
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'business_basics' %}'">
+                            <span>⬅️</span>
+                            <span>חזרה</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                            <span>המשך</span>
+                            <span>➡️</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        // Accordion functionality
+        function toggleAccordion(index) {
+            const items = document.querySelectorAll('.accordion-item');
+            const clickedItem = items[index];
+            const isActive = clickedItem.classList.contains('active');
+
+            // Close all items
+            items.forEach(item => item.classList.remove('active'));
+
+            // Open clicked item if it was closed
+            if (!isActive) {
+                clickedItem.classList.add('active');
+            }
+        }
+
+        // Form validation
+        const form = document.getElementById('businessDetailsForm');
+        const businessSize = document.getElementById('businessSize');
+        const monthlyRevenue = document.getElementById('monthlyRevenue');
+        const primaryGoal = document.getElementById('primaryGoal');
+        const submitBtn = document.getElementById('submitBtn');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        function validateForm() {
+            const sizeValid = businessSize.value !== '';
+            const revenueValid = monthlyRevenue.value !== '';
+            const goalValid = primaryGoal.value !== '';
+
+            submitBtn.disabled = !(sizeValid && revenueValid && goalValid);
+        }
+
+        businessSize.addEventListener('change', validateForm);
+        monthlyRevenue.addEventListener('change', validateForm);
+        primaryGoal.addEventListener('change', validateForm);
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const data = {
+                business_size: businessSize.value,
+                monthly_revenue: monthlyRevenue.value,
+                primary_goal: primaryGoal.value
+            };
+
+            sessionStorage.setItem('business_details', JSON.stringify(data));
+
+            loadingOverlay.classList.add('active');
+
+            setTimeout(() => {
+                window.location.href = '{% url 'business_branding' %}';
+            }, 400);
+        });
+
+        // Load existing data
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedData = sessionStorage.getItem('business_details');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                businessSize.value = data.business_size || '';
+                monthlyRevenue.value = data.monthly_revenue || '';
+                primaryGoal.value = data.primary_goal || '';
+
+                validateForm();
+            }
+        });
+    </script>
+</body>
+</html>

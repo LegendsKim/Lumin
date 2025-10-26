@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ברוכים הבאים! - Lumin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #00ADB5;
+            position: absolute;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Sparkles */
+        .sparkle {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            font-size: 20px;
+            animation: sparkle 2s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1) rotate(180deg); }
+        }
+
+        /* Main Container */
+        .celebration-container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            animation: zoomIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Success Icon */
+        .success-icon {
+            width: 150px;
+            height: 150px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6em;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .title {
+            font-size: 3.5em;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.5em;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 50px;
+            line-height: 1.6;
+            animation: slideUp 0.8s ease-out 0.5s both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease-out 0.7s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .business-info {
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .business-name {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .plan-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 900;
+            color: #00ADB5;
+            text-shadow: 0 2px 10px rgba(0, 173, 181, 0.5);
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 5px;
+        }
+
+        /* Next Steps */
+        .next-steps {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            text-align: right;
+        }
+
+        .next-steps-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .step-card {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .step-card:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-10px);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: #00ADB5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0, 173, 181, 0.5);
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .step-description {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .step-icon {
+            font-size: 2em;
+        }
+
+        /* CTA Buttons */
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            font-size: 1.15em;
+            font-weight: 600;
+            font-family: 'Heebo', sans-serif;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .btn-primary,
+        button.btn-primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+            border: none;
+            cursor: pointer;
+            font-family: 'Heebo', sans-serif;
+            width: 100%;
+        }
+
+        .btn-primary:hover,
+        button.btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Pro Upsell */
+        .pro-upsell {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 140, 0, 0.2) 100%);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 40px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+            }
+        }
+
+        .pro-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #FFD700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pro-features {
+            color: white;
+            text-align: right;
+            margin: 20px 0;
+        }
+
+        .pro-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5em;
+            }
+
+            .subtitle {
+                font-size: 1.2em;
+            }
+
+            .stats-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .cta-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="celebration-container">
+        <!-- Success Icon -->
+        <div class="success-icon">
+            🎉
+        </div>
+
+        <!-- Title -->
+        <h1 class="title">כל הכבוד! העסק שלך מוכן! 🎊</h1>
+        <p class="subtitle">
+            ברוך הבא ל-Lumin, {{ user.first_name }}!<br>
+            הגדרת בהצלחה את {{ tenant.business_name }}
+        </p>
+
+        <!-- Business Info Card -->
+        <div class="glass-card">
+            <div class="business-info">
+                <div class="business-name">✨ {{ tenant.business_name }}</div>
+                <div class="plan-badge">
+                    <span>📦</span>
+                    <span>תוכנית: Basic (חינם)</span>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-value">0/10</div>
+                    <div class="stat-label">מוצרים</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">0/5</div>
+                    <div class="stat-label">לקוחות</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">₪0</div>
+                    <div class="stat-label">מכירות</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="next-steps">
+            <h2 class="next-steps-title">מה עכשיו? הנה 3 צעדים קלים: 🚀</h2>
+
+            <div class="step-card" onclick="window.location.href='/api/products/'">
+                <div class="step-number">1️⃣</div>
+                <div class="step-content">
+                    <div class="step-title">הוסף את המוצרים הראשונים שלך</div>
+                    <div class="step-description">צור את קטלוג המוצרים או השירותים שלך</div>
+                </div>
+                <div class="step-icon">📦</div>
+            </div>
+
+            <div class="step-card" onclick="window.location.href='/api/customers/'">
+                <div class="step-number">2️⃣</div>
+                <div class="step-content">
+                    <div class="step-title">הוסף לקוחות</div>
+                    <div class="step-description">בנה את בסיס הלקוחות שלך</div>
+                </div>
+                <div class="step-icon">👥</div>
+            </div>
+
+            <div class="step-card" onclick="window.location.href='/api/orders/'">
+                <div class="step-number">3️⃣</div>
+                <div class="step-content">
+                    <div class="step-title">רשום את המכירה הראשונה</div>
+                    <div class="step-description">התחל למכור ולהפיק חשבוניות</div>
+                </div>
+                <div class="step-icon">💰</div>
+            </div>
+        </div>
+
+        <!-- Pro Upsell -->
+        <div class="pro-upsell">
+            <div class="pro-title">
+                <span>👑</span>
+                <span>רוצה יותר?</span>
+            </div>
+            <p style="color: white; text-align: center; margin-bottom: 20px;">
+                שדרג ל-Pro וקבל:
+            </p>
+            <div class="pro-features">
+                <div class="pro-feature">
+                    <span>✓</span>
+                    <span>מלאי ללא הגבלות + לקוחות ללא הגבלה</span>
+                </div>
+                <div class="pro-feature">
+                    <span>✓</span>
+                    <span>לוגו והתאמה אישית</span>
+                </div>
+                <div class="pro-feature">
+                    <span>✓</span>
+                    <span>חשבוניות PDF מקצועיות</span>
+                </div>
+                <div class="pro-feature">
+                    <span>✓</span>
+                    <span>סנכרון WooCommerce</span>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="/pricing/" class="btn btn-primary" style="background: #FFD700; color: #333;">
+                    <span>👑</span>
+                    <span>שדרג ל-Pro - 14 ימי ניסיון חינם</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="cta-group">
+            <form method="POST" action="{% url 'onboarding_complete' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">
+                    <span>🏠</span>
+                    <span>עבור לדשבורד</span>
+                </button>
+            </form>
+            <a href="/help/videos/" class="btn btn-secondary">
+                <span>📺</span>
+                <span>צפה בהדרכות וידאו</span>
+            </a>
+            <a href="/help/" class="btn btn-secondary">
+                <span>📚</span>
+                <span>קרא את מרכז העזרה</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Generate confetti
+        function createConfetti() {
+            const colors = ['#00ADB5', '#66D9DD', '#FFD700', '#FF6B9D', '#C779D0', '#4ECDC4'];
+
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 100);
+            }
+        }
+
+        // Generate sparkles
+        function createSparkles() {
+            const sparkles = ['✨', '⭐', '💫', '🌟'];
+
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+                    sparkle.style.left = Math.random() * 100 + '%';
+                    sparkle.style.top = Math.random() * 100 + '%';
+                    sparkle.style.animationDelay = Math.random() * 2 + 's';
+                    document.body.appendChild(sparkle);
+                }, i * 200);
+            }
+        }
+
+        // Start celebration
+        window.addEventListener('load', () => {
+            createConfetti();
+            createSparkles();
+
+            // Repeat confetti every 5 seconds
+            setInterval(createConfetti, 5000);
+        });
+
+        // Mark onboarding as complete
+        fetch('/api/tenants/me/', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                setup_completed: true,
+                onboarding_completed_at: new Date().toISOString()
+            })
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

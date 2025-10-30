@@ -9,9 +9,8 @@ services:
     plan: free
     region: oregon
     branch: main
-    rootDirectory: lumin-backend
-    buildCommand: "./build.sh"
-    startCommand: "gunicorn config.wsgi:application"
+    buildCommand: "cd lumin-backend && chmod +x build.sh && ./build.sh"
+    startCommand: "cd lumin-backend && gunicorn config.wsgi:application"
     healthCheckPath: /
     envVars:
       # Django Settings

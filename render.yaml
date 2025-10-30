@@ -1,0 +1,105 @@
+# Render Blueprint for Lumin SaaS
+# This file defines all services needed for deployment
+
+services:
+  # ==================== WEB SERVICE ====================
+  - type: web
+    name: lumin-web
+    runtime: python
+    plan: free
+    region: oregon
+    branch: main
+    rootDirectory: lumin-backend
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application"
+    healthCheckPath: /
+    envVars:
+      # Django Settings
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+
+      - key: SECRET_KEY
+        generateValue: true
+
+      - key: DEBUG
+        value: false
+
+      # Database Connection (from PostgreSQL service)
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lumin-db
+          property: connectionString
+
+      # Redis Connection (from Redis service)
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: lumin-redis
+          property: connectionString
+
+      # Allowed Hosts
+      - key: ALLOWED_HOSTS
+        value: .onrender.com,localhost
+
+      # CORS Settings
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://lumin-app.onrender.com,http://localhost:3000
+
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://*.onrender.com
+
+      # Security Settings
+      - key: SECURE_SSL_REDIRECT
+        value: true
+
+      - key: SECURE_HSTS_SECONDS
+        value: 31536000
+
+      # AWS S3 (Optional - Add these manually when ready)
+      # - key: USE_S3
+      #   value: true
+      # - key: AWS_ACCESS_KEY_ID
+      #   sync: false
+      # - key: AWS_SECRET_ACCESS_KEY
+      #   sync: false
+      # - key: AWS_STORAGE_BUCKET_NAME
+      #   value: your-bucket-name
+      # - key: AWS_S3_REGION_NAME
+      #   value: us-east-1
+
+      # Email (SendGrid) - Add manually when ready
+      # - key: SENDGRID_API_KEY
+      #   sync: false
+      # - key: DEFAULT_FROM_EMAIL
+      #   value: noreply@lumin.app
+
+      # SMS (Twilio) - Add manually when ready
+      # - key: TWILIO_ACCOUNT_SID
+      #   sync: false
+      # - key: TWILIO_AUTH_TOKEN
+      #   sync: false
+      # - key: TWILIO_PHONE_NUMBER
+      #   value: +1234567890
+
+      # Google OAuth - Add manually when ready
+      # - key: GOOGLE_CLIENT_ID
+      #   sync: false
+      # - key: GOOGLE_CLIENT_SECRET
+      #   sync: false
+
+  # ==================== POSTGRESQL DATABASE ====================
+  - type: pserv
+    name: lumin-db
+    plan: free
+    region: oregon
+    ipAllowList: []
+    databaseName: lumin_production
+    databaseUser: lumin_user
+
+  # ==================== REDIS CACHE ====================
+  - type: redis
+    name: lumin-redis
+    plan: free
+    region: oregon
+    ipAllowList: []
+    maxmemoryPolicy: allkeys-lru

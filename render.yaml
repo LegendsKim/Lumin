@@ -93,8 +93,6 @@ services:
     plan: free
     region: oregon
     ipAllowList: []
-    databaseName: lumin_production
-    databaseUser: lumin_user
 
   # ==================== REDIS CACHE ====================
   - type: redis

@@ -6,6 +6,18 @@ from .base import *
 # Security
 DEBUG = False
 
+# Allowed Hosts - Support Render domains
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[
+    '.onrender.com',
+    'localhost',
+    '127.0.0.1',
+])
+
+# CSRF Trusted Origins
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[
+    'https://*.onrender.com',
+])
+
 # Security settings
 SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
 SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS', default=31536000)
@@ -34,6 +46,11 @@ LOGGING['loggers']['apps'] = {
     'propagate': False,
 }
 
-# Static files - Use S3 in production if configured
-if USE_S3:
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# Static files
+# S3 configuration is already handled in base.py based on USE_S3
+# If USE_S3=False in production, Whitenoise will serve static files
+
+# Force S3 usage in production (recommended)
+if not USE_S3:
+    # Fallback to Whitenoise if S3 is not configured
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

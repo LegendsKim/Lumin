@@ -93,7 +93,8 @@
             font-weight: 600;
         }
 
-        .nav-item {
+        .nav-item,
+        .menu-link {
             padding: 14px 24px;
             color: var(--text-light);
             text-decoration: none;
@@ -105,19 +106,66 @@
             cursor: pointer;
         }
 
-        .nav-item:hover {
+        .nav-item:hover,
+        .menu-link:hover {
             background: rgba(0, 173, 181, 0.1);
             border-right-color: var(--lumin-turquoise);
         }
 
-        .nav-item.active {
+        .nav-item.active,
+        .menu-link.active {
             background: rgba(0, 173, 181, 0.15);
             border-right-color: var(--lumin-turquoise);
             color: var(--lumin-turquoise);
         }
 
-        .nav-icon {
+        .nav-icon,
+        .menu-icon {
             font-size: 20px;
+        }
+
+        /* User Section */
+        .sidebar-user {
+            padding: 20px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0, 173, 181, 0.05);
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid var(--lumin-turquoise);
+            box-shadow: 0 0 15px rgba(0, 173, 181, 0.5);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .user-logout {
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-logout:hover {
+            color: #FF6B6B;
         }
 
         /* Main Content */
@@ -399,56 +447,7 @@
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-logo" onclick="window.location.href='/dashboard/'">
-            <div class="logo-icon">💡</div>
-            <div class="logo-text">Lumin</div>
-            <div class="logo-tagline">האור של העסק שלך</div>
-        </div>
-
-        <nav class="sidebar-nav">
-            <div class="menu-section">
-                <div class="menu-section-title">תפריט ראשי</div>
-                <a href="/dashboard/" class="nav-item">
-                    <span class="nav-icon">📊</span>
-                    <span>דשבורד</span>
-                </a>
-                <a href="/api/products/" class="nav-item">
-                    <span class="nav-icon">📦</span>
-                    <span>מוצרים</span>
-                </a>
-                <a href="/api/orders/" class="nav-item">
-                    <span class="nav-icon">🛒</span>
-                    <span>הזמנות</span>
-                </a>
-                <a href="/api/customers/" class="nav-item">
-                    <span class="nav-icon">👥</span>
-                    <span>לקוחות</span>
-                </a>
-            </div>
-
-            <div class="menu-section">
-                <div class="menu-section-title">כלים</div>
-                <a href="/api/analytics/" class="nav-item">
-                    <span class="nav-icon">📈</span>
-                    <span>אנליטיקה</span>
-                </a>
-                <a href="/api/integrations/coupons/" class="nav-item active">
-                    <span class="nav-icon">🎫</span>
-                    <span>קופונים</span>
-                </a>
-                <a href="/api/integrations/sync/" class="nav-item">
-                    <span class="nav-icon">🔄</span>
-                    <span>סנכרון</span>
-                </a>
-                <a href="/admin/" class="nav-item">
-                    <span class="nav-icon">⚙️</span>
-                    <span>הגדרות</span>
-                </a>
-            </div>
-        </nav>
-    </div>
+    {% include '_sidebar.html' with active_page='coupons' %}
 
     <!-- Main Content -->
     <div class="main-content">

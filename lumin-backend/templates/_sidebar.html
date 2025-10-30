@@ -2,7 +2,7 @@
 <aside class="sidebar">
     <!-- Logo -->
     <a href="/dashboard/" style="text-decoration: none;">
-        <div class="sidebar-logo">
+        <div class="sidebar-logo" onclick="window.location.href='/dashboard/'">
             <div class="logo-icon">💡</div>
             <div class="logo-text">Lumin</div>
             <div class="logo-tagline">האור של העסק שלך</div>
@@ -10,30 +10,30 @@
     </a>
 
     <!-- Menu -->
-    <nav class="sidebar-menu">
+    <nav class="sidebar-menu sidebar-nav">
         <div class="menu-section">
             <div class="menu-section-title">תפריט ראשי</div>
             <div class="menu-item">
-                <a href="/dashboard/" class="menu-link {% if active_page == 'dashboard' %}active{% endif %}">
-                    <span class="menu-icon">📊</span>
+                <a href="/dashboard/" class="menu-link nav-item {% if active_page == 'dashboard' %}active{% endif %}">
+                    <span class="menu-icon nav-icon">📊</span>
                     <span>דשבורד</span>
                 </a>
             </div>
             <div class="menu-item">
-                <a href="/api/products/" class="menu-link {% if active_page == 'products' %}active{% endif %}">
-                    <span class="menu-icon">📦</span>
+                <a href="/api/products/" class="menu-link nav-item {% if active_page == 'products' %}active{% endif %}">
+                    <span class="menu-icon nav-icon">📦</span>
                     <span>מוצרים</span>
                 </a>
             </div>
             <div class="menu-item">
-                <a href="/api/orders/" class="menu-link {% if active_page == 'orders' %}active{% endif %}">
-                    <span class="menu-icon">🛒</span>
+                <a href="/api/orders/" class="menu-link nav-item {% if active_page == 'orders' %}active{% endif %}">
+                    <span class="menu-icon nav-icon">🛒</span>
                     <span>הזמנות</span>
                 </a>
             </div>
             <div class="menu-item">
-                <a href="/api/customers/" class="menu-link {% if active_page == 'customers' %}active{% endif %}">
-                    <span class="menu-icon">👥</span>
+                <a href="/api/customers/" class="menu-link nav-item {% if active_page == 'customers' %}active{% endif %}">
+                    <span class="menu-icon nav-icon">👥</span>
                     <span>לקוחות</span>
                 </a>
             </div>
@@ -42,26 +42,26 @@
         <div class="menu-section">
             <div class="menu-section-title">כלים</div>
             <div class="menu-item">
-                <a href="/api/analytics/" class="menu-link {% if active_page == 'analytics' %}active{% endif %}">
-                    <span class="menu-icon">📈</span>
+                <a href="/api/analytics/" class="menu-link nav-item {% if active_page == 'analytics' %}active{% endif %}">
+                    <span class="menu-icon nav-icon">📈</span>
                     <span>אנליטיקה</span>
                 </a>
             </div>
             <div class="menu-item">
-                <a href="/api/integrations/coupons/" class="menu-link {% if active_page == 'coupons' %}active{% endif %}">
-                    <span class="menu-icon">🎫</span>
+                <a href="/api/integrations/coupons/" class="menu-link nav-item {% if active_page == 'coupons' %}active{% endif %}">
+                    <span class="menu-icon nav-icon">🎫</span>
                     <span>קופונים</span>
                 </a>
             </div>
             <div class="menu-item">
-                <a href="/api/integrations/sync/" class="menu-link {% if active_page == 'sync' %}active{% endif %}">
-                    <span class="menu-icon">🔄</span>
+                <a href="/api/integrations/sync/" class="menu-link nav-item {% if active_page == 'sync' %}active{% endif %}">
+                    <span class="menu-icon nav-icon">🔄</span>
                     <span>סנכרון</span>
                 </a>
             </div>
             <div class="menu-item">
-                <a href="/settings/" class="menu-link {% if active_page == 'settings' %}active{% endif %}">
-                    <span class="menu-icon">⚙️</span>
+                <a href="/settings/" class="menu-link nav-item {% if active_page == 'settings' %}active{% endif %}">
+                    <span class="menu-icon nav-icon">⚙️</span>
                     <span>הגדרות</span>
                 </a>
             </div>

@@ -5,7 +5,7 @@ services:
   # ==================== WEB SERVICE ====================
   - type: web
     name: lumin-web
-    runtime: python
+    env: python
     plan: free
     region: oregon
     branch: main
@@ -91,12 +91,10 @@ services:
     name: lumin-db
     plan: free
     region: oregon
-    ipAllowList: []
 
   # ==================== REDIS CACHE ====================
   - type: redis
     name: lumin-redis
     plan: free
     region: oregon
-    ipAllowList: []
     maxmemoryPolicy: allkeys-lru

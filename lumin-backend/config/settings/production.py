@@ -3,6 +3,14 @@ Production settings for Lumin SaaS (Render deployment).
 """
 from .base import *
 
+# Force SQLite for initial deployment test
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
 # Security
 DEBUG = False
 

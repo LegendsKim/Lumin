@@ -23,9 +23,13 @@ if os.path.exists(env_file):
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-temp-key-change-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+# Use default=True for development; production.py will override with env var
+DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
+# Allowed hosts - supports both development and production
+# Development (no env var): allows localhost, 127.0.0.1
+# Production (Render): reads from ALLOWED_HOSTS env var
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '0.0.0.0'])
 
 # Application definition
 INSTALLED_APPS = [

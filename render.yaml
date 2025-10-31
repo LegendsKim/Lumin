@@ -2,6 +2,8 @@ services:
   - type: web
     name: lumin-web
     runtime: python
+    plan: free
+    region: oregon
     buildCommand: cd lumin-backend && chmod +x build.sh && ./build.sh
     startCommand: cd lumin-backend && gunicorn config.wsgi:application
     envVars:
@@ -15,11 +17,6 @@ services:
         fromDatabase:
           name: lumin-db
           property: connectionString
-      - key: REDIS_URL
-        fromService:
-          name: lumin-redis
-          type: keyvalue
-          property: connectionString
       - key: ALLOWED_HOSTS
         value: .onrender.com,localhost
       - key: CORS_ALLOWED_ORIGINS
@@ -27,10 +24,7 @@ services:
       - key: CSRF_TRUSTED_ORIGINS
         value: https://*.onrender.com
 
-  - type: keyvalue
-    name: lumin-redis
-    ipAllowList: []
-
 databases:
   - name: lumin-db
+    plan: free
     ipAllowList: []

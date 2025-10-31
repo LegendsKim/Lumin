@@ -4,7 +4,6 @@ Django base settings for Lumin SaaS project.
 import os
 from pathlib import Path
 import environ
-import dj_database_url
 
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -102,6 +101,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASE_URL = env('DATABASE_URL', default=None)
 
 if DATABASE_URL:
+    import dj_database_url
     # Production: Use DATABASE_URL from Render (PostgreSQL)
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)

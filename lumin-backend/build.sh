@@ -5,9 +5,9 @@ set -o errexit
 
 echo "🚀 Starting Lumin build process..."
 
-# Upgrade pip
-echo "📦 Upgrading pip..."
-pip install --upgrade pip
+# Upgrade pip and setuptools
+echo "📦 Upgrading pip, setuptools, and wheel..."
+pip install --upgrade pip setuptools wheel
 
 # Install dependencies
 echo "📦 Installing Python dependencies..."

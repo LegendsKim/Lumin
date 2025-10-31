@@ -13,8 +13,12 @@ pip install --upgrade pip setuptools wheel
 echo "📦 Installing Python dependencies..."
 pip install -r requirements.txt
 
-# Skip collect static and migrations for initial deployment test
-echo "⚠️  Skipping collectstatic and migrations for initial deployment test"
-echo "💡 These will be added back after successful deployment"
+# Collect static files
+echo "📁 Collecting static files..."
+python manage.py collectstatic --noinput --clear
+
+# Run database migrations
+echo "🗄️  Running database migrations..."
+python manage.py migrate --noinput
 
 echo "✅ Build completed successfully!"

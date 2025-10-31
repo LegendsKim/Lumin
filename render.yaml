@@ -5,7 +5,8 @@ services:
     plan: free
     region: oregon
     buildCommand: cd lumin-backend && chmod +x build.sh && ./build.sh
-    startCommand: cd lumin-backend && gunicorn config.wsgi:application
+    startCommand: cd lumin-backend && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+    healthCheckPath: /
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: config.settings.production

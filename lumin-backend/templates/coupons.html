@@ -1,556 +1,383 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>קופונים - Lumin</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+{% extends 'base.html' %}
+
+{% block title %}קופונים{% endblock %}
+
+{% block page_title %}🎫 קופונים{% endblock %}
+{% block page_subtitle %}נהל קופונים והנחות לחנות WooCommerce שלך{% endblock %}
+
+{% block extra_css %}
+/* Coupons-specific styles */
+
+/* ========== COUPONS GRID ========== */
+.coupons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.coupon-card {
+    background: var(--light-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.coupon-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 173, 181, 0.15);
+}
+
+.coupon-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.coupon-code {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--lumin-turquoise);
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+}
+
+.coupon-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.coupon-badge.active {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success);
+}
+
+.coupon-badge.expired {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--danger);
+}
+
+.coupon-badge.scheduled {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--warning);
+}
+
+.coupon-discount {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--text-dark);
+    margin: 16px 0;
+}
+
+.coupon-discount-label {
+    font-size: 14px;
+    color: #64748B;
+    margin-bottom: 16px;
+}
+
+.coupon-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    margin-bottom: 16px;
+}
+
+.coupon-meta-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #64748B;
+}
+
+.coupon-meta-item strong {
+    color: var(--text-dark);
+}
+
+.coupon-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.coupon-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.coupon-btn-edit {
+    background: rgba(0, 173, 181, 0.1);
+    color: var(--lumin-turquoise);
+}
+
+.coupon-btn-edit:hover {
+    background: var(--lumin-turquoise);
+    color: white;
+}
+
+.coupon-btn-delete {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+.coupon-btn-delete:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* ========== EMPTY STATE ========== */
+.empty-state {
+    text-align: center;
+    padding: 80px 24px;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.empty-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+}
+
+.empty-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.empty-text {
+    font-size: 16px;
+    color: #64748B;
+    margin-bottom: 24px;
+}
+
+/* ========== LOADING STATE ========== */
+.loading {
+    text-align: center;
+    padding: 60px 24px;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(0, 173, 181, 0.1);
+    border-top-color: var(--lumin-turquoise);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .coupons-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .coupon-card {
+        padding: 20px;
+    }
+
+    .coupon-code {
+        font-size: 20px;
+    }
+
+    .coupon-discount {
+        font-size: 28px;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<!-- LOADING STATE -->
+<div class="loading" id="loadingState">
+    <div class="spinner"></div>
+    <p>טוען קופונים...</p>
+</div>
+
+<!-- COUPONS GRID -->
+<div class="coupons-grid" id="couponsGrid" style="display: none;">
+    <!-- Coupons will be inserted here via JavaScript -->
+</div>
+
+<!-- EMPTY STATE -->
+<div class="empty-state" id="emptyState" style="display: none;">
+    <div class="empty-icon">🎫</div>
+    <div class="empty-title">אין קופונים עדיין</div>
+    <div class="empty-text">התחל ביצירת הקופון הראשון שלך</div>
+    <button class="primary-btn" onclick="createCoupon()">
+        <span>➕</span>
+        <span>צור קופון חדש</span>
+    </button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+// ========== DATA FETCHING ==========
+let allCoupons = [];
+
+async function fetchCoupons() {
+    try {
+        const response = await fetch('/api/integrations/api/coupons/');
+        const data = await response.json();
+        allCoupons = data.results || data || [];
+
+        // Hide loading
+        document.getElementById('loadingState').style.display = 'none';
+
+        if (allCoupons.length === 0) {
+            document.getElementById('emptyState').style.display = 'block';
+        } else {
+            renderCoupons(allCoupons);
         }
+    } catch (error) {
+        console.error('Error fetching coupons:', error);
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'block';
+    }
+}
 
-        :root {
-            --lumin-turquoise: #00ADB5;
-            --lumin-turquoise-light: #00CED6;
-            --lumin-dark: #0F2027;
-            --lumin-dark-secondary: #1E293B;
-            --lumin-dark-tertiary: #2C5364;
-            --light-bg: #F8FAFC;
-            --text-dark: #1E293B;
-            --text-light: rgba(255, 255, 255, 0.9);
-            --text-muted: rgba(255, 255, 255, 0.6);
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-        }
+// ========== RENDERING ==========
+function renderCoupons(coupons) {
+    const grid = document.getElementById('couponsGrid');
+    grid.style.display = 'grid';
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--light-bg);
-            min-height: 100vh;
-            display: flex;
-            color: var(--text-dark);
-        }
+    grid.innerHTML = coupons.map(coupon => {
+        const status = getCouponStatus(coupon);
+        const discount = formatDiscount(coupon);
 
-        /* Sidebar - Same as other pages */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, var(--lumin-dark) 0%, var(--lumin-dark-tertiary) 100%);
-            height: 100vh;
-            position: fixed;
-            right: 0;
-            top: 0;
-            display: flex;
-            flex-direction: column;
-            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
+        return `
+            <div class="coupon-card">
+                <div class="coupon-header">
+                    <div class="coupon-code">${coupon.code}</div>
+                    <span class="coupon-badge ${status.class}">${status.text}</span>
+                </div>
 
-        .sidebar-logo {
-            padding: 32px 24px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-        }
+                <div class="coupon-discount">${discount}</div>
+                <div class="coupon-discount-label">${getDiscountType(coupon)}</div>
 
-        .logo-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-            filter: drop-shadow(0 0 20px rgba(0, 173, 181, 0.8));
-        }
+                <div class="coupon-meta">
+                    <div class="coupon-meta-item">
+                        <span>שימושים:</span>
+                        <strong>${coupon.usage_count || 0} / ${coupon.usage_limit || '∞'}</strong>
+                    </div>
+                    ${coupon.date_expires ? `
+                        <div class="coupon-meta-item">
+                            <span>תוקף עד:</span>
+                            <strong>${formatDate(coupon.date_expires)}</strong>
+                        </div>
+                    ` : ''}
+                    ${coupon.minimum_amount ? `
+                        <div class="coupon-meta-item">
+                            <span>הזמנה מינימלית:</span>
+                            <strong>₪${coupon.minimum_amount}</strong>
+                        </div>
+                    ` : ''}
+                </div>
 
-        .logo-text {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--lumin-turquoise);
-            text-shadow: 0 0 20px rgba(0, 173, 181, 0.5);
-        }
-
-        .logo-tagline {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .sidebar-nav {
-            flex: 1;
-            padding: 24px 0;
-            overflow-y: auto;
-        }
-
-        .menu-section {
-            margin-bottom: 24px;
-        }
-
-        .menu-section-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            padding: 0 24px 8px;
-            font-weight: 600;
-        }
-
-        .nav-item,
-        .menu-link {
-            padding: 14px 24px;
-            color: var(--text-light);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.3s ease;
-            border-right: 3px solid transparent;
-            cursor: pointer;
-        }
-
-        .nav-item:hover,
-        .menu-link:hover {
-            background: rgba(0, 173, 181, 0.1);
-            border-right-color: var(--lumin-turquoise);
-        }
-
-        .nav-item.active,
-        .menu-link.active {
-            background: rgba(0, 173, 181, 0.15);
-            border-right-color: var(--lumin-turquoise);
-            color: var(--lumin-turquoise);
-        }
-
-        .nav-icon,
-        .menu-icon {
-            font-size: 20px;
-        }
-
-        /* User Section */
-        .sidebar-user {
-            padding: 20px 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(0, 173, 181, 0.05);
-        }
-
-        .user-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 2px solid var(--lumin-turquoise);
-            box-shadow: 0 0 15px rgba(0, 173, 181, 0.5);
-        }
-
-        .user-info {
-            flex: 1;
-        }
-
-        .user-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-light);
-        }
-
-        .user-role {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .user-logout {
-            color: var(--text-muted);
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .user-logout:hover {
-            color: #FF6B6B;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-right: 280px;
-            flex: 1;
-            padding: 40px;
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-        }
-
-        .page-title {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--lumin-turquoise) 0%, var(--lumin-turquoise-light) 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0, 173, 181, 0.3);
-        }
-
-        /* Coupons Grid */
-        .coupons-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 24px;
-        }
-
-        .coupon-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
-            border-right: 4px solid var(--lumin-turquoise);
-        }
-
-        .coupon-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-        }
-
-        .coupon-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 16px;
-        }
-
-        .coupon-code {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-dark);
-            font-family: 'Courier New', monospace;
-        }
-
-        .coupon-badge {
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .badge-active {
-            background: #D1FAE5;
-            color: #065F46;
-        }
-
-        .badge-inactive {
-            background: #FEE2E2;
-            color: #991B1B;
-        }
-
-        .badge-expired {
-            background: #E0E7FF;
-            color: #3730A3;
-        }
-
-        .coupon-discount {
-            font-size: 36px;
-            font-weight: 700;
-            color: var(--lumin-turquoise);
-            margin: 16px 0;
-        }
-
-        .coupon-info {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #E2E8F0;
-            font-size: 14px;
-            color: #64748b;
-        }
-
-        .coupon-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .btn-small {
-            padding: 8px 16px;
-            font-size: 13px;
-        }
-
-        .btn-secondary {
-            background: #E2E8F0;
-            color: var(--text-dark);
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            color: #64748b;
-        }
-
-        .empty-icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-        }
-
-        /* ========== PLAN FEATURES CSS ========== */
-        /* Locked Account Banner */
-        .locked-account-banner {
-            position: sticky;
-            top: 0;
-            z-index: 9999;
-            background: linear-gradient(135deg, #dc2626, #991b1b);
-            color: white;
-            padding: 16px 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .banner-content {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .banner-icon {
-            font-size: 24px;
-        }
-
-        .banner-text {
-            flex: 1;
-            font-size: 15px;
-            line-height: 1.5;
-        }
-
-        .banner-text strong {
-            font-weight: 700;
-        }
-
-        .upgrade-btn {
-            background: white;
-            color: #dc2626;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .upgrade-btn:hover {
-            background: #fef2f2;
-            transform: scale(1.05);
-        }
-
-        /* Upgrade Prompt Button */
-        .upgrade-prompt-btn {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
-        }
-
-        .upgrade-prompt-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-        }
-
-        /* Disabled Elements */
-        button.disabled,
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed !important;
-            pointer-events: none;
-        }
-
-        /* Usage Stats */
-        .usage-stats {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .stat-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .stat-progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
-            transition: width 0.3s ease;
-        }
-
-        .stat-text {
-            font-size: 13px;
-            color: var(--text-light);
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body>
-    {% include '_sidebar.html' with active_page='coupons' %}
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="page-header">
-            <h1 class="page-title">🎫 ניהול קופונים</h1>
-            <button class="btn btn-primary" onclick="alert('יצירת קופון חדש תתווסף בקרוב!')">
-                + קופון חדש
-            </button>
-        </div>
-
-        <div class="coupons-grid" id="couponsGrid">
-            <div class="empty-state">
-                <div class="empty-icon">🎫</div>
-                <h3>אין קופונים עדיין</h3>
-                <p>צור קופון ראשון כדי להתחיל</p>
+                <div class="coupon-actions">
+                    <button class="coupon-btn coupon-btn-edit" onclick="editCoupon('${coupon.id}')">
+                        ✏️ עריכה
+                    </button>
+                    <button class="coupon-btn coupon-btn-delete" onclick="deleteCoupon('${coupon.id}')">
+                        🗑️ מחיקה
+                    </button>
+                </div>
             </div>
-        </div>
-    </div>
+        `;
+    }).join('');
+}
 
-    <script>
-        // Load coupons
-        async function loadCoupons() {
-            try {
-                const response = await fetch('/api/integrations/api/coupons/');
-                const data = await response.json();
+// ========== HELPER FUNCTIONS ==========
+function getCouponStatus(coupon) {
+    const now = new Date();
+    const expires = coupon.date_expires ? new Date(coupon.date_expires) : null;
 
-                const grid = document.getElementById('couponsGrid');
+    if (expires && expires < now) {
+        return { class: 'expired', text: 'פג תוקף' };
+    }
 
-                if (data.results && data.results.length > 0) {
-                    grid.innerHTML = data.results.map(coupon => `
-                        <div class="coupon-card">
-                            <div class="coupon-header">
-                                <div class="coupon-code">${coupon.code}</div>
-                                <span class="coupon-badge ${getBadgeClass(coupon)}">${getStatus(coupon)}</span>
-                            </div>
-                            <div class="coupon-discount">
-                                ${coupon.discount_type === 'percent' ? coupon.amount + '%' : '₪' + coupon.amount}
-                                הנחה
-                            </div>
-                            ${coupon.description ? `<p>${coupon.description}</p>` : ''}
-                            <div class="coupon-info">
-                                <div>📊 שימושים: ${coupon.usage_count}${coupon.usage_limit ? ' / ' + coupon.usage_limit : ''}</div>
-                                ${coupon.date_expires ? `<div>📅 תוקף עד: ${new Date(coupon.date_expires).toLocaleDateString('he-IL')}</div>` : ''}
-                                <div>🔗 סנכרון: ${getSyncStatus(coupon.sync_status)}</div>
-                            </div>
-                            <div class="coupon-actions">
-                                <button class="btn btn-small btn-secondary" onclick="editCoupon('${coupon.id}')">ערוך</button>
-                                <button class="btn btn-small btn-danger" onclick="deleteCoupon('${coupon.id}')">מחק</button>
-                            </div>
-                        </div>
-                    `).join('');
-                } else {
-                    grid.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon">🎫</div>
-                            <h3>אין קופונים עדיין</h3>
-                            <p>צור קופון ראשון כדי להתחיל</p>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                console.error('Error loading coupons:', error);
-            }
-        }
+    if (coupon.usage_limit && coupon.usage_count >= coupon.usage_limit) {
+        return { class: 'expired', text: 'מוצה' };
+    }
 
-        function getBadgeClass(coupon) {
-            if (!coupon.is_active) return 'badge-inactive';
-            if (coupon.is_expired) return 'badge-expired';
-            return 'badge-active';
-        }
+    return { class: 'active', text: 'פעיל' };
+}
 
-        function getStatus(coupon) {
-            if (!coupon.is_active) return 'לא פעיל';
-            if (coupon.is_expired) return 'פג תוקף';
-            return 'פעיל';
-        }
+function formatDiscount(coupon) {
+    if (coupon.discount_type === 'percent') {
+        return `${coupon.amount}%`;
+    } else {
+        return `₪${coupon.amount}`;
+    }
+}
 
-        function getSyncStatus(status) {
-            const statuses = {
-                'synced': '✅ מסונכרן',
-                'pending': '⏳ ממתין',
-                'error': '❌ שגיאה',
-                'not_synced': '⚪ לא מסונכרן'
-            };
-            return statuses[status] || status;
-        }
+function getDiscountType(coupon) {
+    const types = {
+        'percent': 'הנחה באחוזים',
+        'fixed_cart': 'הנחה קבועה בעגלה',
+        'fixed_product': 'הנחה קבועה למוצר'
+    };
+    return types[coupon.discount_type] || 'הנחה';
+}
 
-        function editCoupon(id) {
-            alert('עריכת קופון תתווסף בקרוב!');
-        }
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('he-IL');
+}
 
-        function deleteCoupon(id) {
-            if (confirm('האם אתה בטוח שברצונך למחוק קופון זה?')) {
-                // Delete logic here
-                alert('מחיקה תתווסף בקרוב!');
-            }
-        }
+// ========== COUPON ACTIONS ==========
+function createCoupon() {
+    alert('יצירת קופון חדש - יתווסף בהמשך');
+}
 
-        // Load on page load
-        window.addEventListener('DOMContentLoaded', loadCoupons);
-    </script>
+function editCoupon(id) {
+    alert(`עריכת קופון ${id} - יתווסף בהמשך`);
+}
 
-    <!-- Plan Features JavaScript -->
-    <script src="/static/js/plan-features.js"></script>
-</body>
-</html>
+function deleteCoupon(id) {
+    if (confirm('האם אתה בטוח שברצונך למחוק קופון זה?')) {
+        alert(`מחיקת קופון ${id} - יתווסף בהמשך`);
+    }
+}
+
+// ========== INIT ==========
+document.addEventListener('DOMContentLoaded', function() {
+    fetchCoupons();
+});
+{% endblock %}

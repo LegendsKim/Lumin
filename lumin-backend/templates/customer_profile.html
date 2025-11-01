@@ -476,6 +476,152 @@
             font-weight: 700;
             color: var(--lumin-turquoise);
         }
+
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .back-btn {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+
+            .profile-header {
+                padding: 24px 20px;
+            }
+
+            .profile-header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+
+            .profile-info h1 {
+                font-size: 24px;
+            }
+
+            .profile-meta {
+                flex-direction: column;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .profile-actions {
+                margin-left: 0;
+                margin-top: 16px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .action-button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-value {
+                font-size: 22px;
+            }
+
+            .tabs {
+                padding: 4px;
+                gap: 4px;
+            }
+
+            .tab-btn {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .card-title {
+                font-size: 18px;
+            }
+
+            .treatment-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .modal {
+                width: 95%;
+                max-width: none;
+            }
+
+            .modal-header {
+                padding: 20px 24px;
+            }
+
+            .modal-title {
+                font-size: 20px;
+            }
+
+            .modal-body {
+                padding: 24px;
+            }
+
+            .modal-footer {
+                padding: 16px 24px;
+                flex-direction: column-reverse;
+            }
+
+            .modal-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 12px;
+            }
+
+            .profile-header {
+                padding: 20px 16px;
+            }
+
+            .profile-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+            }
+
+            .profile-info h1 {
+                font-size: 20px;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-btn {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .card {
+                padding: 12px;
+            }
+        }
     </style>
 </head>
 <body>

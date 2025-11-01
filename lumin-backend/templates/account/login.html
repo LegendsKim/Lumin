@@ -397,36 +397,210 @@
 
         /* Responsive */
         @media (max-width: 968px) {
+            body {
+                overflow: auto;
+            }
+
             .split-container {
                 flex-direction: column;
+                min-height: auto;
             }
 
             .left-side {
-                min-height: 400px;
+                min-height: 280px;
+                padding: 30px 20px 20px;
+            }
+
+            .light-bulb {
+                width: 70px;
+                height: 100px;
+            }
+
+            .light-glow {
+                width: 200px;
+                height: 200px;
+            }
+
+            .pull-cord {
+                height: 0;
+            }
+
+            @keyframes pullCordDrop {
+                0% { height: 0; }
+                100% { height: 50px; }
             }
 
             .brand-content {
-                margin-top: 60px;
+                margin-top: 50px;
+                padding: 20px;
             }
 
             .brand-logo {
-                font-size: 3em;
+                font-size: 2.2em;
+                margin-bottom: 8px;
             }
 
             .brand-tagline {
-                font-size: 1.4em;
+                font-size: 1.1em;
             }
 
             .right-side {
-                padding: 60px 30px;
+                padding: 40px 24px;
+            }
+
+            .login-container {
+                max-width: 100%;
             }
 
             .logo {
-                font-size: 2.8em;
+                display: none;
+            }
+
+            .tagline {
+                display: none;
             }
 
             .welcome-title {
+                font-size: 1.6em;
+                margin-bottom: 12px;
+            }
+
+            .welcome-subtitle {
+                font-size: 1em;
+                margin-bottom: 30px;
+            }
+
+            .google-btn {
+                padding: 18px 35px;
+                font-size: 1.1em;
+                border-radius: 40px;
+            }
+
+            .google-icon {
+                width: 24px;
+                height: 24px;
+            }
+
+            .google-icon svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .benefits {
+                margin-top: 30px;
+                padding-top: 25px;
+            }
+
+            .benefits-title {
+                font-size: 1em;
+                margin-bottom: 15px;
+            }
+
+            .benefit-item {
+                font-size: 0.9em;
+                margin-bottom: 10px;
+            }
+
+            .footer-note {
+                margin-top: 35px;
+                font-size: 0.85em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .left-side {
+                min-height: 240px;
+                padding: 20px 15px 15px;
+            }
+
+            .light-bulb {
+                width: 60px;
+                height: 85px;
+            }
+
+            .light-glow {
+                width: 150px;
+                height: 150px;
+            }
+
+            @keyframes pullCordDrop {
+                0% { height: 0; }
+                100% { height: 40px; }
+            }
+
+            .brand-content {
+                margin-top: 35px;
+                padding: 15px;
+            }
+
+            .brand-logo {
                 font-size: 1.8em;
+                margin-bottom: 6px;
+            }
+
+            .brand-tagline {
+                font-size: 0.95em;
+            }
+
+            .right-side {
+                padding: 30px 20px;
+            }
+
+            .logo {
+                display: none;
+            }
+
+            .tagline {
+                display: none;
+            }
+
+            .welcome-title {
+                font-size: 1.4em;
+                margin-bottom: 10px;
+            }
+
+            .welcome-subtitle {
+                font-size: 0.95em;
+                margin-bottom: 25px;
+                line-height: 1.5;
+            }
+
+            .google-btn {
+                padding: 16px 30px;
+                font-size: 1em;
+                border-radius: 35px;
+            }
+
+            .google-icon {
+                width: 22px;
+                height: 22px;
+            }
+
+            .google-icon svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .benefits {
+                margin-top: 25px;
+                padding-top: 20px;
+            }
+
+            .benefits-title {
+                font-size: 0.95em;
+                margin-bottom: 12px;
+            }
+
+            .benefit-item {
+                font-size: 0.85em;
+                margin-bottom: 8px;
+                gap: 10px;
+            }
+
+            .footer-note {
+                margin-top: 30px;
+                font-size: 0.8em;
+                line-height: 1.6;
             }
         }
     </style>

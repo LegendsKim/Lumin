@@ -85,6 +85,13 @@
             justify-content: center;
             font-size: 48px;
             box-shadow: 0 0 30px rgba(0, 173, 181, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 173, 181, 0.7);
         }
 
         .profile-info h1 {
@@ -109,7 +116,7 @@
         }
 
         .profile-actions {
-            margin-right: auto;
+            margin-left: auto;
             display: flex;
             gap: 12px;
         }
@@ -481,7 +488,7 @@
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-header-content">
-                <div class="profile-avatar" id="customerAvatar">👤</div>
+                <div class="profile-avatar" id="customerAvatar" onclick="openImageUpload()" ontouchstart="openImageUpload()" title="לחץ להעלאת תמונת פרופיל">👤</div>
                 <div class="profile-info">
                     <h1 id="customerName">טוען...</h1>
                     <div class="profile-meta">
@@ -724,6 +731,9 @@
         </div>
     </div>
 
+    <!-- Hidden file input for image upload -->
+    <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+
     <script>
         // Get customer ID from URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -768,6 +778,9 @@
                 document.getElementById('generalNotes').value = customerData.notes || '';
                 document.getElementById('medicalNotes').value = customerData.medical_notes || '';
 
+                // Update profile image if exists
+                updateProfileImage();
+
                 // Load treatments
                 await loadTreatments();
 
@@ -779,6 +792,62 @@
                 alert('שגיאה בטעינת נתוני הלקוח');
             }
         }
+
+        // Update profile image display
+        function updateProfileImage() {
+            if (customerData && customerData.profile_image) {
+                const avatar = document.getElementById('customerAvatar');
+                avatar.style.background = `url('${customerData.profile_image}') center/cover no-repeat`;
+                avatar.innerHTML = '<div style="opacity: 0;">👤</div>';
+            }
+        }
+
+        // Open image upload dialog
+        function openImageUpload(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const input = document.getElementById('profileImageInput');
+            setTimeout(() => {
+                input.click();
+            }, 100);
+        }
+
+        // Handle image upload
+        document.getElementById('profileImageInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('profile_image', file);
+
+            try {
+                const csrftoken = getCookie('csrftoken');
+                const response = await fetch(`/api/customers/api/customers/${customerId}/`, {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    credentials: 'same-origin',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    await loadCustomer();
+                    alert('תמונת הפרופיל עודכנה בהצלחה! ✓');
+                } else {
+                    const error = await response.json();
+                    alert('שגיאה בהעלאת התמונה: ' + JSON.stringify(error));
+                }
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                alert('שגיאה בהעלאת התמונה');
+            }
+
+            // Reset input
+            this.value = '';
+        });
 
         // Load treatments
         async function loadTreatments() {

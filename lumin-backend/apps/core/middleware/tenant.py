@@ -49,8 +49,27 @@ class TenantMiddleware:
                         f'(ID: {request.tenant.id}) for user {request.user.email}'
                     )
                 else:
+                    # Auto-create tenant for users without one
                     logger.warning(
-                        f'Authenticated user {request.user.email} has no tenant assigned'
+                        f'Authenticated user {request.user.email} has no tenant assigned - creating one'
+                    )
+                    from apps.accounts.models import Tenant
+
+                    # Create tenant for this user
+                    tenant = Tenant.objects.create(
+                        business_name=f"{request.user.first_name} {request.user.last_name}'s Business",
+                        owner_email=request.user.email,
+                        owner_phone=request.user.phone if request.user.phone else '+972500000000',
+                        plan='BASIC'
+                    )
+
+                    # Assign to user
+                    request.user.tenant = tenant
+                    request.user.save()
+                    request.tenant = tenant
+
+                    logger.info(
+                        f'✅ Auto-created tenant "{tenant.business_name}" for user {request.user.email}'
                     )
             except Exception as e:
                 logger.error(f'Error setting tenant context: {e}')

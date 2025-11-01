@@ -628,9 +628,20 @@
 
                 <div class="form-group">
                     <label class="form-label">מטפל</label>
+                    <div style="display: flex; gap: 12px; margin-bottom: 8px;">
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="staff_option" value="existing" checked onchange="toggleStaffInput()">
+                            <span>בחר קיים</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="staff_option" value="new" onchange="toggleStaffInput()">
+                            <span>הוסף חדש</span>
+                        </label>
+                    </div>
                     <select name="staff_member" id="staffMember" class="form-select">
                         <option value="">בחר מטפל...</option>
                     </select>
+                    <input type="text" name="new_staff_name" id="newStaffName" class="form-input" placeholder="שם המטפל/ת החדש/ה" style="display: none;">
                 </div>
 
                 <div class="form-group">
@@ -833,6 +844,23 @@
             }
         }
 
+        // Toggle between existing staff and new staff input
+        function toggleStaffInput() {
+            const option = document.querySelector('input[name="staff_option"]:checked').value;
+            const staffSelect = document.getElementById('staffMember');
+            const newStaffInput = document.getElementById('newStaffName');
+
+            if (option === 'existing') {
+                staffSelect.style.display = 'block';
+                newStaffInput.style.display = 'none';
+                newStaffInput.value = '';
+            } else {
+                staffSelect.style.display = 'none';
+                newStaffInput.style.display = 'block';
+                staffSelect.value = '';
+            }
+        }
+
         // Tab switching
         function switchTab(tabName) {
             // Update buttons
@@ -848,6 +876,10 @@
         function openAddTreatmentModal() {
             document.getElementById('treatmentModal').classList.add('active');
             document.getElementById('treatmentForm').reset();
+
+            // Reset to "existing" option
+            document.querySelector('input[name="staff_option"][value="existing"]').checked = true;
+            toggleStaffInput();
         }
 
         function closeTreatmentModal() {
@@ -876,17 +908,57 @@
             e.preventDefault();
 
             const formData = new FormData(this);
-            const treatmentData = {
-                customer: customerId,
-                treatment_type: formData.get('treatment_type'),
-                treatment_date: formData.get('treatment_date'),
-                staff_member: formData.get('staff_member') || null,
-                price: formData.get('price'),
-                notes: formData.get('notes') || ''
-            };
+            const staffOption = document.querySelector('input[name="staff_option"]:checked').value;
+            const csrftoken = getCookie('csrftoken');
 
             try {
-                const csrftoken = getCookie('csrftoken');
+                let staffMemberId = formData.get('staff_member') || null;
+
+                // If creating new staff member, create it first
+                if (staffOption === 'new') {
+                    const newStaffName = formData.get('new_staff_name');
+                    if (!newStaffName || newStaffName.trim() === '') {
+                        alert('נא להזין שם מטפל');
+                        return;
+                    }
+
+                    // Create new staff member
+                    const staffResponse = await fetch('/api/customers/api/staff-members/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({
+                            full_name: newStaffName.trim(),
+                            is_active: true
+                        })
+                    });
+
+                    if (!staffResponse.ok) {
+                        const error = await staffResponse.json();
+                        alert('שגיאה ביצירת מטפל חדש: ' + JSON.stringify(error));
+                        return;
+                    }
+
+                    const newStaff = await staffResponse.json();
+                    staffMemberId = newStaff.id;
+
+                    // Reload staff members list for future use
+                    await loadStaffMembers();
+                }
+
+                // Now create the treatment
+                const treatmentData = {
+                    customer: customerId,
+                    treatment_type: formData.get('treatment_type'),
+                    treatment_date: formData.get('treatment_date'),
+                    staff_member: staffMemberId,
+                    price: formData.get('price'),
+                    notes: formData.get('notes') || ''
+                };
+
                 const response = await fetch('/api/customers/api/treatments/', {
                     method: 'POST',
                     headers: {

@@ -2,47 +2,39 @@
 
 {% block title %}לקוחות{% endblock %}
 
-{% block top_bar_left %}
-<h1>👥 ניהול לקוחות</h1>
-<p>נהל את הלקוחות והקשרים שלך</p>
-{% endblock %}
-
-{% block top_bar_icons %}
-<button class="top-bar-btn add-customer-btn" onclick="openAddCustomerModal()">
-    <span>➕</span>
-    <span>הוסף לקוח</span>
-</button>
-{% endblock %}
+{% block page_title %}👥 ניהול לקוחות{% endblock %}
+{% block page_subtitle %}נהל את הלקוחות והקשרים שלך{% endblock %}
 
 {% block extra_css %}
 /* Customers-specific styles */
-.customers-content {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
 
-/* Customer Tabs */
+/* ========== CUSTOMER TABS ========== */
 .customer-tabs {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     background: white;
-    padding: 12px;
+    padding: 8px;
     border-radius: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     overflow-x: auto;
+    scrollbar-width: none;
+    margin-bottom: 24px;
+}
+
+.customer-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .tab-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 20px;
+    padding: 10px 16px;
     background: transparent;
     border: none;
     border-radius: 12px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text-dark);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -63,399 +55,626 @@
     padding: 2px 8px;
     border-radius: 12px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .tab-btn.active .tab-count {
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* Filters Bar */
-.filters-bar {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
+/* ========== SEARCH BAR ========== */
+.search-bar {
+    position: relative;
+    margin-bottom: 24px;
 }
 
-.search-box {
-    flex: 1;
-    min-width: 200px;
-}
-
-.search-box input {
+.search-bar input {
     width: 100%;
-    padding: 12px 16px;
+    padding: 14px 16px 14px 48px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 12px;
-    font-size: 14px;
+    font-size: 15px;
     background: white;
     transition: all 0.3s ease;
 }
 
-.search-box input:focus {
+.search-bar input:focus {
     outline: none;
     border-color: var(--lumin-turquoise);
     box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
 }
 
-.filter-select {
-    padding: 12px 16px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    font-size: 14px;
-    background: white;
-    cursor: pointer;
+.search-bar::before {
+    content: '🔍';
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
 }
 
-.view-toggle {
-    display: flex;
-    background: white;
-    border-radius: 12px;
-    padding: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+/* ========== CUSTOMERS GRID ========== */
+.customers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
 }
 
-.view-toggle-btn {
-    padding: 8px 12px;
-    border: none;
-    background: transparent;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.view-toggle-btn.active {
-    background: var(--lumin-turquoise);
-    color: white;
-}
-
-.top-bar-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    background: var(--lumin-turquoise);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 173, 181, 0.3);
-}
-
-.top-bar-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 173, 181, 0.4);
-}
-
-/* Customers Table */
-.customers-table {
+.customer-card {
     background: var(--light-card);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 16px;
     padding: 24px;
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-thead {
-    background: rgba(0, 173, 181, 0.05);
-}
-
-th {
-    padding: 16px 20px;
-    text-align: right;
-    font-weight: 600;
-    color: var(--text-dark);
-    font-size: 14px;
-    white-space: nowrap;
-}
-
-tbody tr {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
     transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease-out;
+    cursor: pointer;
 }
 
-tbody tr:hover {
-    background: rgba(0, 173, 181, 0.03);
+.customer-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 173, 181, 0.15);
 }
 
-td {
-    padding: 16px 20px;
-    text-align: right;
-    color: var(--text-dark);
-    white-space: nowrap;
+.customer-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.customer-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+}
+
+.customer-info {
+    flex: 1;
 }
 
 .customer-name {
-    font-weight: 600;
-    color: var(--lumin-turquoise);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 4px;
 }
 
 .customer-email {
-    color: #64748B;
     font-size: 13px;
+    color: #64748B;
+    margin-bottom: 8px;
+    word-break: break-word;
 }
 
-.customer-type {
+.customer-type-badge {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 4px 12px;
+    padding: 4px 10px;
     border-radius: 12px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
+    text-transform: uppercase;
 }
 
-.customer-type.PRIVATE {
+.customer-type-badge.private {
     background: rgba(59, 130, 246, 0.1);
     color: #3B82F6;
 }
 
-.customer-type.BUSINESS {
-    background: rgba(139, 92, 246, 0.1);
-    color: #8B5CF6;
+.customer-type-badge.business {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
 }
 
-.customer-type.TREATMENT {
-    background: rgba(236, 72, 153, 0.1);
-    color: #EC4899;
-}
-
-.customer-type.VIP {
+.customer-type-badge.treatment {
     background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+}
+
+.customer-type-badge.vip {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
     color: #F59E0B;
 }
 
-.action-btns {
+.customer-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    margin-bottom: 12px;
+}
+
+.customer-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #64748B;
+}
+
+.customer-contact-item span:first-child {
+    font-size: 16px;
+}
+
+.customer-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.customer-stat {
+    text-align: center;
+}
+
+.customer-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--lumin-turquoise);
+}
+
+.customer-stat-label {
+    font-size: 11px;
+    color: #64748B;
+    margin-top: 2px;
+}
+
+.customer-actions {
     display: flex;
     gap: 8px;
 }
 
-.action-btn {
-    padding: 6px 12px;
+.customer-btn {
+    flex: 1;
+    padding: 10px;
     border: none;
-    border-radius: 8px;
-    font-size: 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
-.action-btn.view {
+.customer-btn-edit {
     background: rgba(0, 173, 181, 0.1);
     color: var(--lumin-turquoise);
 }
 
-.action-btn.edit {
-    background: rgba(59, 130, 246, 0.1);
-    color: #3B82F6;
+.customer-btn-edit:hover {
+    background: var(--lumin-turquoise);
+    color: white;
 }
 
-.action-btn.delete {
+.customer-btn-delete {
     background: rgba(239, 68, 68, 0.1);
     color: var(--danger);
 }
 
-.action-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.customer-btn-delete:hover {
+    background: var(--danger);
+    color: white;
 }
 
-/* Empty State */
-.empty-state {
-    display: flex;
-    flex-direction: column;
+/* ========== ADD CUSTOMER MODAL ========== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 10000;
     align-items: center;
     justify-content: center;
-    padding: 64px 24px;
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.modal-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    font-size: 14px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--lumin-turquoise);
+    box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 173, 181, 0.4);
+}
+
+.btn-secondary {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text-dark);
+}
+
+.btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+/* ========== EMPTY STATE ========== */
+.empty-state {
     text-align: center;
+    padding: 80px 24px;
 }
 
 .empty-icon {
-    font-size: 64px;
+    font-size: 80px;
     margin-bottom: 16px;
-    opacity: 0.4;
+    opacity: 0.3;
 }
 
-.empty-text {
-    font-size: 18px;
-    color: #94A3B8;
-    font-weight: 500;
+.empty-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
     margin-bottom: 8px;
 }
 
-.empty-subtext {
-    font-size: 14px;
-    color: #CBD5E1;
+.empty-text {
+    font-size: 15px;
+    color: #64748B;
+    margin-bottom: 24px;
 }
 
-/* Responsive */
+/* ========== LOADING STATE ========== */
+.loading {
+    text-align: center;
+    padding: 60px 24px;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(0, 173, 181, 0.1);
+    border-top-color: var(--lumin-turquoise);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
+    .customers-grid {
+        grid-template-columns: 1fr;
+    }
+
     .customer-tabs {
-        overflow-x: scroll;
-        scrollbar-width: none;
+        gap: 6px;
+        padding: 6px;
     }
 
-    .customer-tabs::-webkit-scrollbar {
-        display: none;
-    }
-
-    .filters-bar {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .search-box {
-        min-width: 100%;
-    }
-
-    .view-toggle {
-        order: -1;
-    }
-
-    .customers-table {
-        padding: 16px;
-    }
-
-    th, td {
-        padding: 12px 8px;
+    .tab-btn {
+        padding: 8px 12px;
         font-size: 13px;
     }
 
-    .top-bar-btn span:nth-child(2) {
-        display: none;
+    .modal-content {
+        padding: 24px;
+        max-height: 95vh;
+    }
+
+    .customer-card {
+        padding: 20px;
     }
 }
 
 @media (max-width: 480px) {
-    .action-btns {
+    .customer-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .customer-info {
+        width: 100%;
+    }
+
+    .customer-stats {
+        justify-content: space-around;
+    }
+
+    .form-actions {
         flex-direction: column;
     }
 
-    .customer-tabs {
-        flex-wrap: nowrap;
-    }
-
-    .tab-btn {
-        padding: 10px 16px;
-        font-size: 13px;
+    .modal-content {
+        padding: 20px;
     }
 }
 {% endblock %}
 
 {% block content %}
-<div class="customers-content">
-    <!-- CUSTOMER TYPE TABS -->
-    <div class="customer-tabs">
-        <button class="tab-btn active" data-type="all" onclick="filterByTab('all')">
-            <span>👥</span>
-            <span>כל הלקוחות</span>
-            <span class="tab-count" id="count-all">0</span>
-        </button>
-        <button class="tab-btn" data-type="PRIVATE" onclick="filterByTab('PRIVATE')">
-            <span>👤</span>
-            <span>פרטיים</span>
-            <span class="tab-count" id="count-private">0</span>
-        </button>
-        <button class="tab-btn" data-type="BUSINESS" onclick="filterByTab('BUSINESS')">
-            <span>🏢</span>
-            <span>עסקיים</span>
-            <span class="tab-count" id="count-business">0</span>
-        </button>
-        <button class="tab-btn" data-type="TREATMENT" onclick="filterByTab('TREATMENT')">
-            <span>💆</span>
-            <span>טיפול</span>
-            <span class="tab-count" id="count-treatment">0</span>
-        </button>
-        <button class="tab-btn" data-type="VIP" onclick="filterByTab('VIP')">
-            <span>⭐</span>
-            <span>VIP</span>
-            <span class="tab-count" id="count-vip">0</span>
-        </button>
-    </div>
+<!-- CUSTOMER TABS -->
+<div class="customer-tabs">
+    <button class="tab-btn active" data-type="all" onclick="filterByTab('all')">
+        <span>👥</span>
+        <span>הכל</span>
+        <span class="tab-count" id="count-all">0</span>
+    </button>
+    <button class="tab-btn" data-type="PRIVATE" onclick="filterByTab('PRIVATE')">
+        <span>👤</span>
+        <span>פרטי</span>
+        <span class="tab-count" id="count-private">0</span>
+    </button>
+    <button class="tab-btn" data-type="BUSINESS" onclick="filterByTab('BUSINESS')">
+        <span>🏢</span>
+        <span>עסקי</span>
+        <span class="tab-count" id="count-business">0</span>
+    </button>
+    <button class="tab-btn" data-type="TREATMENT" onclick="filterByTab('TREATMENT')">
+        <span>💆</span>
+        <span>טיפולים</span>
+        <span class="tab-count" id="count-treatment">0</span>
+    </button>
+    <button class="tab-btn" data-type="VIP" onclick="filterByTab('VIP')">
+        <span>⭐</span>
+        <span>VIP</span>
+        <span class="tab-count" id="count-vip">0</span>
+    </button>
+</div>
 
-    <!-- FILTERS BAR -->
-    <div class="filters-bar">
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="חפש לקוח לפי שם, אימייל או טלפון...">
+<!-- SEARCH BAR -->
+<div class="search-bar">
+    <input type="text" id="searchInput" placeholder="חפש לקוח לפי שם, אימייל או טלפון...">
+</div>
+
+<!-- LOADING STATE -->
+<div class="loading" id="loadingState">
+    <div class="spinner"></div>
+    <p>טוען לקוחות...</p>
+</div>
+
+<!-- CUSTOMERS GRID -->
+<div class="customers-grid" id="customersGrid" style="display: none;">
+    <!-- Customers will be inserted here via JavaScript -->
+</div>
+
+<!-- EMPTY STATE -->
+<div class="empty-state" id="emptyState" style="display: none;">
+    <div class="empty-icon">👥</div>
+    <div class="empty-title">אין לקוחות עדיין</div>
+    <div class="empty-text">התחל בהוספת הלקוח הראשון שלך</div>
+    <button class="btn btn-primary" onclick="openAddCustomerModal()">
+        <span>➕</span>
+        <span>הוסף לקוח</span>
+    </button>
+</div>
+
+<!-- ADD CUSTOMER MODAL -->
+<div class="modal" id="addCustomerModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">➕ הוסף לקוח חדש</h2>
+            <button class="modal-close" onclick="closeAddCustomerModal()">✕</button>
         </div>
 
-        <select class="filter-select" id="statusFilter">
-            <option value="">כל הסטטוסים</option>
-            <option value="active">פעיל</option>
-            <option value="inactive">לא פעיל</option>
-        </select>
+        <form class="modal-form" id="addCustomerForm" onsubmit="handleAddCustomer(event)">
+            <div class="form-group">
+                <label>שם פרטי *</label>
+                <input type="text" name="first_name" placeholder="הזן שם פרטי" required>
+            </div>
 
-        <div class="view-toggle">
-            <button class="view-toggle-btn active" onclick="switchView('grid')">⊞</button>
-            <button class="view-toggle-btn" onclick="switchView('table')">☰</button>
-        </div>
-    </div>
+            <div class="form-group">
+                <label>שם משפחה *</label>
+                <input type="text" name="last_name" placeholder="הזן שם משפחה" required>
+            </div>
 
-    <!-- CUSTOMERS TABLE -->
-    <div class="customers-table" id="customersTable">
-        <table>
-            <thead>
-                <tr>
-                    <th>שם מלא</th>
-                    <th>אימייל</th>
-                    <th>טלפון</th>
-                    <th>חברה</th>
-                    <th>סוג</th>
-                    <th>סה"כ הזמנות</th>
-                    <th>סה"כ הוצאות</th>
-                    <th>פעולות</th>
-                </tr>
-            </thead>
-            <tbody id="customersTableBody">
-                <!-- Empty State -->
-                <tr>
-                    <td colspan="8">
-                        <div class="empty-state">
-                            <div class="empty-icon">👥</div>
-                            <div class="empty-text">אין לקוחות עדיין</div>
-                            <div class="empty-subtext">לחץ על "הוסף לקוח" כדי להתחיל</div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+            <div class="form-group">
+                <label>אימייל *</label>
+                <input type="email" name="email" placeholder="example@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>טלפון *</label>
+                <input type="tel" name="phone" placeholder="050-1234567" required>
+            </div>
+
+            <div class="form-group">
+                <label>סוג לקוח *</label>
+                <select name="customer_type" required>
+                    <option value="PRIVATE">פרטי</option>
+                    <option value="BUSINESS">עסקי</option>
+                    <option value="TREATMENT">טיפולים</option>
+                    <option value="VIP">VIP</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>חברה</label>
+                <input type="text" name="company_name" placeholder="שם החברה (אופציונלי)">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <span>💾</span>
+                    <span>שמור</span>
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeAddCustomerModal()">
+                    ביטול
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-// Customers page JavaScript
-console.log('Customers page loaded');
-
+// ========== DATA ==========
 let allCustomers = [];
 let filteredCustomers = [];
 let currentFilter = 'all';
 
-// Fetch customers from API
+// ========== FETCH CUSTOMERS ==========
 async function fetchCustomers() {
     try {
-        const response = await fetch('/api/customers/');
-        if (!response.ok) throw new Error('Failed to fetch customers');
-        allCustomers = await response.json();
+        const response = await fetch('/api/customers/api/customers/');
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        allCustomers = data.results || data || [];
         filteredCustomers = allCustomers;
-        updateCounts();
-        renderCustomers();
+
+        // Hide loading
+        document.getElementById('loadingState').style.display = 'none';
+
+        if (allCustomers.length === 0) {
+            document.getElementById('emptyState').style.display = 'block';
+        } else {
+            updateCounts();
+            renderCustomers();
+        }
     } catch (error) {
         console.error('Error fetching customers:', error);
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'block';
     }
 }
 
-// Update tab counts
+// ========== UPDATE COUNTS ==========
 function updateCounts() {
     document.getElementById('count-all').textContent = allCustomers.length;
     document.getElementById('count-private').textContent = allCustomers.filter(c => c.customer_type === 'PRIVATE').length;
@@ -464,7 +683,7 @@ function updateCounts() {
     document.getElementById('count-vip').textContent = allCustomers.filter(c => c.customer_type === 'VIP').length;
 }
 
-// Filter by tab
+// ========== FILTER BY TAB ==========
 function filterByTab(type) {
     currentFilter = type;
 
@@ -483,115 +702,227 @@ function filterByTab(type) {
     renderCustomers();
 }
 
-// Render customers table
+// ========== RENDER CUSTOMERS ==========
 function renderCustomers() {
-    const tbody = document.getElementById('customersTableBody');
+    const grid = document.getElementById('customersGrid');
+    const emptyState = document.getElementById('emptyState');
 
     if (filteredCustomers.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="8">
-                    <div class="empty-state">
-                        <div class="empty-icon">👥</div>
-                        <div class="empty-text">אין לקוחות להציג</div>
-                        <div class="empty-subtext">נסה לשנות את הפילטרים או להוסיף לקוח חדש</div>
-                    </div>
-                </td>
-            </tr>
-        `;
+        grid.style.display = 'none';
+        emptyState.style.display = 'block';
         return;
     }
 
-    tbody.innerHTML = filteredCustomers.map(customer => `
-        <tr>
-            <td>
-                <div class="customer-name">${customer.full_name || customer.first_name + ' ' + customer.last_name}</div>
-            </td>
-            <td>
-                <div class="customer-email">${customer.email || '-'}</div>
-            </td>
-            <td>${customer.phone || '-'}</td>
-            <td>${customer.company_name || '-'}</td>
-            <td>
-                <span class="customer-type ${customer.customer_type}">
-                    ${getCustomerTypeLabel(customer.customer_type)}
-                </span>
-            </td>
-            <td>${customer.total_orders || 0}</td>
-            <td>₪${customer.total_spent ? customer.total_spent.toLocaleString() : '0'}</td>
-            <td>
-                <div class="action-btns">
-                    <button class="action-btn view" onclick="viewCustomer('${customer.id}')">צפה</button>
-                    <button class="action-btn edit" onclick="editCustomer('${customer.id}')">ערוך</button>
-                    <button class="action-btn delete" onclick="deleteCustomer('${customer.id}')">מחק</button>
+    grid.style.display = 'grid';
+    emptyState.style.display = 'none';
+
+    grid.innerHTML = filteredCustomers.map(customer => {
+        const initials = getInitials(customer.first_name, customer.last_name);
+        const typeClass = customer.customer_type.toLowerCase();
+        const typeName = getTypeName(customer.customer_type);
+
+        return `
+            <div class="customer-card" onclick="viewCustomer(${customer.id})">
+                <div class="customer-header">
+                    <div class="customer-avatar">${initials}</div>
+                    <div class="customer-info">
+                        <div class="customer-name">${customer.first_name} ${customer.last_name}</div>
+                        <div class="customer-email">${customer.email || 'אין אימייל'}</div>
+                        <span class="customer-type-badge ${typeClass}">
+                            ${getTypeIcon(customer.customer_type)} ${typeName}
+                        </span>
+                    </div>
                 </div>
-            </td>
-        </tr>
-    `).join('');
+
+                <div class="customer-contact">
+                    <div class="customer-contact-item">
+                        <span>📞</span>
+                        <span>${customer.phone || 'אין טלפון'}</span>
+                    </div>
+                    ${customer.company_name ? `
+                        <div class="customer-contact-item">
+                            <span>🏢</span>
+                            <span>${customer.company_name}</span>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <div class="customer-stats">
+                    <div class="customer-stat">
+                        <div class="customer-stat-value">${customer.total_orders || 0}</div>
+                        <div class="customer-stat-label">הזמנות</div>
+                    </div>
+                    <div class="customer-stat">
+                        <div class="customer-stat-value">₪${customer.total_spent || 0}</div>
+                        <div class="customer-stat-label">סה"כ הוצאות</div>
+                    </div>
+                </div>
+
+                <div class="customer-actions" onclick="event.stopPropagation()">
+                    <button class="customer-btn customer-btn-edit" onclick="editCustomer(${customer.id})">
+                        ✏️ עריכה
+                    </button>
+                    <button class="customer-btn customer-btn-delete" onclick="deleteCustomer(${customer.id})">
+                        🗑️ מחיקה
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
-// Get customer type label
-function getCustomerTypeLabel(type) {
-    const labels = {
-        'PRIVATE': 'פרטי',
-        'BUSINESS': 'עסקי',
-        'TREATMENT': 'טיפול',
-        'VIP': 'VIP'
-    };
-    return labels[type] || type;
-}
-
-// Switch view
-function switchView(view) {
-    document.querySelectorAll('.view-toggle-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-
-    // TODO: Implement grid view
-    console.log('Switched to view:', view);
-}
-
-// Customer actions
-function viewCustomer(id) {
-    window.location.href = `/api/customers/${id}/`;
-}
-
-function editCustomer(id) {
-    // TODO: Implement edit modal
-    console.log('Edit customer:', id);
-}
-
-function deleteCustomer(id) {
-    if (confirm('האם אתה בטוח שברצונך למחוק לקוח זה?')) {
-        // TODO: Implement delete
-        console.log('Delete customer:', id);
-    }
-}
-
-function openAddCustomerModal() {
-    // TODO: Implement add customer modal
-    console.log('Open add customer modal');
-}
-
-// Search functionality
+// ========== SEARCH ==========
 document.getElementById('searchInput').addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    filteredCustomers = allCustomers.filter(customer => {
-        if (currentFilter !== 'all' && customer.customer_type !== currentFilter) {
-            return false;
-        }
+    const query = e.target.value.toLowerCase();
 
-        const fullName = (customer.full_name || customer.first_name + ' ' + customer.last_name).toLowerCase();
-        const email = (customer.email || '').toLowerCase();
-        const phone = (customer.phone || '').toLowerCase();
+    filteredCustomers = allCustomers.filter(c => {
+        const fullName = `${c.first_name} ${c.last_name}`.toLowerCase();
+        const email = (c.email || '').toLowerCase();
+        const phone = (c.phone || '').toLowerCase();
 
-        return fullName.includes(searchTerm) || email.includes(searchTerm) || phone.includes(searchTerm);
+        return fullName.includes(query) || email.includes(query) || phone.includes(query);
     });
+
+    // Apply tab filter if not "all"
+    if (currentFilter !== 'all') {
+        filteredCustomers = filteredCustomers.filter(c => c.customer_type === currentFilter);
+    }
 
     renderCustomers();
 });
 
-// Initialize
-fetchCustomers();
+// ========== HELPER FUNCTIONS ==========
+function getInitials(firstName, lastName) {
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+}
+
+function getTypeName(type) {
+    const types = {
+        'PRIVATE': 'פרטי',
+        'BUSINESS': 'עסקי',
+        'TREATMENT': 'טיפולים',
+        'VIP': 'VIP'
+    };
+    return types[type] || type;
+}
+
+function getTypeIcon(type) {
+    const icons = {
+        'PRIVATE': '👤',
+        'BUSINESS': '🏢',
+        'TREATMENT': '💆',
+        'VIP': '⭐'
+    };
+    return icons[type] || '👤';
+}
+
+// ========== MODAL FUNCTIONS ==========
+function openAddCustomerModal() {
+    document.getElementById('addCustomerModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAddCustomerModal() {
+    document.getElementById('addCustomerModal').classList.remove('active');
+    document.body.style.overflow = '';
+    document.getElementById('addCustomerForm').reset();
+}
+
+// ========== ADD CUSTOMER ==========
+async function handleAddCustomer(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const customerData = {
+        first_name: formData.get('first_name'),
+        last_name: formData.get('last_name'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        customer_type: formData.get('customer_type'),
+        company_name: formData.get('company_name') || null
+    };
+
+    try {
+        const response = await fetch('/api/customers/api/customers/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(customerData)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to create customer');
+        }
+
+        const newCustomer = await response.json();
+
+        // Add to array and refresh
+        allCustomers.unshift(newCustomer);
+        filterByTab(currentFilter);
+        updateCounts();
+
+        // Close modal
+        closeAddCustomerModal();
+
+        // Show success message
+        alert('✅ הלקוח נוסף בהצלחה!');
+    } catch (error) {
+        console.error('Error adding customer:', error);
+        alert('❌ שגיאה בהוספת לקוח. נסה שוב.');
+    }
+}
+
+// ========== CUSTOMER ACTIONS ==========
+function viewCustomer(id) {
+    console.log('View customer:', id);
+    // TODO: Navigate to customer details page
+}
+
+function editCustomer(id) {
+    alert(`עריכת לקוח ${id} - יתווסף בהמשך`);
+}
+
+function deleteCustomer(id) {
+    if (confirm('האם אתה בטוח שברצונך למחוק לקוח זה?')) {
+        alert(`מחיקת לקוח ${id} - יתווסף בהמשך`);
+    }
+}
+
+// ========== UTILITY ==========
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// ========== INIT ==========
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Customers page loaded');
+    fetchCustomers();
+});
+
+// Close modal on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeAddCustomerModal();
+    }
+});
+
+// Close modal on background click
+document.getElementById('addCustomerModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeAddCustomerModal();
+    }
+});
 {% endblock %}

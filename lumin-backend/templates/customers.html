@@ -481,9 +481,15 @@
 {% endblock %}
 
 {% block content %}
-<!-- SEARCH BAR -->
-<div class="search-bar">
-    <input type="text" id="searchInput" placeholder="חפש לקוח לפי שם, אימייל או טלפון...">
+<!-- HEADER WITH SEARCH AND ADD BUTTON -->
+<div style="display: flex; gap: 12px; margin-bottom: 24px; align-items: center;">
+    <div class="search-bar" style="flex: 1; margin-bottom: 0;">
+        <input type="text" id="searchInput" placeholder="חפש לקוח לפי שם, אימייל או טלפון...">
+    </div>
+    <button class="btn btn-primary" onclick="openAddCustomerModal()" style="white-space: nowrap; flex-shrink: 0;">
+        <span>➕</span>
+        <span>הוסף לקוח</span>
+    </button>
 </div>
 
 <!-- LOADING STATE -->
@@ -685,8 +691,8 @@ function renderCustomers() {
         return `
             <div class="customer-card" onclick="viewCustomer('${customer.id}')">
                 <div class="customer-header">
-                    <div class="customer-avatar" onclick="event.stopPropagation(); openImageUpload('${customer.id}')" style="cursor: pointer; ${profileImageUrl ? `background-image: url('${profileImageUrl}'); background-size: cover; background-position: center;` : ''}" title="לחץ להעלאת תמונה">
-                        ${profileImageUrl ? '' : initials}
+                    <div class="customer-avatar" onclick="openImageUpload('${customer.id}', event)" ontouchstart="openImageUpload('${customer.id}', event)" style="cursor: pointer; ${profileImageUrl ? `background: url('${profileImageUrl}') center/cover no-repeat;` : ''}" title="לחץ להעלאת תמונה">
+                        ${profileImageUrl ? '<div style="opacity: 0;">' + initials + '</div>' : initials}
                     </div>
                     <div class="customer-info">
                         <div class="customer-name">${customer.first_name} ${customer.last_name}</div>
@@ -951,9 +957,17 @@ async function deleteCustomer(id) {
 // ========== IMAGE UPLOAD ==========
 let currentUploadCustomerId = null;
 
-function openImageUpload(customerId) {
+function openImageUpload(customerId, event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
     currentUploadCustomerId = customerId;
-    document.getElementById('imageUploadInput').click();
+    const input = document.getElementById('imageUploadInput');
+    // Trigger click with small delay to ensure it works on mobile
+    setTimeout(() => {
+        input.click();
+    }, 100);
 }
 
 async function handleImageUpload(event) {

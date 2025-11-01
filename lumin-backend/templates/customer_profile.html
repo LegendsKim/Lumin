@@ -616,9 +616,20 @@
             <form id="treatmentForm" class="modal-body">
                 <div class="form-group">
                     <label class="form-label required">סוג טיפול</label>
-                    <select name="treatment_type" id="treatmentType" class="form-select" required>
+                    <div style="display: flex; gap: 12px; margin-bottom: 8px;">
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="treatment_type_option" value="existing" checked onchange="toggleTreatmentTypeInput()">
+                            <span>בחר קיים</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="treatment_type_option" value="new" onchange="toggleTreatmentTypeInput()">
+                            <span>הוסף חדש</span>
+                        </label>
+                    </div>
+                    <select name="treatment_type" id="treatmentType" class="form-select">
                         <option value="">בחר סוג טיפול...</option>
                     </select>
+                    <input type="text" name="new_treatment_type_name" id="newTreatmentTypeName" class="form-input" placeholder="שם הטיפול החדש" style="display: none;">
                 </div>
 
                 <div class="form-group">
@@ -861,6 +872,27 @@
             }
         }
 
+        // Toggle between existing treatment type and new treatment type input
+        function toggleTreatmentTypeInput() {
+            const option = document.querySelector('input[name="treatment_type_option"]:checked').value;
+            const typeSelect = document.getElementById('treatmentType');
+            const newTypeInput = document.getElementById('newTreatmentTypeName');
+
+            if (option === 'existing') {
+                typeSelect.style.display = 'block';
+                newTypeInput.style.display = 'none';
+                newTypeInput.value = '';
+                typeSelect.required = true;
+                newTypeInput.required = false;
+            } else {
+                typeSelect.style.display = 'none';
+                newTypeInput.style.display = 'block';
+                typeSelect.value = '';
+                typeSelect.required = false;
+                newTypeInput.required = true;
+            }
+        }
+
         // Tab switching
         function switchTab(tabName) {
             // Update buttons
@@ -877,9 +909,11 @@
             document.getElementById('treatmentModal').classList.add('active');
             document.getElementById('treatmentForm').reset();
 
-            // Reset to "existing" option
+            // Reset to "existing" options
             document.querySelector('input[name="staff_option"][value="existing"]').checked = true;
+            document.querySelector('input[name="treatment_type_option"][value="existing"]').checked = true;
             toggleStaffInput();
+            toggleTreatmentTypeInput();
         }
 
         function closeTreatmentModal() {
@@ -909,12 +943,49 @@
 
             const formData = new FormData(this);
             const staffOption = document.querySelector('input[name="staff_option"]:checked').value;
+            const treatmentTypeOption = document.querySelector('input[name="treatment_type_option"]:checked').value;
             const csrftoken = getCookie('csrftoken');
 
             try {
                 let staffMemberId = formData.get('staff_member') || null;
+                let treatmentTypeId = formData.get('treatment_type') || null;
 
-                // If creating new staff member, create it first
+                // If creating new treatment type, create it first
+                if (treatmentTypeOption === 'new') {
+                    const newTypeName = formData.get('new_treatment_type_name');
+                    if (!newTypeName || newTypeName.trim() === '') {
+                        alert('נא להזין שם טיפול');
+                        return;
+                    }
+
+                    // Create new treatment type
+                    const typeResponse = await fetch('/api/customers/api/treatment-types/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({
+                            name: newTypeName.trim(),
+                            is_active: true
+                        })
+                    });
+
+                    if (!typeResponse.ok) {
+                        const error = await typeResponse.json();
+                        alert('שגיאה ביצירת סוג טיפול חדש: ' + JSON.stringify(error));
+                        return;
+                    }
+
+                    const newType = await typeResponse.json();
+                    treatmentTypeId = newType.id;
+
+                    // Reload treatment types list for future use
+                    await loadTreatmentTypes();
+                }
+
+                // If creating new staff member, create it
                 if (staffOption === 'new') {
                     const newStaffName = formData.get('new_staff_name');
                     if (!newStaffName || newStaffName.trim() === '') {
@@ -952,7 +1023,7 @@
                 // Now create the treatment
                 const treatmentData = {
                     customer: customerId,
-                    treatment_type: formData.get('treatment_type'),
+                    treatment_type: treatmentTypeId,
                     treatment_date: formData.get('treatment_date'),
                     staff_member: staffMemberId,
                     price: formData.get('price'),

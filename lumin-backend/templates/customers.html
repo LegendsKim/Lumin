@@ -8,60 +8,6 @@
 {% block extra_css %}
 /* Customers-specific styles */
 
-/* ========== CUSTOMER TABS ========== */
-.customer-tabs {
-    display: flex;
-    gap: 8px;
-    background: white;
-    padding: 8px;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    overflow-x: auto;
-    scrollbar-width: none;
-    margin-bottom: 24px;
-}
-
-.customer-tabs::-webkit-scrollbar {
-    display: none;
-}
-
-.tab-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    background: transparent;
-    border: none;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-dark);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-.tab-btn:hover {
-    background: rgba(0, 173, 181, 0.05);
-}
-
-.tab-btn.active {
-    background: var(--lumin-turquoise);
-    color: white;
-}
-
-.tab-count {
-    background: rgba(0, 0, 0, 0.1);
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.tab-btn.active .tab-count {
-    background: rgba(255, 255, 255, 0.3);
-}
-
 /* ========== SEARCH BAR ========== */
 .search-bar {
     position: relative;
@@ -525,35 +471,6 @@
 {% endblock %}
 
 {% block content %}
-<!-- CUSTOMER TABS -->
-<div class="customer-tabs">
-    <button class="tab-btn active" data-type="all" onclick="filterByTab('all')">
-        <span>👥</span>
-        <span>הכל</span>
-        <span class="tab-count" id="count-all">0</span>
-    </button>
-    <button class="tab-btn" data-type="PRIVATE" onclick="filterByTab('PRIVATE')">
-        <span>👤</span>
-        <span>פרטי</span>
-        <span class="tab-count" id="count-private">0</span>
-    </button>
-    <button class="tab-btn" data-type="BUSINESS" onclick="filterByTab('BUSINESS')">
-        <span>🏢</span>
-        <span>עסקי</span>
-        <span class="tab-count" id="count-business">0</span>
-    </button>
-    <button class="tab-btn" data-type="TREATMENT" onclick="filterByTab('TREATMENT')">
-        <span>💆</span>
-        <span>טיפולים</span>
-        <span class="tab-count" id="count-treatment">0</span>
-    </button>
-    <button class="tab-btn" data-type="VIP" onclick="filterByTab('VIP')">
-        <span>⭐</span>
-        <span>VIP</span>
-        <span class="tab-count" id="count-vip">0</span>
-    </button>
-</div>
-
 <!-- SEARCH BAR -->
 <div class="search-bar">
     <input type="text" id="searchInput" placeholder="חפש לקוח לפי שם, אימייל או טלפון...">
@@ -643,7 +560,6 @@
 // ========== DATA ==========
 let allCustomers = [];
 let filteredCustomers = [];
-let currentFilter = 'all';
 
 // ========== FETCH CUSTOMERS ==========
 async function fetchCustomers() {
@@ -664,7 +580,6 @@ async function fetchCustomers() {
         if (allCustomers.length === 0) {
             document.getElementById('emptyState').style.display = 'block';
         } else {
-            updateCounts();
             renderCustomers();
         }
     } catch (error) {
@@ -672,34 +587,6 @@ async function fetchCustomers() {
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('emptyState').style.display = 'block';
     }
-}
-
-// ========== UPDATE COUNTS ==========
-function updateCounts() {
-    document.getElementById('count-all').textContent = allCustomers.length;
-    document.getElementById('count-private').textContent = allCustomers.filter(c => c.customer_type === 'PRIVATE').length;
-    document.getElementById('count-business').textContent = allCustomers.filter(c => c.customer_type === 'BUSINESS').length;
-    document.getElementById('count-treatment').textContent = allCustomers.filter(c => c.customer_type === 'TREATMENT').length;
-    document.getElementById('count-vip').textContent = allCustomers.filter(c => c.customer_type === 'VIP').length;
-}
-
-// ========== FILTER BY TAB ==========
-function filterByTab(type) {
-    currentFilter = type;
-
-    // Update active tab
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.type === type);
-    });
-
-    // Filter customers
-    if (type === 'all') {
-        filteredCustomers = allCustomers;
-    } else {
-        filteredCustomers = allCustomers.filter(c => c.customer_type === type);
-    }
-
-    renderCustomers();
 }
 
 // ========== RENDER CUSTOMERS ==========
@@ -782,11 +669,6 @@ document.getElementById('searchInput').addEventListener('input', function(e) {
 
         return fullName.includes(query) || email.includes(query) || phone.includes(query);
     });
-
-    // Apply tab filter if not "all"
-    if (currentFilter !== 'all') {
-        filteredCustomers = filteredCustomers.filter(c => c.customer_type === currentFilter);
-    }
 
     renderCustomers();
 });

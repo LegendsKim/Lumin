@@ -197,6 +197,16 @@
     gap: 6px;
 }
 
+.customer-btn-primary {
+    background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
+    color: white;
+}
+
+.customer-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 173, 181, 0.4);
+}
+
 .customer-btn-edit {
     background: rgba(0, 173, 181, 0.1);
     color: var(--lumin-turquoise);
@@ -554,6 +564,68 @@
         </form>
     </div>
 </div>
+
+<!-- EDIT CUSTOMER MODAL -->
+<div class="modal" id="editCustomerModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>✏️ עריכת לקוח</h2>
+            <button class="modal-close" onclick="closeEditCustomerModal()">×</button>
+        </div>
+
+        <form id="editCustomerForm" onsubmit="handleEditCustomer(event)">
+            <input type="hidden" id="editCustomerId">
+
+            <div class="form-group">
+                <label>שם פרטי *</label>
+                <input type="text" id="editFirstName" name="first_name" required>
+            </div>
+
+            <div class="form-group">
+                <label>שם משפחה *</label>
+                <input type="text" id="editLastName" name="last_name" required>
+            </div>
+
+            <div class="form-group">
+                <label>אימייל</label>
+                <input type="email" id="editEmail" name="email">
+            </div>
+
+            <div class="form-group">
+                <label>טלפון *</label>
+                <input type="tel" id="editPhone" name="phone" required>
+            </div>
+
+            <div class="form-group">
+                <label>סוג לקוח</label>
+                <select id="editCustomerType" name="customer_type">
+                    <option value="PRIVATE">פרטי</option>
+                    <option value="BUSINESS">עסקי</option>
+                    <option value="TREATMENT">טיפולים</option>
+                    <option value="VIP">VIP</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>חברה</label>
+                <input type="text" id="editCompany" name="company_name" placeholder="שם החברה (אופציונלי)">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <span>💾</span>
+                    <span>שמור שינויים</span>
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeEditCustomerModal()">
+                    ביטול
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- UPLOAD IMAGE INPUT (HIDDEN) -->
+<input type="file" id="imageUploadInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
 {% endblock %}
 
 {% block extra_js %}
@@ -608,10 +680,14 @@ function renderCustomers() {
         const typeClass = customer.customer_type.toLowerCase();
         const typeName = getTypeName(customer.customer_type);
 
+        const profileImageUrl = customer.profile_image_url;
+
         return `
-            <div class="customer-card" onclick="viewCustomer(${customer.id})">
+            <div class="customer-card" onclick="viewCustomer('${customer.id}')">
                 <div class="customer-header">
-                    <div class="customer-avatar">${initials}</div>
+                    <div class="customer-avatar" onclick="event.stopPropagation(); openImageUpload('${customer.id}')" style="cursor: pointer; ${profileImageUrl ? `background-image: url('${profileImageUrl}'); background-size: cover; background-position: center;` : ''}" title="לחץ להעלאת תמונה">
+                        ${profileImageUrl ? '' : initials}
+                    </div>
                     <div class="customer-info">
                         <div class="customer-name">${customer.first_name} ${customer.last_name}</div>
                         <div class="customer-email">${customer.email || 'אין אימייל'}</div>
@@ -626,30 +702,33 @@ function renderCustomers() {
                         <span>📞</span>
                         <span>${customer.phone || 'אין טלפון'}</span>
                     </div>
-                    ${customer.company_name ? `
+                    ${customer.company ? `
                         <div class="customer-contact-item">
                             <span>🏢</span>
-                            <span>${customer.company_name}</span>
+                            <span>${customer.company}</span>
                         </div>
                     ` : ''}
                 </div>
 
                 <div class="customer-stats">
                     <div class="customer-stat">
-                        <div class="customer-stat-value">${customer.total_orders || 0}</div>
-                        <div class="customer-stat-label">הזמנות</div>
+                        <div class="customer-stat-value">${customer.treatment_count || 0}</div>
+                        <div class="customer-stat-label">טיפולים</div>
                     </div>
                     <div class="customer-stat">
-                        <div class="customer-stat-value">₪${customer.total_spent || 0}</div>
-                        <div class="customer-stat-label">סה"כ הוצאות</div>
+                        <div class="customer-stat-value">₪${Number(customer.total_treatments || 0).toLocaleString()}</div>
+                        <div class="customer-stat-label">סה"כ טיפולים</div>
                     </div>
                 </div>
 
                 <div class="customer-actions" onclick="event.stopPropagation()">
-                    <button class="customer-btn customer-btn-edit" onclick="editCustomer(${customer.id})">
+                    <button class="customer-btn customer-btn-primary" onclick="viewCustomer('${customer.id}')">
+                        📋 פרטים
+                    </button>
+                    <button class="customer-btn customer-btn-edit" onclick="editCustomer('${customer.id}')">
                         ✏️ עריכה
                     </button>
-                    <button class="customer-btn customer-btn-delete" onclick="deleteCustomer(${customer.id})">
+                    <button class="customer-btn customer-btn-delete" onclick="deleteCustomer('${customer.id}')">
                         🗑️ מחיקה
                     </button>
                 </div>
@@ -710,6 +789,17 @@ function closeAddCustomerModal() {
     document.getElementById('addCustomerForm').reset();
 }
 
+function openEditCustomerModal() {
+    document.getElementById('editCustomerModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeEditCustomerModal() {
+    document.getElementById('editCustomerModal').classList.remove('active');
+    document.body.style.overflow = '';
+    document.getElementById('editCustomerForm').reset();
+}
+
 // ========== ADD CUSTOMER ==========
 async function handleAddCustomer(event) {
     event.preventDefault();
@@ -758,17 +848,164 @@ async function handleAddCustomer(event) {
 
 // ========== CUSTOMER ACTIONS ==========
 function viewCustomer(id) {
-    console.log('View customer:', id);
-    // TODO: Navigate to customer details page
+    window.location.href = `/api/customers/${id}/`;
 }
 
-function editCustomer(id) {
-    alert(`עריכת לקוח ${id} - יתווסף בהמשך`);
+async function editCustomer(id) {
+    const customer = allCustomers.find(c => c.id === id);
+    if (!customer) {
+        alert('❌ לא נמצא לקוח');
+        return;
+    }
+
+    // Fill form with customer data
+    document.getElementById('editCustomerId').value = customer.id;
+    document.getElementById('editFirstName').value = customer.first_name;
+    document.getElementById('editLastName').value = customer.last_name;
+    document.getElementById('editEmail').value = customer.email || '';
+    document.getElementById('editPhone').value = customer.phone;
+    document.getElementById('editCustomerType').value = customer.customer_type;
+    document.getElementById('editCompany').value = customer.company || '';
+
+    openEditCustomerModal();
 }
 
-function deleteCustomer(id) {
-    if (confirm('האם אתה בטוח שברצונך למחוק לקוח זה?')) {
-        alert(`מחיקת לקוח ${id} - יתווסף בהמשך`);
+async function handleEditCustomer(event) {
+    event.preventDefault();
+
+    const customerId = document.getElementById('editCustomerId').value;
+    const formData = new FormData(event.target);
+    const customerData = {
+        first_name: formData.get('first_name'),
+        last_name: formData.get('last_name'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        customer_type: formData.get('customer_type'),
+        company: formData.get('company_name') || null
+    };
+
+    try {
+        const response = await fetch(`/api/customers/api/customers/${customerId}/`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(customerData)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update customer');
+        }
+
+        const updatedCustomer = await response.json();
+
+        // Update in array
+        const index = allCustomers.findIndex(c => c.id === customerId);
+        if (index !== -1) {
+            allCustomers[index] = updatedCustomer;
+            filteredCustomers = allCustomers;
+            renderCustomers();
+        }
+
+        closeEditCustomerModal();
+        alert('✅ הלקוח עודכן בהצלחה!');
+    } catch (error) {
+        console.error('Error updating customer:', error);
+        alert('❌ שגיאה בעדכון לקוח. נסה שוב.');
+    }
+}
+
+async function deleteCustomer(id) {
+    const customer = allCustomers.find(c => c.id === id);
+    if (!customer) return;
+
+    if (!confirm(`האם אתה בטוח שברצונך למחוק את ${customer.first_name} ${customer.last_name}?`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/customers/api/customers/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete customer');
+        }
+
+        // Remove from arrays
+        allCustomers = allCustomers.filter(c => c.id !== id);
+        filteredCustomers = filteredCustomers.filter(c => c.id !== id);
+        renderCustomers();
+
+        alert('✅ הלקוח נמחק בהצלחה');
+    } catch (error) {
+        console.error('Error deleting customer:', error);
+        alert('❌ שגיאה במחיקת לקוח. נסה שוב.');
+    }
+}
+
+// ========== IMAGE UPLOAD ==========
+let currentUploadCustomerId = null;
+
+function openImageUpload(customerId) {
+    currentUploadCustomerId = customerId;
+    document.getElementById('imageUploadInput').click();
+}
+
+async function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file || !currentUploadCustomerId) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        alert('❌ נא להעלות קובץ תמונה בלבד');
+        return;
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+        alert('❌ גודל התמונה חייב להיות פחות מ-5MB');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('profile_image', file);
+
+    try {
+        const response = await fetch(`/api/customers/api/customers/${currentUploadCustomerId}/`, {
+            method: 'PATCH',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to upload image');
+        }
+
+        const updatedCustomer = await response.json();
+
+        // Update in array
+        const index = allCustomers.findIndex(c => c.id === currentUploadCustomerId);
+        if (index !== -1) {
+            allCustomers[index] = updatedCustomer;
+            filteredCustomers = allCustomers;
+            renderCustomers();
+        }
+
+        alert('✅ התמונה הועלתה בהצלחה!');
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        alert('❌ שגיאה בהעלאת תמונה. נסה שוב.');
+    } finally {
+        // Reset input
+        event.target.value = '';
+        currentUploadCustomerId = null;
     }
 }
 

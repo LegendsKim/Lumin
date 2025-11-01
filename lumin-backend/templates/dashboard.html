@@ -1,1061 +1,310 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Lumin</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --lumin-turquoise: #00ADB5;
-            --lumin-turquoise-light: #00CED6;
-            --lumin-dark: #0F2027;
-            --lumin-dark-secondary: #1E293B;
-            --lumin-dark-tertiary: #2C5364;
-            --light-bg: #F8FAFC;
-            --light-card: rgba(255, 255, 255, 0.7);
-            --text-dark: #1E293B;
-            --text-light: rgba(255, 255, 255, 0.9);
-            --text-muted: rgba(255, 255, 255, 0.6);
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--light-bg);
-            min-height: 100vh;
-            display: flex;
-            color: var(--text-dark);
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                radial-gradient(circle at 20% 50%, rgba(0, 173, 181, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(0, 173, 181, 0.03) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* ========== DARK SIDEBAR ========== */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, var(--lumin-dark) 0%, var(--lumin-dark-tertiary) 100%);
-            height: 100vh;
-            position: fixed;
-            right: 0;
-            top: 0;
-            display: flex;
-            flex-direction: column;
-            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
-
-        /* Logo Section */
-        .sidebar-logo {
-            padding: 32px 24px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar-logo:hover .logo-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .logo-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-            filter: drop-shadow(0 0 20px rgba(0, 173, 181, 0.8));
-            animation: pulse-glow 3s ease-in-out infinite;
-            transition: all 0.4s ease;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 173, 181, 0.8)); }
-            50% { filter: drop-shadow(0 0 30px rgba(0, 173, 181, 1)); }
-        }
-
-        .logo-text {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--lumin-turquoise);
-            text-shadow: 0 0 20px rgba(0, 173, 181, 0.5);
-            transition: all 0.3s ease;
-        }
-
-        .sidebar-logo:hover .logo-text {
-            text-shadow: 0 0 30px rgba(0, 173, 181, 0.8);
-        }
-
-        .logo-tagline {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar-logo:hover .logo-tagline {
-            color: var(--text-light);
-        }
-
-        /* Menu */
-        .sidebar-menu {
-            flex: 1;
-            padding: 24px 16px;
-            overflow-y: auto;
-        }
-
-        .menu-section {
-            margin-bottom: 24px;
-        }
-
-        .menu-section-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            padding: 0 12px 8px;
-            font-weight: 600;
-        }
-
-        .menu-item {
-            margin-bottom: 4px;
-        }
-
-        .menu-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            color: var(--text-light);
-            text-decoration: none;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            font-size: 15px;
-            position: relative;
-        }
-
-        .menu-link:hover {
-            background: rgba(0, 173, 181, 0.15);
-            color: var(--lumin-turquoise);
-            transform: translateX(-4px);
-        }
-
-        .menu-link.active {
-            background: rgba(0, 173, 181, 0.2);
-            color: var(--lumin-turquoise);
-            box-shadow: 0 0 20px rgba(0, 173, 181, 0.3);
-        }
-
-        .menu-link.active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 60%;
-            background: var(--lumin-turquoise);
-            border-radius: 0 4px 4px 0;
-            box-shadow: 0 0 10px rgba(0, 173, 181, 0.8);
-        }
-
-        .menu-icon {
-            font-size: 20px;
-        }
-
-        /* User Section */
-        .sidebar-user {
-            padding: 20px 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(0, 173, 181, 0.05);
-        }
-
-        .user-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 2px solid var(--lumin-turquoise);
-            box-shadow: 0 0 15px rgba(0, 173, 181, 0.5);
-        }
-
-        .user-info {
-            flex: 1;
-        }
-
-        .user-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-light);
-        }
-
-        .user-role {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .user-logout {
-            color: var(--text-muted);
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .user-logout:hover {
-            color: #FF6B6B;
-        }
-
-        /* ========== MAIN CONTENT ========== */
-        .main-content {
-            margin-right: 280px;
-            flex: 1;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ========== DARK TOP BAR ========== */
-        .top-bar {
-            background: linear-gradient(135deg, var(--lumin-dark-secondary), var(--lumin-dark));
-            padding: 20px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .top-bar-left h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-light);
-            margin-bottom: 4px;
-        }
-
-        .top-bar-left p {
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        .top-bar-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .top-bar-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text-light);
-            font-size: 18px;
-            position: relative;
-        }
-
-        .top-bar-icon:hover {
-            background: rgba(0, 173, 181, 0.2);
-            border-color: rgba(0, 173, 181, 0.4);
-            box-shadow: 0 0 15px rgba(0, 173, 181, 0.4);
-            transform: translateY(-2px);
-            color: var(--lumin-turquoise);
-        }
-
-        .top-bar-icon.has-notification::after {
-            content: '';
-            position: absolute;
-            top: 6px;
-            left: 6px;
-            width: 8px;
-            height: 8px;
-            background: #EF4444;
-            border-radius: 50%;
-            border: 2px solid var(--lumin-dark-secondary);
-            animation: pulse-notification 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-notification {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-            }
-            50% {
-                transform: scale(1.1);
-                box-shadow: 0 0 0 4px rgba(239, 68, 68, 0);
-            }
-        }
-
-        /* ========== DASHBOARD CONTENT (Light) ========== */
-        .dashboard-content {
-            padding: 32px;
-            flex: 1;
-        }
-
-        /* ========== WIDGET GRID SYSTEM ========== */
-        .widget-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-bottom: 24px;
-        }
-
-        .widget-grid-large {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 24px;
-            margin-bottom: 24px;
-        }
-
-        /* ========== LIGHT GLASS WIDGET ========== */
-        .widget {
-            background: var(--light-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
-        }
-
-        .widget:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 32px rgba(0, 173, 181, 0.15);
-        }
-
-        .widget:hover .widget-icon {
-            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
-            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.4);
-        }
-
-        /* Widget Header */
-        .widget-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .widget-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .widget-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: #94A3B8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-            transition: all 0.3s ease;
-        }
-
-        /* KPI Widget */
-        .kpi-value {
-            font-size: 36px;
-            font-weight: 900;
-            color: #1E293B;
-            margin-bottom: 8px;
-            font-variant-numeric: tabular-nums;
-            transition: all 0.3s ease;
-        }
-
-        .widget:hover .kpi-value {
-            transform: scale(1.05);
-            color: var(--lumin-turquoise);
-        }
-
-        .kpi-label {
-            font-size: 14px;
-            color: #64748B;
-            font-weight: 500;
-        }
-
-        .kpi-change {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 13px;
-            margin-top: 8px;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-weight: 600;
-        }
-
-        .kpi-change.positive {
-            color: #10B981;
-            background: rgba(16, 185, 129, 0.1);
-        }
-
-        .kpi-change.negative {
-            color: #EF4444;
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        /* Chart Widget */
-        .chart-placeholder {
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, rgba(0, 173, 181, 0.05), rgba(0, 173, 181, 0.02));
-            border-radius: 12px;
-            border: 1px dashed rgba(0, 173, 181, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .chart-placeholder::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 173, 181, 0.1), transparent);
-            animation: shimmer 3s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .chart-placeholder-text {
-            color: var(--lumin-turquoise);
-            font-size: 14px;
-            font-weight: 500;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Quick Actions Widget */
-        .quick-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .quick-action-btn {
-            padding: 14px 18px;
-            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quick-action-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .quick-action-btn:hover::before {
-            left: 100%;
-        }
-
-        .quick-action-btn:hover {
-            box-shadow: 0 8px 20px rgba(0, 173, 181, 0.5);
-            transform: translateY(-2px) scale(1.02);
-        }
-
-        .quick-action-btn:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        .quick-action-btn.secondary {
-            background: rgba(0, 173, 181, 0.1);
-            color: var(--lumin-turquoise);
-            box-shadow: none;
-            border: 1px solid rgba(0, 173, 181, 0.3);
-        }
-
-        .quick-action-btn.secondary:hover {
-            background: rgba(0, 173, 181, 0.2);
-            box-shadow: 0 4px 12px rgba(0, 173, 181, 0.2);
-        }
-
-        /* Activity Feed Widget */
-        .activity-item {
-            display: flex;
-            gap: 12px;
-            padding: 12px;
-            margin-bottom: 8px;
-            background: rgba(148, 163, 184, 0.05);
-            border-radius: 10px;
-            border-right: 3px solid #CBD5E1;
-            transition: all 0.3s ease;
-        }
-
-        .activity-item:hover {
-            background: rgba(0, 173, 181, 0.05);
-            border-right-color: var(--lumin-turquoise);
-        }
-
-        .activity-item:hover .activity-icon {
-            background: linear-gradient(135deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
-            box-shadow: 0 2px 8px rgba(0, 173, 181, 0.3);
-        }
-
-        .activity-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            background: #94A3B8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 16px;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-        }
-
-        .activity-content {
-            flex: 1;
-        }
-
-        .activity-text {
-            font-size: 14px;
-            color: var(--text-dark);
-            margin-bottom: 4px;
-        }
-
-        .activity-time {
-            font-size: 12px;
-            color: #94A3B8;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 48px 24px;
-        }
-
-        .empty-icon {
-            font-size: 64px;
-            opacity: 0.3;
-            margin-bottom: 16px;
-        }
-
-        .empty-text {
-            font-size: 16px;
-            color: #94A3B8;
-            font-weight: 500;
-        }
-
-        /* ========== ANIMATIONS ========== */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .widget {
-            animation: fadeInUp 0.6s ease-out forwards;
-            opacity: 0;
-        }
-
-        .widget:nth-child(1) { animation-delay: 0.1s; }
-        .widget:nth-child(2) { animation-delay: 0.2s; }
-        .widget:nth-child(3) { animation-delay: 0.3s; }
-        .widget:nth-child(4) { animation-delay: 0.4s; }
-        .widget:nth-child(5) { animation-delay: 0.5s; }
-        .widget:nth-child(6) { animation-delay: 0.6s; }
-        .widget:nth-child(7) { animation-delay: 0.7s; }
-        .widget:nth-child(8) { animation-delay: 0.8s; }
-
-        .menu-item {
-            animation: slideInRight 0.4s ease-out forwards;
-            opacity: 0;
-        }
-
-        .menu-item:nth-child(1) { animation-delay: 0.1s; }
-        .menu-item:nth-child(2) { animation-delay: 0.15s; }
-        .menu-item:nth-child(3) { animation-delay: 0.2s; }
-        .menu-item:nth-child(4) { animation-delay: 0.25s; }
-        .menu-item:nth-child(5) { animation-delay: 0.3s; }
-        .menu-item:nth-child(6) { animation-delay: 0.35s; }
-        .menu-item:nth-child(7) { animation-delay: 0.4s; }
-        .menu-item:nth-child(8) { animation-delay: 0.45s; }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 240px;
-            }
-
-            .main-content {
-                margin-right: 240px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(100%);
-                transition: transform 0.3s ease;
-            }
-
-            .sidebar.mobile-open {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-right: 0;
-            }
-
-            .widget-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .widget-grid-large {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ========== PLAN FEATURES CSS ========== */
-        /* Locked Account Banner */
-        .locked-account-banner {
-            position: sticky;
-            top: 0;
-            z-index: 9999;
-            background: linear-gradient(135deg, #dc2626, #991b1b);
-            color: white;
-            padding: 16px 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .banner-content {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .banner-icon {
-            font-size: 24px;
-        }
-
-        .banner-text {
-            flex: 1;
-            font-size: 15px;
-            line-height: 1.5;
-        }
-
-        .banner-text strong {
-            font-weight: 700;
-        }
-
-        .upgrade-btn {
-            background: white;
-            color: #dc2626;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .upgrade-btn:hover {
-            background: #fef2f2;
-            transform: scale(1.05);
-        }
-
-        /* Upgrade Prompt Button */
-        .upgrade-prompt-btn {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
-        }
-
-        .upgrade-prompt-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-        }
-
-        /* Disabled Elements */
-        button.disabled,
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed !important;
-            pointer-events: none;
-        }
-
-        /* Usage Stats */
-        .usage-stats {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .stat-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .stat-progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--lumin-turquoise), var(--lumin-turquoise-light));
-            transition: width 0.3s ease;
-        }
-
-        .stat-text {
-            font-size: 13px;
-            color: var(--text-light);
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body>
-    {% include '_sidebar.html' with active_page='dashboard' %}
-
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
-        <!-- DARK TOP BAR -->
-        <header class="top-bar">
-            <div class="top-bar-left">
-                <h1>שלום, {{ user.first_name }}! 👋</h1>
-                <p>סיכום הביצועים שלך היום</p>
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block extra_css %}
+/* Dashboard-specific styles */
+.dashboard-content {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* KPI Widgets Grid */
+.widget-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.widget-grid-large {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 24px;
+}
+
+.widget {
+    background: var(--light-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+}
+
+.widget:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 173, 181, 0.15);
+}
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.widget-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.widget-icon {
+    font-size: 24px;
+    opacity: 0.7;
+}
+
+/* KPI Values */
+.kpi-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--lumin-turquoise);
+    margin-bottom: 8px;
+}
+
+.kpi-label {
+    font-size: 14px;
+    color: #64748B;
+    margin-bottom: 12px;
+}
+
+.kpi-change {
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border-radius: 12px;
+}
+
+.kpi-change.positive {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+}
+
+.kpi-change.negative {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+/* Chart Placeholder */
+.chart-placeholder {
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(0, 173, 181, 0.05), rgba(0, 173, 181, 0.02));
+    border-radius: 12px;
+    border: 2px dashed rgba(0, 173, 181, 0.2);
+}
+
+.chart-placeholder-text {
+    font-size: 16px;
+    color: #94A3B8;
+    font-weight: 500;
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+}
+
+.empty-text {
+    font-size: 16px;
+    color: #94A3B8;
+    font-weight: 500;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: grid;
+    gap: 12px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    background: var(--lumin-turquoise);
+    color: white;
+    transform: translateX(-4px);
+    box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+}
+
+.action-icon {
+    font-size: 24px;
+}
+
+/* Responsive for Dashboard */
+@media (max-width: 768px) {
+    .widget-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .widget-grid-large {
+        grid-template-columns: 1fr;
+    }
+
+    .kpi-value {
+        font-size: 28px;
+    }
+
+    .chart-placeholder {
+        height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .widget {
+        padding: 20px;
+    }
+
+    .kpi-value {
+        font-size: 24px;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-content">
+    <!-- KPI WIDGETS -->
+    <div class="widget-grid">
+        <div class="widget">
+            <div class="widget-header">
+                <span class="widget-title">סך מכירות</span>
+                <span class="widget-icon">💰</span>
             </div>
+            <div class="kpi-value">₪0</div>
+            <div class="kpi-label">מכירות החודש</div>
+            <div class="kpi-change positive">↑ 0% מחודש שעבר</div>
+        </div>
 
-            <div class="top-bar-right">
-                <div class="top-bar-icon" title="חיפוש">🔍</div>
-                <div class="top-bar-icon has-notification" title="התראות">🔔</div>
-                <div class="top-bar-icon has-notification" title="הודעות">✉️</div>
+        <div class="widget">
+            <div class="widget-header">
+                <span class="widget-title">הזמנות</span>
+                <span class="widget-icon">🛒</span>
             </div>
-        </header>
+            <div class="kpi-value">0</div>
+            <div class="kpi-label">הזמנות החודש</div>
+            <div class="kpi-change positive">↑ 0% מחודש שעבר</div>
+        </div>
 
-        <!-- LIGHT DASHBOARD CONTENT -->
-        <div class="dashboard-content">
-            <!-- KPI WIDGETS -->
-            <div class="widget-grid">
-                <div class="widget">
-                    <div class="widget-header">
-                        <span class="widget-title">סך מכירות</span>
-                        <span class="widget-icon">💰</span>
-                    </div>
-                    <div class="kpi-value">₪0</div>
-                    <div class="kpi-label">מכירות החודש</div>
-                    <div class="kpi-change positive">↑ 0% מחודש שעבר</div>
-                </div>
-
-                <div class="widget">
-                    <div class="widget-header">
-                        <span class="widget-title">הזמנות</span>
-                        <span class="widget-icon">🛒</span>
-                    </div>
-                    <div class="kpi-value">0</div>
-                    <div class="kpi-label">הזמנות החודש</div>
-                    <div class="kpi-change positive">↑ 0% מחודש שעבר</div>
-                </div>
-
-                <div class="widget">
-                    <div class="widget-header">
-                        <span class="widget-title">לקוחות</span>
-                        <span class="widget-icon">👥</span>
-                    </div>
-                    <div class="kpi-value">0</div>
-                    <div class="kpi-label">סך לקוחות</div>
-                    <div class="kpi-change positive">↑ 0 חדשים</div>
-                </div>
-
-                <div class="widget">
-                    <div class="widget-header">
-                        <span class="widget-title">מוצרים</span>
-                        <span class="widget-icon">📦</span>
-                    </div>
-                    <div class="kpi-value">0</div>
-                    <div class="kpi-label">סך מוצרים</div>
-                    <div class="kpi-change positive">↑ 0 חדשים</div>
-                </div>
+        <div class="widget">
+            <div class="widget-header">
+                <span class="widget-title">לקוחות</span>
+                <span class="widget-icon">👥</span>
             </div>
+            <div class="kpi-value">0</div>
+            <div class="kpi-label">סך לקוחות</div>
+            <div class="kpi-change positive">↑ 0 חדשים</div>
+        </div>
 
-            <!-- CHART WIDGETS -->
-            <div class="widget-grid-large">
-                <div class="widget">
-                    <div class="widget-header">
-                        <span class="widget-title">מגמת מכירות</span>
-                        <span class="widget-icon">📈</span>
-                    </div>
-                    <div class="chart-placeholder">
-                        <span class="chart-placeholder-text">📊 גרף מכירות - בקרוב</span>
-                    </div>
-                </div>
-
-                <div class="widget">
-                    <div class="widget-header">
-                        <span class="widget-title">הכנסות לפי קטגוריה</span>
-                        <span class="widget-icon">💹</span>
-                    </div>
-                    <div class="chart-placeholder">
-                        <span class="chart-placeholder-text">📊 גרף קטגוריות - בקרוב</span>
-                    </div>
-                </div>
+        <div class="widget">
+            <div class="widget-header">
+                <span class="widget-title">מוצרים</span>
+                <span class="widget-icon">📦</span>
             </div>
+            <div class="kpi-value">0</div>
+            <div class="kpi-label">סך מוצרים</div>
+            <div class="kpi-change positive">↑ 0 חדשים</div>
+        </div>
+    </div>
 
-            <!-- ACTIVITY & ACTIONS -->
-            <div class="widget-grid-large">
-                <div class="widget">
-                    <div class="widget-header">
-                        <span class="widget-title">פעילות אחרונה</span>
-                        <span class="widget-icon">🕒</span>
-                    </div>
+    <!-- CHART WIDGETS -->
+    <div class="widget-grid-large">
+        <div class="widget">
+            <div class="widget-header">
+                <span class="widget-title">מגמת מכירות</span>
+                <span class="widget-icon">📈</span>
+            </div>
+            <div class="chart-placeholder">
+                <span class="chart-placeholder-text">📊 גרף מכירות - בקרוב</span>
+            </div>
+        </div>
 
-                    <div class="empty-state">
-                        <div class="empty-icon">📭</div>
-                        <div class="empty-text">אין פעילות עדיין</div>
-                    </div>
-                </div>
-
-                <div class="widget">
-                    <div class="widget-header">
-                        <span class="widget-title">פעולות מהירות</span>
-                        <span class="widget-icon">⚡</span>
-                    </div>
-
-                    <div class="quick-actions">
-                        <button class="quick-action-btn">
-                            <span>➕</span>
-                            <span>הוסף מוצר חדש</span>
-                        </button>
-                        <button class="quick-action-btn secondary">
-                            <span>🛒</span>
-                            <span>צור הזמנה</span>
-                        </button>
-                        <button class="quick-action-btn secondary">
-                            <span>👤</span>
-                            <span>הוסף לקוח</span>
-                        </button>
-                    </div>
-                </div>
+        <div class="widget">
+            <div class="widget-header">
+                <span class="widget-title">הכנסות לפי קטגוריה</span>
+                <span class="widget-icon">💹</span>
+            </div>
+            <div class="chart-placeholder">
+                <span class="chart-placeholder-text">📊 גרף קטגוריות - בקרוב</span>
             </div>
         </div>
     </div>
 
-    <script>
-        // ========== Counter Animation for KPI Values ==========
-        function animateCounter(element, target, duration = 1500) {
-            const start = 0;
-            const increment = target / (duration / 16); // 60fps
-            let current = start;
+    <!-- ACTIVITY & ACTIONS -->
+    <div class="widget-grid-large">
+        <div class="widget">
+            <div class="widget-header">
+                <span class="widget-title">פעילות אחרונה</span>
+                <span class="widget-icon">🕒</span>
+            </div>
 
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    element.textContent = target.toLocaleString('he-IL');
-                    clearInterval(timer);
-                } else {
-                    element.textContent = Math.floor(current).toLocaleString('he-IL');
-                }
-            }, 16);
-        }
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <div class="empty-text">אין פעילות עדיין</div>
+            </div>
+        </div>
 
-        // Animate KPI values on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const kpiValues = document.querySelectorAll('.kpi-value');
+        <div class="widget">
+            <div class="widget-header">
+                <span class="widget-title">פעולות מהירות</span>
+                <span class="widget-icon">⚡</span>
+            </div>
 
-            // Delay animation to match widget fade-in
-            setTimeout(() => {
-                kpiValues.forEach((element, index) => {
-                    const text = element.textContent.replace(/[^\d]/g, '');
-                    const value = parseInt(text) || 0;
+            <div class="quick-actions">
+                <a href="/api/products/" class="action-btn">
+                    <span class="action-icon">📦</span>
+                    <span>הוסף מוצר חדש</span>
+                </a>
+                <a href="/api/orders/" class="action-btn">
+                    <span class="action-icon">🛒</span>
+                    <span>צור הזמנה</span>
+                </a>
+                <a href="/api/customers/" class="action-btn">
+                    <span class="action-icon">👥</span>
+                    <span>הוסף לקוח</span>
+                </a>
+                <a href="/api/integrations/sync/" class="action-btn">
+                    <span class="action-icon">🔄</span>
+                    <span>סנכרן עם WooCommerce</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-                    setTimeout(() => {
-                        if (value > 0) {
-                            animateCounter(element, value, 1200);
-                        }
-                    }, index * 100); // Stagger the animations
-                });
-            }, 300);
-        });
+{% block extra_js %}
+// Dashboard-specific JavaScript
+console.log('Dashboard loaded successfully');
 
-        // ========== Smooth Scroll for Internal Links ==========
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // ========== Notification Badge Pulse ==========
-        const notificationIcons = document.querySelectorAll('.has-notification');
-        notificationIcons.forEach(icon => {
-            icon.addEventListener('click', function() {
-                // Remove notification badge on click
-                this.classList.remove('has-notification');
-            });
-        });
-
-        // ========== Widget Interactions ==========
-        const widgets = document.querySelectorAll('.widget');
-        widgets.forEach(widget => {
-            widget.addEventListener('mouseenter', function() {
-                // Add subtle animation on hover
-                this.style.zIndex = '10';
-            });
-
-            widget.addEventListener('mouseleave', function() {
-                this.style.zIndex = '1';
-            });
-        });
-
-        // ========== User Avatar Click ==========
-        const userLogout = document.querySelector('.user-logout');
-        if (userLogout) {
-            userLogout.addEventListener('click', function() {
-                if (confirm('האם אתה בטוח שברצונך להתנתק?')) {
-                    window.location.href = '/accounts/logout/';
-                }
-            });
-        }
-
-        // ========== Loading State Simulation (if needed) ==========
-        // Add loading skeleton or spinner before real data loads
-        function showLoadingState() {
-            widgets.forEach(widget => {
-                widget.style.opacity = '0.6';
-            });
-        }
-
-        function hideLoadingState() {
-            widgets.forEach(widget => {
-                widget.style.opacity = '1';
-            });
-        }
-
-        // ========== Real-time Clock in Top Bar ==========
-        function updateClock() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('he-IL', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            const dateString = now.toLocaleDateString('he-IL', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-
-            const topBarSubtitle = document.querySelector('.top-bar-left p');
-            if (topBarSubtitle && !topBarSubtitle.dataset.originalText) {
-                topBarSubtitle.dataset.originalText = topBarSubtitle.textContent;
-            }
-        }
-
-        // Update clock every minute
-        updateClock();
-        setInterval(updateClock, 60000);
-    </script>
-
-    <!-- Plan Features JavaScript -->
-    <script src="/static/js/plan-features.js"></script>
-</body>
-</html>
+// Add any dashboard-specific functionality here
+{% endblock %}

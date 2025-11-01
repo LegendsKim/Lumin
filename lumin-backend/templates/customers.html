@@ -742,8 +742,8 @@ async function handleAddCustomer(event) {
 
         // Add to array and refresh
         allCustomers.unshift(newCustomer);
-        filterByTab(currentFilter);
-        updateCounts();
+        filteredCustomers = allCustomers;
+        renderCustomers();
 
         // Close modal
         closeAddCustomerModal();

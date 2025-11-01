@@ -11,6 +11,28 @@ DATABASES = {
     }
 }
 
+# Cache - Use in-memory cache instead of Redis (free tier compatible)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'lumin-production-cache',
+    }
+}
+
+# Sessions - Use database instead of Redis
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+# Celery - Use database broker instead of Redis (free tier compatible)
+REDIS_URL = env('REDIS_URL', default=None)
+if REDIS_URL:
+    # Use Redis for Celery if available
+    CELERY_BROKER_URL = REDIS_URL
+    CELERY_RESULT_BACKEND = REDIS_URL
+else:
+    # Fallback to database (slower but works without Redis)
+    CELERY_BROKER_URL = 'django-db'
+    CELERY_RESULT_BACKEND = 'django-db'
+
 # Security
 DEBUG = False
 

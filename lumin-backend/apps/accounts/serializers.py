@@ -4,6 +4,7 @@ Serializers for accounts app.
 """
 from rest_framework import serializers
 from .models import Tenant, User
+from .services import TenantService
 
 
 class PlanFeaturesSerializer(serializers.Serializer):
@@ -35,7 +36,7 @@ class PlanFeaturesSerializer(serializers.Serializer):
 
     def get_is_locked(self, obj):
         """Check if account is locked."""
-        return obj.tenant.is_locked()
+        return TenantService(obj.tenant).check_and_lock_if_over_limit() or obj.tenant.is_locked()
 
     def get_limits(self, obj):
         """Get all plan limits."""
@@ -49,15 +50,16 @@ class PlanFeaturesSerializer(serializers.Serializer):
 
     def get_current(self, obj):
         """Get current resource counts."""
-        return obj.tenant.get_current_counts()
+        return TenantService(obj.tenant).get_current_counts()
 
     def get_features(self, obj):
         """Get feature availability."""
         tenant = obj.tenant
+        service = TenantService(tenant)
         return {
-            'woocommerce_full_sync': tenant.can_use_woocommerce_full_sync(),
+            'woocommerce_full_sync': service.can_use_woocommerce_full_sync(),
             'woocommerce_basic_import': True,  # Available to all
-            'sms_marketing': tenant.can_send_sms_marketing(),
+            'sms_marketing': service.can_send_sms_marketing(),
             'sms_verification': True,  # Available to all
             's3_uploads': True,  # Available to all (with size limits)
             'unlimited_customers': tenant.plan == 'PRO',
@@ -70,9 +72,9 @@ class PlanFeaturesSerializer(serializers.Serializer):
         """Check if can add more resources."""
         tenant = obj.tenant
         return {
-            'customer': tenant.can_add_customer() and not tenant.is_locked(),
-            'product': tenant.can_add_product() and not tenant.is_locked(),
-            'staff_member': tenant.can_add_staff_member() and not tenant.is_locked(),
+            'customer': TenantService(tenant).can_add_customer() and not tenant.is_locked(),
+            'product': TenantService(tenant).can_add_product() and not tenant.is_locked(),
+            'staff_member': TenantService(tenant).can_add_staff_member() and not tenant.is_locked(),
         }
 
 

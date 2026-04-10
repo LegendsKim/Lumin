@@ -37,8 +37,7 @@ urlpatterns = [
     path('api/', api_root, name='api-root'),
 
     # API Routes
-    path('api/auth/', include('apps.accounts.urls')),
-    path('api/users/', include('apps.accounts.urls')),
+    path('api/accounts/', include('apps.accounts.urls')),
     path('api/products/', include('apps.inventory.urls')),
     path('api/orders/', include('apps.sales.urls')),
     path('api/customers/', include('apps.customers.urls')),

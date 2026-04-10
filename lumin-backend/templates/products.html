@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}מוצרים{% endblock %}
 
@@ -10,113 +11,113 @@
 
 /* ========== FILTERS BAR ========== */
 .filters-bar {
-    background: var(--light-card);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 16px;
-    padding: 20px 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    align-items: center;
-    animation: fadeInUp 0.6s ease-out;
+background: var(--light-card);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border: 1px solid rgba(255, 255, 255, 0.5);
+border-radius: 16px;
+padding: 20px 24px;
+margin-bottom: 24px;
+box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+display: flex;
+gap: 16px;
+flex-wrap: wrap;
+align-items: center;
+animation: fadeInUp 0.6s ease-out;
 }
 
 .search-box {
-    flex: 1;
-    min-width: 280px;
-    position: relative;
+flex: 1;
+min-width: 280px;
+position: relative;
 }
 
 .search-box input {
-    width: 100%;
-    padding: 12px 16px 12px 44px;
-    border: 1px solid rgba(0, 173, 181, 0.2);
-    border-radius: 10px;
-    font-size: 15px;
-    background: white;
-    transition: all 0.3s ease;
+width: 100%;
+padding: 12px 16px 12px 44px;
+border: 1px solid rgba(0, 173, 181, 0.2);
+border-radius: 10px;
+font-size: 15px;
+background: white;
+transition: all 0.3s ease;
 }
 
 .search-box input:focus {
-    outline: none;
-    border-color: var(--lumin-turquoise);
-    box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
+outline: none;
+border-color: var(--lumin-turquoise);
+box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
 }
 
 .search-box::before {
-    content: '🔍';
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 18px;
+content: '🔍';
+position: absolute;
+left: 16px;
+top: 50%;
+transform: translateY(-50%);
+font-size: 18px;
 }
 
 .filter-select {
-    padding: 12px 16px;
-    border: 1px solid rgba(0, 173, 181, 0.2);
-    border-radius: 10px;
-    font-size: 15px;
-    background: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
+padding: 12px 16px;
+border: 1px solid rgba(0, 173, 181, 0.2);
+border-radius: 10px;
+font-size: 15px;
+background: white;
+cursor: pointer;
+transition: all 0.3s ease;
 }
 
 .filter-select:focus {
-    outline: none;
-    border-color: var(--lumin-turquoise);
-    box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
+outline: none;
+border-color: var(--lumin-turquoise);
+box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
 }
 
 /* ========== VIEW TOGGLE ========== */
 .view-toggle {
-    display: flex;
-    gap: 8px;
-    background: white;
-    border-radius: 10px;
-    padding: 4px;
+display: flex;
+gap: 8px;
+background: white;
+border-radius: 10px;
+padding: 4px;
 }
 
 .view-toggle-btn {
-    padding: 8px 16px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    border-radius: 8px;
-    font-size: 18px;
-    transition: all 0.3s ease;
+padding: 8px 16px;
+border: none;
+background: transparent;
+cursor: pointer;
+border-radius: 8px;
+font-size: 18px;
+transition: all 0.3s ease;
 }
 
 .view-toggle-btn.active {
-    background: var(--lumin-turquoise);
-    color: white;
+background: var(--lumin-turquoise);
+color: white;
 }
 
 /* ========== GRID VIEW ========== */
 .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+gap: 24px;
 }
 
 .product-card {
-    background: var(--light-card);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 16px;
-    padding: 0;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-    transition: all 0.3s ease;
-    cursor: pointer;
-    overflow: hidden;
-    animation: fadeInUp 0.6s ease-out;
-    opacity: 0;
-    animation-fill-mode: forwards;
+background: var(--light-card);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border: 1px solid rgba(255, 255, 255, 0.5);
+border-radius: 16px;
+padding: 0;
+box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+transition: all 0.3s ease;
+cursor: pointer;
+overflow: hidden;
+animation: fadeInUp 0.6s ease-out;
+opacity: 0;
+animation-fill-mode: forwards;
 }
 
 .product-card:nth-child(1) { animation-delay: 0.1s; }
@@ -127,276 +128,387 @@
 .product-card:nth-child(6) { animation-delay: 0.35s; }
 
 .product-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 173, 181, 0.15);
+transform: translateY(-4px);
+box-shadow: 0 12px 32px rgba(0, 173, 181, 0.15);
 }
 
 .product-image {
-    width: 100%;
-    height: 200px;
-    background: linear-gradient(135deg, rgba(0, 173, 181, 0.1), rgba(0, 173, 181, 0.05));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 64px;
-    position: relative;
+width: 100%;
+height: 200px;
+background: linear-gradient(135deg, rgba(0, 173, 181, 0.1), rgba(0, 173, 181, 0.05));
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 64px;
+position: relative;
 }
 
 .product-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+width: 100%;
+height: 100%;
+object-fit: cover;
 }
 
 .stock-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    backdrop-filter: blur(10px);
+position: absolute;
+top: 12px;
+right: 12px;
+padding: 6px 12px;
+border-radius: 20px;
+font-size: 12px;
+font-weight: 600;
+backdrop-filter: blur(10px);
 }
 
 .stock-badge.good {
-    background: rgba(16, 185, 129, 0.2);
-    color: var(--success);
-    border: 1px solid var(--success);
+background: rgba(16, 185, 129, 0.2);
+color: var(--success);
+border: 1px solid var(--success);
 }
 
 .stock-badge.medium {
-    background: rgba(245, 158, 11, 0.2);
-    color: var(--warning);
-    border: 1px solid var(--warning);
+background: rgba(245, 158, 11, 0.2);
+color: var(--warning);
+border: 1px solid var(--warning);
 }
 
 .stock-badge.low {
-    background: rgba(239, 68, 68, 0.2);
-    color: var(--danger);
-    border: 1px solid var(--danger);
+background: rgba(239, 68, 68, 0.2);
+color: var(--danger);
+border: 1px solid var(--danger);
 }
 
 .stock-badge.out {
-    background: rgba(100, 116, 139, 0.2);
-    color: #64748B;
-    border: 1px solid #64748B;
+background: rgba(100, 116, 139, 0.2);
+color: #64748B;
+border: 1px solid #64748B;
 }
 
 .product-info {
-    padding: 20px;
+padding: 20px;
 }
 
 .product-name {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text-dark);
-    margin-bottom: 4px;
+font-size: 18px;
+font-weight: 700;
+color: var(--text-dark);
+margin-bottom: 4px;
 }
 
 .product-sku {
-    font-size: 13px;
-    color: #64748B;
-    margin-bottom: 12px;
+font-size: 13px;
+color: #64748B;
+margin-bottom: 12px;
 }
 
 .product-price {
-    font-size: 24px;
-    font-weight: 900;
-    color: var(--lumin-turquoise);
-    margin-bottom: 12px;
+font-size: 24px;
+font-weight: 900;
+color: var(--lumin-turquoise);
+margin-bottom: 12px;
 }
 
 .product-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 12px;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding-top: 12px;
+border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .product-stock {
-    font-size: 13px;
-    color: #64748B;
+font-size: 13px;
+color: #64748B;
 }
 
 .product-stock strong {
-    color: var(--text-dark);
+color: var(--text-dark);
 }
 
 .product-actions {
-    display: flex;
-    gap: 8px;
+display: flex;
+gap: 8px;
 }
 
 .action-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
+width: 32px;
+height: 32px;
+border-radius: 8px;
+border: none;
+cursor: pointer;
+transition: all 0.3s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 16px;
 }
 
 .action-btn.edit {
-    background: rgba(0, 173, 181, 0.1);
-    color: var(--lumin-turquoise);
+background: rgba(0, 173, 181, 0.1);
+color: var(--lumin-turquoise);
 }
 
 .action-btn.edit:hover {
-    background: var(--lumin-turquoise);
-    color: white;
+background: var(--lumin-turquoise);
+color: white;
 }
 
 .action-btn.delete {
-    background: rgba(239, 68, 68, 0.1);
-    color: var(--danger);
+background: rgba(239, 68, 68, 0.1);
+color: var(--danger);
 }
 
 .action-btn.delete:hover {
-    background: var(--danger);
-    color: white;
+background: var(--danger);
+color: white;
 }
 
 /* ========== TABLE VIEW ========== */
 .products-table {
-    display: none;
-    background: var(--light-card);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 16px;
-    overflow-x: auto;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+display: none;
+background: var(--light-card);
+backdrop-filter: blur(20px);
+border: 1px solid rgba(255, 255, 255, 0.5);
+border-radius: 16px;
+overflow-x: auto;
+box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 .products-table.active {
-    display: block;
+display: block;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 800px;
+width: 100%;
+border-collapse: collapse;
+min-width: 800px;
 }
 
 thead {
-    background: rgba(0, 173, 181, 0.05);
+background: rgba(0, 173, 181, 0.05);
 }
 
 th {
-    padding: 16px 20px;
-    text-align: right;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-dark);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+padding: 16px 20px;
+text-align: right;
+font-size: 13px;
+font-weight: 700;
+color: var(--text-dark);
+text-transform: uppercase;
+letter-spacing: 0.5px;
 }
 
 tbody tr {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    transition: all 0.3s ease;
+border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+transition: all 0.3s ease;
 }
 
 tbody tr:hover {
-    background: rgba(0, 173, 181, 0.03);
+background: rgba(0, 173, 181, 0.03);
 }
 
 td {
-    padding: 16px 20px;
-    font-size: 15px;
-    color: var(--text-dark);
+padding: 16px 20px;
+font-size: 15px;
+color: var(--text-dark);
 }
 
 /* ========== EMPTY STATE ========== */
 .empty-state {
-    text-align: center;
-    padding: 80px 24px;
-    animation: fadeInUp 0.6s ease-out;
+text-align: center;
+padding: 80px 24px;
+animation: fadeInUp 0.6s ease-out;
 }
 
 .empty-icon {
-    font-size: 80px;
-    margin-bottom: 20px;
-    opacity: 0.3;
+font-size: 80px;
+margin-bottom: 20px;
+opacity: 0.3;
 }
 
 .empty-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text-dark);
-    margin-bottom: 8px;
+font-size: 24px;
+font-weight: 700;
+color: var(--text-dark);
+margin-bottom: 8px;
 }
 
 .empty-text {
-    font-size: 16px;
-    color: #64748B;
-    margin-bottom: 24px;
+font-size: 16px;
+color: #64748B;
+margin-bottom: 24px;
 }
 
 /* ========== LOADING STATE ========== */
 .loading {
-    text-align: center;
-    padding: 60px 24px;
+text-align: center;
+padding: 60px 24px;
 }
 
 .spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid rgba(0, 173, 181, 0.1);
-    border-top-color: var(--lumin-turquoise);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 20px;
+width: 48px;
+height: 48px;
+border: 4px solid rgba(0, 173, 181, 0.1);
+border-top-color: var(--lumin-turquoise);
+border-radius: 50%;
+animation: spin 0.8s linear infinite;
+margin: 0 auto 20px;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+to { transform: rotate(360deg); }
 }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+from {
+opacity: 0;
+transform: translateY(30px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
 }
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
-    .products-grid {
-        grid-template-columns: 1fr;
-    }
+.products-grid {
+grid-template-columns: 1fr;
+}
 
-    .filters-bar {
-        flex-direction: column;
-        align-items: stretch;
-    }
+.filters-bar {
+flex-direction: column;
+align-items: stretch;
+}
 
-    .search-box {
-        min-width: 100%;
-    }
+.search-box {
+min-width: 100%;
+}
 }
 
 @media (max-width: 480px) {
-    .product-card {
-        margin-bottom: 16px;
-    }
+.product-card {
+margin-bottom: 16px;
+}
 
-    .product-image {
-        height: 180px;
-    }
+.product-image {
+height: 180px;
+}
 
-    .product-info {
-        padding: 16px;
-    }
+.product-info {
+padding: 16px;
+}
+}
+
+/* Modal Styles */
+.modal-overlay {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.7);
+backdrop-filter: blur(5px);
+z-index: 2000;
+align-items: center;
+justify-content: center;
+animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay.active {
+display: flex;
+}
+
+.modal {
+background: white;
+border-radius: 20px;
+width: 90%;
+max-width: 600px;
+max-height: 90vh;
+overflow-y: auto;
+box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+padding: 24px 32px;
+border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: linear-gradient(135deg, rgba(0, 173, 181, 0.05), rgba(0, 173, 181, 0.02));
+}
+
+.modal-title {
+font-size: 24px;
+font-weight: 700;
+color: var(--text-dark);
+}
+
+.modal-close {
+background: none;
+border: none;
+font-size: 24px;
+cursor: pointer;
+color: #64748B;
+}
+
+.modal-body {
+padding: 32px;
+}
+
+.form-group {
+margin-bottom: 20px;
+}
+
+.form-label {
+display: block;
+margin-bottom: 8px;
+font-weight: 600;
+color: var(--text-dark);
+}
+
+.form-input, .form-select, .form-textarea {
+width: 100%;
+padding: 12px;
+border: 1px solid rgba(0, 0, 0, 0.1);
+border-radius: 10px;
+font-family: inherit;
+transition: all 0.3s ease;
+}
+
+.form-input:focus {
+border-color: var(--lumin-turquoise);
+outline: none;
+box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
+}
+
+.modal-footer {
+padding: 20px 32px;
+border-top: 1px solid rgba(0, 0, 0, 0.1);
+display: flex;
+justify-content: flex-end;
+gap: 12px;
+}
+
+.modal-btn {
+padding: 12px 24px;
+border-radius: 10px;
+font-weight: 600;
+cursor: pointer;
+border: none;
+transition: all 0.3s ease;
+}
+
+.modal-btn.cancel {
+background: #F1F5F9;
+color: #64748B;
+}
+
+.modal-btn.save {
+background: var(--lumin-turquoise);
+color: white;
 }
 {% endblock %}
 
@@ -425,6 +537,12 @@ td {
         <button class="view-toggle-btn active" onclick="switchView('grid')">⊞</button>
         <button class="view-toggle-btn" onclick="switchView('table')">☰</button>
     </div>
+
+    <button class="primary-btn" onclick="openAddProductModal()"
+        style="margin-right: auto; white-space: nowrap; padding: 12px 20px; border-radius: 10px; background: var(--lumin-turquoise); color: white; border: none; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0, 173, 181, 0.2);">
+        <span>➕</span>
+        <span>הוסף מוצר</span>
+    </button>
 </div>
 
 <!-- LOADING STATE -->
@@ -462,163 +580,75 @@ td {
 <!-- EMPTY STATE -->
 <div class="empty-state" id="emptyState" style="display: none;">
     <div class="empty-icon">📦</div>
-    <div class="empty-title">אין מוצרים עדיין</div>
+    <div class="empty-title">אין כרגע מוצרים במלאי</div>
     <div class="empty-text">התחל בהוספת המוצר הראשון שלך</div>
     <button class="primary-btn" onclick="openAddProductModal()">
         <span>➕</span>
         <span>הוסף מוצר</span>
     </button>
 </div>
+
+<!-- ADD/EDIT PRODUCT MODAL -->
+<div class="modal-overlay" id="productModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title" id="modalTitle">הוסף מוצר חדש</div>
+            <button class="modal-close" onclick="closeProductModal()">×</button>
+        </div>
+        <form id="productForm" class="modal-body">
+            <input type="hidden" id="productId">
+
+            <div class="form-group">
+                <label class="form-label">שם המוצר *</label>
+                <input type="text" id="productName" class="form-input" required>
+            </div>
+
+            <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <label class="form-label">SKU (מק"ט) *</label>
+                    <input type="text" id="productSku" class="form-input" required>
+                </div>
+                <div>
+                    <label class="form-label">ברקוד</label>
+                    <input type="text" id="productBarcode" class="form-input">
+                </div>
+            </div>
+
+            <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <label class="form-label">מחיר (₪) *</label>
+                    <input type="number" id="productPrice" class="form-input" step="0.01" min="0" required>
+                </div>
+                <div>
+                    <label class="form-label">עלות (₪)</label>
+                    <input type="number" id="productCost" class="form-input" step="0.01" min="0">
+                </div>
+            </div>
+
+            <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <label class="form-label">כמות במלאי *</label>
+                    <input type="number" id="productStock" class="form-input" min="0" required>
+                </div>
+                <div>
+                    <label class="form-label">סף מינימום</label>
+                    <input type="number" id="productMinStock" class="form-input" min="0" value="5">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">תיאור</label>
+                <textarea id="productDescription" class="form-textarea" rows="3"></textarea>
+            </div>
+        </form>
+        <div class="modal-footer">
+            <button class="modal-btn cancel" onclick="closeProductModal()">ביטול</button>
+            <button type="submit" form="productForm" class="modal-btn save">שמור מוצר</button>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
-// ========== DATA FETCHING ==========
-let allProducts = [];
-let currentView = 'grid';
-
-async function fetchProducts() {
-    try {
-        const response = await fetch('/api/products/api/products/');
-        const data = await response.json();
-        allProducts = data.results || data || [];
-
-        // Hide loading
-        document.getElementById('loadingState').style.display = 'none';
-
-        if (allProducts.length === 0) {
-            document.getElementById('emptyState').style.display = 'block';
-        } else {
-            renderProducts(allProducts);
-        }
-    } catch (error) {
-        console.error('Error fetching products:', error);
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('emptyState').style.display = 'block';
-    }
-}
-
-// ========== RENDERING ==========
-function renderProducts(products) {
-    if (currentView === 'grid') {
-        renderGrid(products);
-    } else {
-        renderTable(products);
-    }
-}
-
-function renderGrid(products) {
-    const grid = document.getElementById('productsGrid');
-    grid.style.display = 'grid';
-    document.getElementById('productsTable').classList.remove('active');
-
-    grid.innerHTML = products.map((product, index) => `
-        <div class="product-card" style="animation-delay: ${index * 0.05}s;">
-            <div class="product-image">
-                ${product.image ? `<img src="${product.image}" alt="${product.name}">` : '📦'}
-                <span class="stock-badge ${product.stock_status}">${getStockText(product.stock_status)}</span>
-            </div>
-            <div class="product-info">
-                <div class="product-name">${product.name}</div>
-                <div class="product-sku">SKU: ${product.sku}</div>
-                <div class="product-price">₪${product.price}</div>
-                <div class="product-meta">
-                    <div class="product-stock">
-                        <strong>${product.stock_quantity}</strong> ${product.unit}
-                    </div>
-                    <div class="product-actions">
-                        <button class="action-btn edit" onclick="editProduct(${product.id})">✏️</button>
-                        <button class="action-btn delete" onclick="deleteProduct(${product.id})">🗑️</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-function renderTable(products) {
-    const tbody = document.getElementById('productsTableBody');
-    document.getElementById('productsGrid').style.display = 'none';
-    document.getElementById('productsTable').classList.add('active');
-
-    tbody.innerHTML = products.map(product => `
-        <tr>
-            <td>
-                ${product.image ? `<img src="${product.image}" style="width: 48px; height: 48px; object-fit: cover; border-radius: 8px;">` : '📦'}
-            </td>
-            <td><strong>${product.name}</strong></td>
-            <td>${product.sku}</td>
-            <td>${product.category_name || '-'}</td>
-            <td><strong>₪${product.price}</strong></td>
-            <td>${product.stock_quantity} ${product.unit}</td>
-            <td><span class="stock-badge ${product.stock_status}">${getStockText(product.stock_status)}</span></td>
-            <td>
-                <div class="product-actions">
-                    <button class="action-btn edit" onclick="editProduct(${product.id})">✏️</button>
-                    <button class="action-btn delete" onclick="deleteProduct(${product.id})">🗑️</button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
-}
-
-function getStockText(status) {
-    const texts = {
-        'good': 'מלאי תקין',
-        'medium': 'מלאי בינוני',
-        'low': 'מלאי נמוך',
-        'out': 'אזל מהמלאי'
-    };
-    return texts[status] || 'לא ידוע';
-}
-
-// ========== VIEW TOGGLE ==========
-function switchView(view) {
-    currentView = view;
-    const buttons = document.querySelectorAll('.view-toggle-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-
-    renderProducts(allProducts);
-}
-
-// ========== SEARCH & FILTER ==========
-document.getElementById('searchInput').addEventListener('input', function(e) {
-    const query = e.target.value.toLowerCase();
-    const filtered = allProducts.filter(p =>
-        p.name.toLowerCase().includes(query) ||
-        p.sku.toLowerCase().includes(query) ||
-        (p.barcode && p.barcode.toLowerCase().includes(query))
-    );
-    renderProducts(filtered);
-});
-
-document.getElementById('stockFilter').addEventListener('change', function(e) {
-    const status = e.target.value;
-    if (status === '') {
-        renderProducts(allProducts);
-    } else {
-        const filtered = allProducts.filter(p => p.stock_status === status);
-        renderProducts(filtered);
-    }
-});
-
-// ========== PRODUCT ACTIONS ==========
-function openAddProductModal() {
-    alert('פתיחת מודל הוספת מוצר - יתווסף בהמשך');
-}
-
-function editProduct(id) {
-    alert(`עריכת מוצר ${id} - יתווסף בהמשך`);
-}
-
-function deleteProduct(id) {
-    if (confirm('האם אתה בטוח שברצונך למחוק מוצר זה?')) {
-        alert(`מחיקת מוצר ${id} - יתווסף בהמשך`);
-    }
-}
-
-// ========== INIT ==========
-document.addEventListener('DOMContentLoaded', function() {
-    fetchProducts();
-});
+<script src="{% static 'js/products.js' %}?v=3"></script>
 {% endblock %}

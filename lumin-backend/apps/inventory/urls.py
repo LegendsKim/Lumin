@@ -12,5 +12,5 @@ router.register(r'stock-movements', StockMovementViewSet, basename='stock-moveme
 
 urlpatterns = [
     path('', products_page, name='products_page'),
-    path('api/', include(router.urls)),
+    path('data/', include(router.urls)),
 ]

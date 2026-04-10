@@ -1,32 +1,11 @@
 {
   "permissions": {
     "allow": [
+      "Bash(del customers.html)",
       "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe manage.py shell:*)",
-      "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe:*)",
-      "Bash(python:*)",
-      "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe manage.py migrate:*)",
-      "Bash(del business_details.html)",
-      "Bash(ren:*)",
-      "Bash(del phone_verification.html)",
-      "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe manage.py:*)",
-      "Bash(./venv/Scripts/pip.exe install:*)",
-      "Bash(del check_duplicates.py)",
-      "Bash(timeout 3 bash:*)",
-      "Bash(find:*)",
-      "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe manage.py makemigrations:*)",
-      "Bash(timeout 5 curl:*)",
-      "Bash(dir:*)",
-      "Bash(for file in customers.html products.html sync.html coupons.html)",
-      "Bash(do echo \"=== $file ===\")",
-      "Bash(tail:*)",
-      "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe manage.py runserver:*)",
-      "Bash(tasklist:*)",
-      "Bash(findstr:*)",
-      "Bash(cat:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(git add:*)",
-      "Bash(git reset:*)"
+      "Bash(./venv/Scripts/python.exe:*)",
+      "Bash(nul)",
+      "Bash(PGPASSFILE=\"\" ./venv/Scripts/python.exe:*)"
     ],
     "deny": [],
     "ask": []

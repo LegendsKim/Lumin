@@ -137,3 +137,25 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# ===== Python / Django =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+.venv/
+*.egg-info/
+db.sqlite3
+db.sqlite3-journal
+*.pyc
+media/
+staticfiles/
+*.log
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Windows reserved files
+nul
+**/nul

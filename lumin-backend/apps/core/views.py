@@ -50,14 +50,14 @@ def api_root(request):
         'message': 'Welcome to Lumin API',
         'version': '1.0.0',
         'endpoints': {
-            'auth': '/api/auth/',
-            'users': '/api/users/',
+            'accounts': '/api/accounts/',
             'products': '/api/products/',
             'orders': '/api/orders/',
             'customers': '/api/customers/',
             'analytics': '/api/analytics/',
+            'integrations': '/api/integrations/',
         },
-        'documentation': '/admin/',  # For now, admin serves as docs
+        'documentation': '/admin/',
     })
 
 
@@ -79,10 +79,83 @@ def dashboard(request):
     user = request.user
     tenant = user.tenant
     
+    # Fetch recent activity
+    from apps.customers.models import Treatment, Customer
+    from apps.sales.models import Order
+    from itertools import chain
+    from operator import attrgetter
+
+    # Recent treatments
+    recent_treatments = Treatment.objects.filter(tenant=tenant).select_related('customer', 'treatment_type').order_by('-created_at')[:5]
+    
+    # Recent orders
+    recent_orders = Order.objects.filter(tenant=tenant).select_related('customer').order_by('-created_at')[:5]
+    
+    # New customers
+    new_customers = Customer.objects.filter(tenant=tenant).order_by('-created_at')[:5]
+
+    # Combine and sort, taking the 10 most recent
+    activity_stream = sorted(
+        chain(recent_treatments, recent_orders, new_customers),
+        key=attrgetter('created_at'),
+        reverse=True
+    )[:10]
+
+    # Tag items with type for template rendering
+    for item in activity_stream:
+        if isinstance(item, Treatment):
+            item.activity_type = 'treatment'
+        elif isinstance(item, Order):
+            item.activity_type = 'order'
+        elif isinstance(item, Customer):
+            item.activity_type = 'customer'
+
+    # Calculate KPIs
+    from django.db.models import Sum, Count
+    from django.utils import timezone
+    from apps.inventory.models import Product
+
+    now = timezone.now()
+    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+    # Sales & Orders (This Month)
+    sales_data = Order.objects.filter(
+        tenant=tenant, 
+        created_at__gte=month_start
+    ).aggregate(
+        total_sales=Sum('total_amount'),
+        total_orders=Count('id')
+    )
+    kpi_sales_month = sales_data['total_sales'] or 0
+    kpi_orders_month = sales_data['total_orders'] or 0
+
+    # Customers
+    kpi_customers_total = Customer.objects.filter(tenant=tenant).count()
+    kpi_customers_new = Customer.objects.filter(
+        tenant=tenant, 
+        created_at__gte=month_start
+    ).count()
+
+    # Products
+    kpi_products_total = Product.objects.filter(tenant=tenant).count()
+    kpi_products_new = Product.objects.filter(
+        tenant=tenant, 
+        created_at__gte=month_start
+    ).count()
+
     context = {
         'user': user,
         'tenant': tenant,
         'business_name': tenant.business_name if tenant else 'העסק שלי',
+        'activities': activity_stream,
+        
+        # KPIs
+        'kpi_sales_month': kpi_sales_month,
+        'kpi_orders_month': kpi_orders_month,
+        'kpi_customers_total': kpi_customers_total,
+        'kpi_customers_new': kpi_customers_new,
+        'kpi_products_total': kpi_products_total,
+        'kpi_products_new': kpi_products_new,
     }
 
     return render(request, 'dashboard.html', context)

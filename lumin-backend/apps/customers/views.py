@@ -82,6 +82,8 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Set tenant on create and check plan limits."""
+        from apps.accounts.services import TenantService
+
         user = self.request.user
 
         if not user.is_authenticated:
@@ -92,7 +94,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
         # Check plan limits before creating
         tenant = user.tenant
-        if not tenant.can_add_customer():
+        if not TenantService(tenant).can_add_customer():
             raise PlanLimitExceeded(
                 resource_type='customers',
                 max_allowed=tenant.max_customers
@@ -142,8 +144,9 @@ class CustomerViewSet(viewsets.ModelViewSet):
             return Response({'error': 'סוג קובץ לא תקין. מותרים: JPEG, PNG, WebP'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Check plan limits for file size
+        from apps.accounts.services import TenantService
         tenant = request.user.tenant
-        if not tenant.can_upload_to_s3(file_size_mb):
+        if not TenantService(tenant).can_upload_to_s3(file_size_mb):
             return Response({
                 'error': 'PLAN_LIMIT_EXCEEDED',
                 'message': f'קובץ גדול מדי. במסלול {tenant.plan} ניתן להעלות קבצים עד {tenant.max_s3_storage_mb}MB',
@@ -273,10 +276,11 @@ class StaffMemberViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Set tenant on create and check plan limits."""
+        from apps.accounts.services import TenantService
         tenant = self.request.user.tenant
 
         # Check plan limits before creating
-        if not tenant.can_add_staff_member():
+        if not TenantService(tenant).can_add_staff_member():
             raise PlanLimitExceeded(
                 resource_type='staff_members',
                 max_allowed=tenant.max_staff_members

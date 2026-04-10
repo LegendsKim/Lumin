@@ -5,6 +5,7 @@ These permissions check if the tenant has access to specific features
 or can add more resources based on their subscription plan.
 """
 from rest_framework.permissions import BasePermission
+from apps.accounts.services import TenantService
 from .exceptions import PlanLimitExceeded, ProFeatureRequired
 
 
@@ -43,7 +44,7 @@ class CanAddCustomerPermission(PlanBasedPermission):
     def check_permission(self, request, view):
         tenant = request.user.tenant
 
-        if not tenant.can_add_customer():
+        if not TenantService(tenant).can_add_customer():
             raise PlanLimitExceeded(
                 resource_type='customers',
                 max_allowed=tenant.max_customers
@@ -60,7 +61,7 @@ class CanAddProductPermission(PlanBasedPermission):
     def check_permission(self, request, view):
         tenant = request.user.tenant
 
-        if not tenant.can_add_product():
+        if not TenantService(tenant).can_add_product():
             raise PlanLimitExceeded(
                 resource_type='products',
                 max_allowed=tenant.max_products
@@ -77,7 +78,7 @@ class CanAddStaffMemberPermission(PlanBasedPermission):
     def check_permission(self, request, view):
         tenant = request.user.tenant
 
-        if not tenant.can_add_staff_member():
+        if not TenantService(tenant).can_add_staff_member():
             raise PlanLimitExceeded(
                 resource_type='staff_members',
                 max_allowed=tenant.max_staff_members
@@ -111,7 +112,7 @@ class ProFeaturePermission(BasePermission):
             return True
 
         # Check specific feature
-        if not tenant.has_feature(feature_name):
+        if not TenantService(tenant).has_feature(feature_name):
             raise ProFeatureRequired(feature_name)
 
         return True
@@ -133,7 +134,7 @@ class CanUseWooCommerceSyncPermission(BasePermission):
         # Check if this is a full sync request (with webhooks)
         is_full_sync = request.data.get('enable_webhooks', False)
 
-        if is_full_sync and not tenant.can_use_woocommerce_full_sync():
+        if is_full_sync and not TenantService(tenant).can_use_woocommerce_full_sync():
             raise ProFeatureRequired(
                 'woocommerce_sync',
                 'סנכרון אוטומטי עם Webhooks זמין רק במסלול Pro. במסלול Basic אפשר לבצע ייבוא חד-פעמי בלבד.'
@@ -155,7 +156,7 @@ class CanSendSMSMarketingPermission(BasePermission):
 
         tenant = request.user.tenant
 
-        if not tenant.can_send_sms_marketing():
+        if not TenantService(tenant).can_send_sms_marketing():
             raise ProFeatureRequired(
                 'sms_marketing',
                 'שליחת SMS שיווקי זמינה רק במסלול Pro'
@@ -183,7 +184,7 @@ class CanUploadToS3Permission(BasePermission):
             file_obj = request.FILES.get('image') or request.FILES.get('file')
             file_size_mb = file_obj.size / (1024 * 1024)  # Convert to MB
 
-            if not tenant.can_upload_to_s3(file_size_mb):
+            if not TenantService(tenant).can_upload_to_s3(file_size_mb):
                 raise ProFeatureRequired(
                     's3_unlimited',
                     f'קובץ גדול מדי. במסלול Basic ניתן להעלות קבצים עד {tenant.max_s3_storage_mb}MB. שדרג ל-Pro להעלאה ללא הגבלה.'

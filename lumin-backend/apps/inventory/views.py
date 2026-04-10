@@ -6,6 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import render
 from django.db import models
 from apps.core.exceptions import PlanLimitExceeded
+from apps.accounts.services import TenantService
 from .models import Product, Category, StockMovement
 from .serializers import (
     ProductListSerializer,
@@ -15,6 +16,10 @@ from .serializers import (
 )
 
 
+from django.contrib.auth.decorators import login_required
+from rest_framework.permissions import IsAuthenticated
+
+@login_required
 def products_page(request):
     """Render the products management page."""
     return render(request, 'products.html')
@@ -22,6 +27,7 @@ def products_page(request):
 
 class ProductViewSet(viewsets.ModelViewSet):
     """ViewSet for Product management."""
+    permission_classes = [IsAuthenticated]
 
     queryset = Product.objects.select_related('category').all()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -45,7 +51,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         tenant = self.request.user.tenant
 
         # Check plan limits before creating
-        if not tenant.can_add_product():
+        if not TenantService(tenant).can_add_product():
             raise PlanLimitExceeded(
                 resource_type='products',
                 max_allowed=tenant.max_products

@@ -1,36 +1,27 @@
 /**
  * Axios API client configuration with interceptors.
+ * Uses Supabase JWT tokens for authentication.
  */
 import axios from 'axios';
+import { getAccessToken } from './supabase';
 import { ERROR_MESSAGES } from './constants';
-
-// Get CSRF token from cookie
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-  return null;
-}
 
 // Create axios instance
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
   timeout: 10000,
-  withCredentials: true, // Important for session cookies
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor - Add CSRF token to all requests
+// Request interceptor - Attach Supabase JWT token
 api.interceptors.request.use(
-  (config) => {
-    // Add CSRF token for non-GET requests
-    if (config.method !== 'get') {
-      const csrfToken = getCookie('csrftoken');
-      if (csrfToken) {
-        config.headers['X-CSRFToken'] = csrfToken;
-      }
+  async (config) => {
+    // Get JWT token from Supabase session
+    const token = await getAccessToken();
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
 
     // Log request in development

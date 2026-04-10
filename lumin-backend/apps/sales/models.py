@@ -8,76 +8,12 @@ from decimal import Decimal
 from apps.core.models import BaseModel
 from apps.accounts.models import Tenant, User
 from apps.inventory.models import Product
+from apps.customers.models import Customer
 
 
-class Customer(BaseModel):
-    """
-    Customer model for sales.
-    """
-    tenant = models.ForeignKey(
-        Tenant,
-        on_delete=models.CASCADE,
-        related_name='customers',
-        verbose_name=_('Tenant')
-    )
-    name = models.CharField(
-        max_length=255,
-        verbose_name=_('Customer Name')
-    )
-    email = models.EmailField(
-        blank=True,
-        verbose_name=_('Email')
-    )
-    phone = models.CharField(
-        max_length=20,
-        blank=True,
-        verbose_name=_('Phone')
-    )
-    address = models.TextField(
-        blank=True,
-        verbose_name=_('Address')
-    )
-    tax_id = models.CharField(
-        max_length=50,
-        blank=True,
-        verbose_name=_('Tax ID'),
-        help_text=_('VAT number or business registration')
-    )
-    notes = models.TextField(
-        blank=True,
-        verbose_name=_('Notes')
-    )
-    is_active = models.BooleanField(
-        default=True,
-        verbose_name=_('Active')
-    )
+# NOTE: Customer model is defined in apps.customers.models
+# It is imported at the top of this file for use in Order FK.
 
-    class Meta:
-        verbose_name = _('לקוח')
-        verbose_name_plural = _('לקוחות')
-        ordering = ['name']
-        indexes = [
-            models.Index(fields=['tenant', 'name']),
-            models.Index(fields=['tenant', 'phone']),
-            models.Index(fields=['tenant', 'email']),
-        ]
-
-    def __str__(self):
-        return self.name
-
-    @property
-    def total_orders(self):
-        """Get total number of orders."""
-        return self.orders.count()
-
-    @property
-    def total_spent(self):
-        """Get total amount spent by customer."""
-        return self.orders.filter(
-            status='COMPLETED'
-        ).aggregate(
-            total=models.Sum('total_amount')
-        )['total'] or Decimal('0.00')
 
 
 class Order(BaseModel):
@@ -113,7 +49,7 @@ class Order(BaseModel):
     customer = models.ForeignKey(
         Customer,
         on_delete=models.PROTECT,
-        related_name='orders',
+        related_name='sales_orders',
         verbose_name=_('Customer'),
         null=True,
         blank=True

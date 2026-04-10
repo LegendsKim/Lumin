@@ -90,15 +90,15 @@ export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 // API Endpoints (relative to base URL)
 export const API_ENDPOINTS = {
-  // Auth
-  AUTH_PHONE_REQUEST: '/api/auth/phone/request/',
-  AUTH_PHONE_VERIFY: '/api/auth/phone/verify/',
-  AUTH_REGISTER_TENANT: '/api/auth/register-tenant/',
-  AUTH_LOGOUT: '/api/auth/logout/',
+  // Auth & Users (unified under accounts)
+  AUTH_PHONE_REQUEST: '/api/accounts/phone/request/',
+  AUTH_PHONE_VERIFY: '/api/accounts/phone/verify/',
+  AUTH_REGISTER_TENANT: '/api/accounts/register-tenant/',
+  AUTH_LOGOUT: '/api/accounts/logout/',
 
   // Users
-  USERS_ME: '/api/users/me/',
-  USERS_INVITE: '/api/users/invite/',
+  USERS_ME: '/api/accounts/me/',
+  USERS_INVITE: '/api/accounts/invite/',
 
   // Products
   PRODUCTS: '/api/products/',

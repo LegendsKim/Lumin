@@ -1,7 +1,7 @@
 """Admin configuration for Sales app."""
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Customer, Order, OrderItem, Invoice, Payment
+from .models import Order, OrderItem, Invoice, Payment
 
 
 class OrderItemInline(admin.TabularInline):
@@ -16,31 +16,6 @@ class PaymentInline(admin.TabularInline):
     extra = 0
     fields = ['amount', 'payment_method', 'reference', 'received_by', 'created_at']
     readonly_fields = ['created_at']
-
-
-@admin.register(Customer)
-class CustomerAdmin(admin.ModelAdmin):
-    list_display = ['name', 'phone', 'email', 'total_orders', 'total_spent_display', 'is_active', 'tenant']
-    list_filter = ['tenant', 'is_active', 'created_at']
-    search_fields = ['name', 'phone', 'email', 'tax_id']
-    ordering = ['name']
-    readonly_fields = ['created_at', 'updated_at', 'total_orders', 'total_spent_display']
-
-    fieldsets = (
-        ('מידע בסיסי', {
-            'fields': ('tenant', 'name', 'phone', 'email')
-        }),
-        ('פרטים נוספים', {
-            'fields': ('address', 'tax_id', 'notes', 'is_active')
-        }),
-        ('סטטיסטיקה', {
-            'fields': ('total_orders', 'total_spent_display', 'created_at', 'updated_at')
-        }),
-    )
-
-    def total_spent_display(self, obj):
-        return f"₪{obj.total_spent:,.2f}"
-    total_spent_display.short_description = 'סה"כ הוצאות'
 
 
 @admin.register(Order)

@@ -148,8 +148,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Django REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+        'apps.core.authentication.SupabaseJWTAuthentication',  # Supabase JWT (React frontend)
+        'rest_framework.authentication.SessionAuthentication',  # Django sessions (admin/templates)
+        'rest_framework.authentication.TokenAuthentication',    # DRF tokens (legacy)
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -303,3 +304,9 @@ LOGGING = {
         },
     },
 }
+
+# ==================== SUPABASE SETTINGS ====================
+# Get these from: https://supabase.com/dashboard/project/YOUR_PROJECT/settings/api
+SUPABASE_URL = env('SUPABASE_URL', default='')
+SUPABASE_JWT_SECRET = env('SUPABASE_JWT_SECRET', default='')
+SUPABASE_SERVICE_ROLE_KEY = env('SUPABASE_SERVICE_ROLE_KEY', default='')

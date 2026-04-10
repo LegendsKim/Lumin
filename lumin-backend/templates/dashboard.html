@@ -5,189 +5,189 @@
 {% block extra_css %}
 /* Dashboard-specific styles */
 .dashboard-content {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
+display: flex;
+flex-direction: column;
+gap: 32px;
 }
 
 /* KPI Widgets Grid */
 .widget-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+gap: 24px;
 }
 
 .widget-grid-large {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 24px;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+gap: 24px;
 }
 
 .widget {
-    background: var(--light-card);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    transition: all 0.3s ease;
+background: var(--light-card);
+backdrop-filter: blur(20px);
+border: 1px solid rgba(255, 255, 255, 0.5);
+border-radius: 16px;
+padding: 24px;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+transition: all 0.3s ease;
 }
 
 .widget:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 173, 181, 0.15);
+transform: translateY(-4px);
+box-shadow: 0 8px 24px rgba(0, 173, 181, 0.15);
 }
 
 .widget-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 20px;
 }
 
 .widget-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-dark);
+font-size: 16px;
+font-weight: 600;
+color: var(--text-dark);
 }
 
 .widget-icon {
-    font-size: 24px;
-    opacity: 0.7;
+font-size: 24px;
+opacity: 0.7;
 }
 
 /* KPI Values */
 .kpi-value {
-    font-size: 36px;
-    font-weight: 700;
-    color: var(--lumin-turquoise);
-    margin-bottom: 8px;
+font-size: 36px;
+font-weight: 700;
+color: var(--lumin-turquoise);
+margin-bottom: 8px;
 }
 
 .kpi-label {
-    font-size: 14px;
-    color: #64748B;
-    margin-bottom: 12px;
+font-size: 14px;
+color: #64748B;
+margin-bottom: 12px;
 }
 
 .kpi-change {
-    font-size: 13px;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 12px;
-    border-radius: 12px;
+font-size: 13px;
+font-weight: 600;
+display: inline-flex;
+align-items: center;
+gap: 4px;
+padding: 4px 12px;
+border-radius: 12px;
 }
 
 .kpi-change.positive {
-    background: rgba(16, 185, 129, 0.1);
-    color: var(--success);
+background: rgba(16, 185, 129, 0.1);
+color: var(--success);
 }
 
 .kpi-change.negative {
-    background: rgba(239, 68, 68, 0.1);
-    color: var(--danger);
+background: rgba(239, 68, 68, 0.1);
+color: var(--danger);
 }
 
 /* Chart Placeholder */
 .chart-placeholder {
-    height: 240px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, rgba(0, 173, 181, 0.05), rgba(0, 173, 181, 0.02));
-    border-radius: 12px;
-    border: 2px dashed rgba(0, 173, 181, 0.2);
+height: 240px;
+display: flex;
+align-items: center;
+justify-content: center;
+background: linear-gradient(135deg, rgba(0, 173, 181, 0.05), rgba(0, 173, 181, 0.02));
+border-radius: 12px;
+border: 2px dashed rgba(0, 173, 181, 0.2);
 }
 
 .chart-placeholder-text {
-    font-size: 16px;
-    color: #94A3B8;
-    font-weight: 500;
+font-size: 16px;
+color: #94A3B8;
+font-weight: 500;
 }
 
 /* Empty State */
 .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 48px 24px;
-    text-align: center;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 48px 24px;
+text-align: center;
 }
 
 .empty-icon {
-    font-size: 64px;
-    margin-bottom: 16px;
-    opacity: 0.4;
+font-size: 64px;
+margin-bottom: 16px;
+opacity: 0.4;
 }
 
 .empty-text {
-    font-size: 16px;
-    color: #94A3B8;
-    font-weight: 500;
+font-size: 16px;
+color: #94A3B8;
+font-weight: 500;
 }
 
 /* Quick Actions */
 .quick-actions {
-    display: grid;
-    gap: 12px;
+display: grid;
+gap: 12px;
 }
 
 .action-btn {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 20px;
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 12px;
-    text-decoration: none;
-    color: var(--text-dark);
-    font-weight: 500;
-    transition: all 0.3s ease;
-    cursor: pointer;
+display: flex;
+align-items: center;
+gap: 12px;
+padding: 16px 20px;
+background: white;
+border: 1px solid rgba(0, 0, 0, 0.08);
+border-radius: 12px;
+text-decoration: none;
+color: var(--text-dark);
+font-weight: 500;
+transition: all 0.3s ease;
+cursor: pointer;
 }
 
 .action-btn:hover {
-    background: var(--lumin-turquoise);
-    color: white;
-    transform: translateX(-4px);
-    box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
+background: var(--lumin-turquoise);
+color: white;
+transform: translateX(-4px);
+box-shadow: 0 4px 12px rgba(0, 173, 181, 0.3);
 }
 
 .action-icon {
-    font-size: 24px;
+font-size: 24px;
 }
 
 /* Responsive for Dashboard */
 @media (max-width: 768px) {
-    .widget-grid {
-        grid-template-columns: 1fr;
-    }
+.widget-grid {
+grid-template-columns: 1fr;
+}
 
-    .widget-grid-large {
-        grid-template-columns: 1fr;
-    }
+.widget-grid-large {
+grid-template-columns: 1fr;
+}
 
-    .kpi-value {
-        font-size: 28px;
-    }
+.kpi-value {
+font-size: 28px;
+}
 
-    .chart-placeholder {
-        height: 200px;
-    }
+.chart-placeholder {
+height: 200px;
+}
 }
 
 @media (max-width: 480px) {
-    .widget {
-        padding: 20px;
-    }
+.widget {
+padding: 20px;
+}
 
-    .kpi-value {
-        font-size: 24px;
-    }
+.kpi-value {
+font-size: 24px;
+}
 }
 {% endblock %}
 
@@ -200,9 +200,9 @@
                 <span class="widget-title">סך מכירות</span>
                 <span class="widget-icon">💰</span>
             </div>
-            <div class="kpi-value">₪0</div>
+            <div class="kpi-value">₪{{ kpi_sales_month|floatformat:0 }}</div>
             <div class="kpi-label">מכירות החודש</div>
-            <div class="kpi-change positive">↑ 0% מחודש שעבר</div>
+            <div class="kpi-change positive">↑ החודש הנוכחי</div>
         </div>
 
         <div class="widget">
@@ -210,9 +210,9 @@
                 <span class="widget-title">הזמנות</span>
                 <span class="widget-icon">🛒</span>
             </div>
-            <div class="kpi-value">0</div>
+            <div class="kpi-value">{{ kpi_orders_month }}</div>
             <div class="kpi-label">הזמנות החודש</div>
-            <div class="kpi-change positive">↑ 0% מחודש שעבר</div>
+            <div class="kpi-change positive">↑ החודש הנוכחי</div>
         </div>
 
         <div class="widget">
@@ -220,9 +220,9 @@
                 <span class="widget-title">לקוחות</span>
                 <span class="widget-icon">👥</span>
             </div>
-            <div class="kpi-value">0</div>
+            <div class="kpi-value">{{ kpi_customers_total }}</div>
             <div class="kpi-label">סך לקוחות</div>
-            <div class="kpi-change positive">↑ 0 חדשים</div>
+            <div class="kpi-change positive">↑ {{ kpi_customers_new }} חדשים</div>
         </div>
 
         <div class="widget">
@@ -230,9 +230,9 @@
                 <span class="widget-title">מוצרים</span>
                 <span class="widget-icon">📦</span>
             </div>
-            <div class="kpi-value">0</div>
+            <div class="kpi-value">{{ kpi_products_total }}</div>
             <div class="kpi-label">סך מוצרים</div>
-            <div class="kpi-change positive">↑ 0 חדשים</div>
+            <div class="kpi-change positive">↑ {{ kpi_products_new }} חדשים</div>
         </div>
     </div>
 
@@ -267,9 +267,50 @@
                 <span class="widget-icon">🕒</span>
             </div>
 
-            <div class="empty-state">
-                <div class="empty-icon">📭</div>
-                <div class="empty-text">אין פעילות עדיין</div>
+            <div class="activity-list">
+                {% if activities %}
+                {% for activity in activities %}
+                <div class="activity-item"
+                    style="padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="activity-icon"
+                            style="background: rgba(0, 173, 181, 0.1); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                            {% if activity.activity_type == 'treatment' %}💆
+                            {% elif activity.activity_type == 'order' %}🛒
+                            {% else %}👤{% endif %}
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-dark);">
+                                {% if activity.activity_type == 'treatment' %}
+                                {{ activity.treatment_name }}
+                                {% elif activity.activity_type == 'order' %}
+                                הזמנה #{{ activity.order_number }}
+                                {% else %}
+                                לקוח חדש: {{ activity.full_name }}
+                                {% endif %}
+                            </div>
+                            <div style="font-size: 13px; color: #64748B;">
+                                {% if activity.activity_type == 'treatment' %}
+                                ע"י {{ activity.staff_member_name|default:"מטפל" }} • {{ activity.customer.full_name }}
+                                {% elif activity.activity_type == 'order' %}
+                                {{ activity.customer_name }} • ₪{{ activity.total_amount }}
+                                {% else %}
+                                הצטרף למערכת
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="font-size: 12px; color: #94A3B8;">
+                        {{ activity.created_at|timesince }}
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <div class="empty-text">אין פעילות עדיין</div>
+                </div>
+                {% endif %}
             </div>
         </div>
 
@@ -282,15 +323,15 @@
             <div class="quick-actions">
                 <a href="/api/products/" class="action-btn">
                     <span class="action-icon">📦</span>
-                    <span>הוסף מוצר חדש</span>
-                </a>
-                <a href="/api/orders/" class="action-btn">
-                    <span class="action-icon">🛒</span>
-                    <span>צור הזמנה</span>
+                    <span>ניהול מוצרים</span>
                 </a>
                 <a href="/api/customers/" class="action-btn">
                     <span class="action-icon">👥</span>
-                    <span>הוסף לקוח</span>
+                    <span>ניהול לקוחות</span>
+                </a>
+                <a href="/settings/" class="action-btn">
+                    <span class="action-icon">⚙️</span>
+                    <span>הגדרות מערכת</span>
                 </a>
                 <a href="/api/integrations/sync/" class="action-btn">
                     <span class="action-icon">🔄</span>

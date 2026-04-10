@@ -2,9 +2,10 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { ROUTES } from './config/constants'
 import MainLayout from './components/layout/MainLayout'
 import Home from './pages/Home'
+import Login from './pages/Login'
+import Register from './pages/Register'
 
 // Placeholder components - will be created in later phases
-const LoginPage = () => <div className="p-8"><h1 className="text-2xl font-bold">התחברות</h1></div>
 const DashboardPage = () => <div className="p-8"><h1 className="text-2xl font-bold">לוח בקרה</h1></div>
 const NotFoundPage = () => <div className="p-8 text-center"><h1 className="text-2xl font-bold">404 - הדף לא נמצא</h1></div>
 
@@ -13,7 +14,8 @@ function App() {
     <div className="min-h-screen">
       <Routes>
         <Route path={ROUTES.HOME} element={<Home />} />
-        <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+        <Route path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.REGISTER} element={<Register />} />
 
         {/* Protected Routes */}
         <Route element={<MainLayout />}>

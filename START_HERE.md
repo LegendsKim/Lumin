@@ -10,12 +10,12 @@
 
 **Client ID:**
 ```
-333006482129-1i8g1gtsquvfvk3e2uf8vaqb78rjq1p6.apps.googleusercontent.com
+your-google-client-id
 ```
 
 **Client Secret:**
 ```
-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
+your-google-client-secret
 ```
 
 ✅ כבר מעודכן ב-.env

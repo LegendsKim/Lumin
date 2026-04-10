@@ -21,6 +21,6 @@ services:
       - key: CSRF_TRUSTED_ORIGINS
         value: https://*.onrender.com
       - key: GOOGLE_CLIENT_ID
-        value: 333006482129-1i8g1gtsquvfvk3e2uf8vaqb78rjq1p6.apps.googleusercontent.com
+        value: your-google-client-id
       - key: GOOGLE_CLIENT_SECRET
-        value: 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
+        value: your-google-client-secret

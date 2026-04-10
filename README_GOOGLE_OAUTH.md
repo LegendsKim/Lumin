@@ -13,12 +13,12 @@
 
 **Google Client ID:**
 ```
-333006482129-1i8g1gtsquvfvk3e2uf8vaqb78rjq1p6.apps.googleusercontent.com
+your-google-client-id
 ```
 
 **Google Client Secret:**
 ```
-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
+your-google-client-secret
 ```
 
 ---
